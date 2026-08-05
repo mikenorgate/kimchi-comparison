@@ -1,0 +1,68 @@
+@theme {
+  /* Background / surface colors */
+  --color-tahoe-bg: #f5f5f7;
+  --color-tahoe-desktop: #a1c4fd;
+  --color-tahoe-desktop-dark: #5e8bda;
+
+  /* Glass / translucent surfaces */
+  --color-tahoe-glass: rgba(255, 255, 255, 0.25);
+  --color-tahoe-glass-strong: rgba(255, 255, 255, 0.55);
+  --color-tahoe-glass-border: rgba(255, 255, 255, 0.35);
+  --color-tahoe-menu: rgba(255, 255, 255, 0.82);
+  --color-tahoe-menubar: rgba(255, 255, 255, 0.72);
+  --color-tahoe-dock: rgba(255, 255, 255, 0.22);
+  --color-tahoe-window: rgba(255, 255, 255, 0.82);
+  --color-tahoe-titlebar: rgba(255, 255, 255, 0.55);
+
+  /* Text colors */
+  --color-tahoe-text: #1d1d1f;
+  --color-tahoe-text-secondary: #86868b;
+  --color-tahoe-text-tertiary: #a1a1a6;
+  --color-tahoe-text-inverse: #ffffff;
+
+  /* Accent / system colors */
+  --color-tahoe-accent: #007aff;
+  --color-tahoe-accent-hover: #0066d4;
+  --color-tahoe-red: #ff3b30;
+  --color-tahoe-yellow: #ffcc00;
+  --color-tahoe-green: #34c759;
+  --color-tahoe-orange: #ff9500;
+  --color-tahoe-purple: #af52de;
+  --color-tahoe-pink: #ff2d55;
+  --color-tahoe-teal: #5ac8fa;
+  --color-tahoe-indigo: #5856d6;
+
+  /* Border / divider */
+  --color-tahoe-border: rgba(0, 0, 0, 0.06);
+  --color-tahoe-border-strong: rgba(0, 0, 0, 0.12);
+  --color-tahoe-divider: rgba(0, 0, 0, 0.08);
+
+  /* Shadows */
+  --shadow-window: 0 22px 44px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-dock: 0 8px 24px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  --shadow-menu: 0 12px 32px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-context: 0 8px 24px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  /* Blur */
+  --blur-tahoe: 20px;
+  --blur-tahoe-lg: 32px;
+
+  /* Border radius */
+  --radius-tahoe: 1rem;
+  --radius-tahoe-lg: 1.25rem;
+  --radius-tahoe-xl: 1.5rem;
+  --radius-tahoe-sm: 0.5rem;
+  --radius-tahoe-xs: 0.25rem;
+
+  /* Spacing scale helpers */
+  --spacing-tahoe-xs: 0.25rem;
+  --spacing-tahoe-sm: 0.5rem;
+  --spacing-tahoe-md: 0.75rem;
+  --spacing-tahoe-lg: 1rem;
+  --spacing-tahoe-xl: 1.5rem;
+
+  /* Typography */
+  --font-tahoe: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  --font-tahoe-mono: 'SF Mono', ui-monospace, Consolas, monospace;
+}

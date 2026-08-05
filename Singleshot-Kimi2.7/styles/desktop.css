@@ -1,0 +1,27 @@
+.window-layer {
+  position: absolute;
+  top: var(--menubar-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+.window { pointer-events: auto; }
+
+.notification {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 320px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(24px);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow-soft);
+  z-index: 6000;
+  animation: noteIn 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes noteIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.notification h4 { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+.notification p { font-size: 13px; }

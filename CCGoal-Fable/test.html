@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>smoke test</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="desktop">
+    <div id="wallpaper"></div>
+    <div id="desktop-icons"></div>
+    <div id="windows-layer"></div>
+    <div id="menubar">
+      <div id="menubar-left">
+        <div class="menu-item apple-menu" data-menu="apple"></div>
+        <div class="menu-item app-name" data-menu="appname">Finder</div>
+        <div id="app-menus"></div>
+      </div>
+      <div id="menubar-right">
+        <div class="menu-status" id="status-battery"></div>
+        <div class="menu-status" id="status-wifi"></div>
+        <div class="menu-status" id="status-spotlight"></div>
+        <div class="menu-status" id="status-cc"></div>
+        <div class="menu-status" id="status-clock"></div>
+      </div>
+    </div>
+    <div id="dropdown-layer"></div>
+    <div id="control-center" class="glass-panel hidden"></div>
+    <div id="spotlight" class="hidden">
+      <div id="spotlight-box" class="glass-panel">
+        <div id="spotlight-input-row"><input id="spotlight-input" type="text"></div>
+        <div id="spotlight-results"></div>
+      </div>
+    </div>
+    <div id="launchpad" class="hidden">
+      <input id="launchpad-search" type="text">
+      <div id="launchpad-grid"></div>
+    </div>
+    <div id="dock-container"><div id="dock" class="glass-panel"></div></div>
+    <div id="context-menu" class="hidden"></div>
+    <div id="notifications"></div>
+    <div id="sleep-overlay" class="hidden"></div>
+    <div id="lock-screen" class="hidden">
+      <div class="lock-time"></div><div class="lock-date"></div>
+      <div class="lock-user"><div class="lock-avatar"></div><div class="lock-name">Mike</div><button class="lock-unlock">unlock</button></div>
+    </div>
+  </div>
+  <pre id="test-output" style="position:fixed;bottom:0;left:0;z-index:99999;background:#fff;color:#000;max-height:40vh;overflow:auto"></pre>
+  <script src="js/os.js"></script>
+  <script src="js/apps.js"></script>
+  <script src="js/boot.js"></script>
+  <script>
+  (async () => {
+    const out = [];
+    const ok = (name, cond) => out.push((cond ? 'PASS' : 'FAIL') + ' ' + name);
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    try {
+      // launch every non-hidden app + about
+      const ids = Object.keys(OS.apps).filter(id => id !== 'launchpad');
+      for (const id of ids) {
+        try {
+          const w = launchApp(id);
+          ok('launch:' + id, !!w && w.content.children.length > 0);
+        } catch (e) { out.push('FAIL launch:' + id + ' — ' + e.message); }
+      }
+      await wait(100);
+      ok('window count', OS.windows.length >= ids.length - 1);
+
+      // menus for each app produce dropdowns
+      for (const id of ids) {
+        const app = OS.apps[id];
+        setMenusForApp(app);
+        const btns = document.querySelectorAll('#menubar-left .menu-item');
+        let count = 0;
+        btns.forEach(b => { showDropdown(b); count += document.querySelectorAll('#dropdown-layer .dd-item').length > 0 ? 1 : 0; closeDropdowns(); });
+        ok('menus:' + id + ' (' + btns.length + ' menus)', count === btns.length);
+      }
+
+      // calculator math
+      const cw = OS.running.calculator[0];
+      const press = k => [...cw.content.querySelectorAll('.calc-btn')].find(b => b.textContent === k).click();
+      '12+34='.split('').forEach(k => press(k === '+' ? '+' : k));
+      ok('calculator 12+34=46', cw.content.querySelector('.calc-display').textContent === '46');
+
+      // terminal command
+      const tw = OS.running.terminal[0];
+      const tinput = tw.content.querySelector('.term input');
+      tinput.value = 'ls ~';
+      tinput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      ok('terminal ls', tw.content.querySelector('.term').textContent.includes('Documents'));
+
+      // window ops
+      const w0 = OS.windows[0];
+      focusWindow(w0); ok('focus', OS.focusedWin === w0 && w0.el.classList.contains('focused'));
+      minimizeWindow(w0); ok('minimize', w0.minimized);
+      restoreWindow(w0); ok('restore', !w0.minimized);
+      zoomWindow(w0); ok('zoom', w0.maximized);
+      zoomWindow(w0);
+
+      // spotlight
+      toggleSpotlight();
+      renderSpotlight('calc');
+      ok('spotlight results', document.querySelectorAll('.spot-result').length > 0);
+      renderSpotlight('2+2');
+      ok('spotlight math', document.querySelector('.spot-result .sr-title').textContent.includes('= 4'));
+      hideSpotlight();
+
+      // control center + settings
+      toggleControlCenter();
+      ok('control center tiles', document.querySelectorAll('#control-center .cc-tile').length >= 7);
+      setSetting('dark', true);
+      ok('dark mode', document.body.classList.contains('dark'));
+      setSetting('dark', false);
+      setSetting('wallpaper', 'wp-mint');
+      ok('wallpaper', document.getElementById('wallpaper').classList.contains('wp-mint'));
+      setSetting('wallpaper', 'wp-tahoe');
+
+      // launchpad
+      toggleLaunchpad();
+      ok('launchpad apps', document.querySelectorAll('.lp-app').length >= 13);
+      hideLaunchpad();
+
+      // messages send
+      const mw = OS.running.messages[0];
+      const mi = mw.content.querySelector('.msg-inputrow input');
+      mi.value = 'hello';
+      mi.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+      ok('messages send', [...mw.content.querySelectorAll('.bubble.me')].some(b => b.textContent === 'hello'));
+
+      // notes typing persistence
+      const nw = OS.running.notes[0];
+      nw.notesNew();
+      const ed = nw.content.querySelector('.notes-editor');
+      ed.innerText = 'test note';
+      ed.dispatchEvent(new Event('input', { bubbles: true }));
+      ok('notes saved', localStorage.getItem('tahoe-notes').includes('test note'));
+
+      // finder navigation
+      const fw = OS.running.finder[0];
+      fw.finderGo('/Applications');
+      ok('finder nav', fw.content.textContent.includes('Safari.app'));
+      fw.finderNewFolder();
+      ok('finder new folder', fw.content.textContent.includes('untitled folder'));
+
+      // calendar renders a today cell
+      const calw = OS.running.calendar[0];
+      ok('calendar today', !!calw.content.querySelector('.cal-cell.today'));
+
+      // close all windows
+      [...OS.windows].forEach(closeWindow);
+      await wait(250);
+      ok('close all', OS.windows.length === 0);
+    } catch (e) {
+      out.push('FAIL harness — ' + (e.stack || e.message));
+    }
+    document.getElementById('test-output').textContent = out.join('\n') + '\nDONE';
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "id": "ccgoal-fable",
+  "title": "macOS Tahoe — Static Build",
+  "approach": "Static build",
+  "workflow": "/goal",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Approach",
+      "answer": "Static build"
+    }
+  ],
+  "sourcePath": "CCGoal-Fable",
+  "buildCommand": "python3 -m http.server 8080",
+  "entryPoint": "index.html",
+  "agent": "claude",
+  "model": "Fable 5",
+  "durationMs": 1140000,
+  "cost": "$8.79",
+  "fermentId": null
+}

@@ -1,0 +1,89 @@
+/* Translucent macOS/Tahoe material surfaces using backdrop-filter */
+
+.glass {
+  background: var(--color-panel-bg);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--color-border-light);
+}
+
+.glass-thin {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.glass-thick {
+  background: var(--color-panel-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid var(--color-border-light);
+}
+
+.glass-dark {
+  background: rgba(30, 30, 30, 0.5);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark-thick {
+  background: rgba(20, 20, 20, 0.62);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Menu bar and dock materials */
+.menu-bar-material {
+  background: var(--color-menu-bar-bg);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dock-material {
+  background: var(--color-dock-bg);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--shadow-dock);
+}
+
+/* Window material */
+.window-material {
+  background: var(--color-window-bg);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: var(--shadow-window);
+  border-radius: var(--radius-window);
+  overflow: hidden;
+}
+
+.window-titlebar-material {
+  background: var(--color-window-titlebar);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Panel materials */
+.panel-material {
+  background: var(--color-control-center-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+}
+
+.spotlight-material {
+  background: var(--color-spotlight-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-panel);
+}

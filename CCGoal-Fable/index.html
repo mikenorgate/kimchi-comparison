@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>macOS Tahoe</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="desktop">
+    <div id="wallpaper"></div>
+    <div id="desktop-icons"></div>
+    <div id="windows-layer"></div>
+
+    <!-- Menu bar -->
+    <div id="menubar">
+      <div id="menubar-left">
+        <div class="menu-item apple-menu" data-menu="apple"></div>
+        <div class="menu-item app-name" data-menu="appname">Finder</div>
+        <div id="app-menus"></div>
+      </div>
+      <div id="menubar-right">
+        <div class="menu-status" id="status-battery" title="Battery">
+          <svg width="26" height="12" viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.55"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><path d="M23.5 4 v4 a2.2 2.2 0 0 0 0-4z" fill="currentColor" fill-opacity="0.55"/></svg>
+        </div>
+        <div class="menu-status" id="status-wifi" title="Wi-Fi">
+          <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 10.9 L5.6 8.4 a3.4 3.4 0 0 1 4.8 0z M3.5 6.2 a6.4 6.4 0 0 1 9 0 L11 7.7 a4.3 4.3 0 0 0-6 0z M1.2 3.9 a9.6 9.6 0 0 1 13.6 0 l-1.5 1.5 a7.5 7.5 0 0 0-10.6 0z" fill="currentColor"/></svg>
+        </div>
+        <div class="menu-status" id="status-spotlight" title="Spotlight">
+          <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="9.4" y1="9.4" x2="13" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="menu-status" id="status-cc" title="Control Center">
+          <svg width="15" height="15" viewBox="0 0 15 15"><rect x="0.75" y="0.75" width="13.5" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="4.2" cy="3.75" r="2" fill="currentColor"/><rect x="0.75" y="8.25" width="13.5" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10.8" cy="11.25" r="2" fill="currentColor"/></svg>
+        </div>
+        <div class="menu-status" id="status-clock"></div>
+      </div>
+    </div>
+
+    <!-- Dropdown layer for menus -->
+    <div id="dropdown-layer"></div>
+
+    <!-- Control Center panel -->
+    <div id="control-center" class="glass-panel hidden"></div>
+
+    <!-- Spotlight -->
+    <div id="spotlight" class="hidden">
+      <div id="spotlight-box" class="glass-panel">
+        <div id="spotlight-input-row">
+          <svg width="18" height="18" viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="9.4" y1="9.4" x2="13" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input id="spotlight-input" type="text" placeholder="Spotlight Search" autocomplete="off">
+        </div>
+        <div id="spotlight-results"></div>
+      </div>
+    </div>
+
+    <!-- Launchpad -->
+    <div id="launchpad" class="hidden">
+      <input id="launchpad-search" type="text" placeholder="Search">
+      <div id="launchpad-grid"></div>
+    </div>
+
+    <!-- Dock -->
+    <div id="dock-container">
+      <div id="dock" class="glass-panel"></div>
+    </div>
+
+    <!-- Context menu -->
+    <div id="context-menu" class="hidden"></div>
+
+    <!-- Notification stack -->
+    <div id="notifications"></div>
+
+    <!-- Sleep / lock overlays -->
+    <div id="sleep-overlay" class="hidden"></div>
+    <div id="lock-screen" class="hidden">
+      <div class="lock-time"></div>
+      <div class="lock-date"></div>
+      <div class="lock-user">
+        <div class="lock-avatar"></div>
+        <div class="lock-name">Mike</div>
+        <button class="lock-unlock">Click to unlock</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/os.js"></script>
+  <script src="js/apps.js"></script>
+  <script src="js/boot.js"></script>
+</body>
+</html>

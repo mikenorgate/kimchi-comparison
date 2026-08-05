@@ -1,0 +1,55 @@
+{
+  "passed": 12,
+  "failed": 0,
+  "total": 12,
+  "results": [
+    {
+      "name": "apple-menu-opens",
+      "pass": true
+    },
+    {
+      "name": "dock-opens-finder",
+      "pass": true
+    },
+    {
+      "name": "dock-running-indicator",
+      "pass": true
+    },
+    {
+      "name": "traffic-lights-present",
+      "pass": true
+    },
+    {
+      "name": "minimize-hides-window",
+      "pass": true
+    },
+    {
+      "name": "maximize-expands-window",
+      "pass": true
+    },
+    {
+      "name": "restore-returns-window",
+      "pass": true
+    },
+    {
+      "name": "drag-titlebar-moves-window",
+      "pass": true
+    },
+    {
+      "name": "resize-handle-resizes-window",
+      "pass": true
+    },
+    {
+      "name": "close-button-closes-window",
+      "pass": true
+    },
+    {
+      "name": "focus-raises-z-order",
+      "pass": true
+    },
+    {
+      "name": "desktop-context-menu-opens",
+      "pass": true
+    }
+  ]
+}

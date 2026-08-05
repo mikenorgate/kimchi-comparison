@@ -1,0 +1,151 @@
+[
+  {
+    "id": "ccgoal-fable",
+    "title": "macOS Tahoe — Static Build",
+    "approach": "Static build",
+    "workflow": "/goal",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Static build"
+      }
+    ],
+    "sourcePath": "CCGoal-Fable",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "claude",
+    "model": "Fable 5",
+    "durationMs": 1140000,
+    "cost": "$8.79",
+    "fermentId": null
+  },
+  {
+    "id": "ferment-full-kimi2-7",
+    "title": "macOS Tahoe — Full Desktop",
+    "approach": "Full desktop + bundled apps",
+    "workflow": "ferment",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "What web stack should I use? I'm assuming React + TypeScript + Vite + Tailwind CSS for a modern component-based recreation unless you prefer something else.",
+        "answer": "React + TypeScript + Vite + Tailwind CSS"
+      },
+      {
+        "question": "macOS Tahoe includes many apps and menus. Which core components must be included in the first version? 'Every app' is huge, so I recommend starting with the shell + a few canonical apps.",
+        "answer": "Desktop, Dock, and top Menu Bar; Finder (file manager with folders, files, icons, sidebar); System Settings / Control Center; Safari browser (basic web view or mocked pages); Terminal; Calculator and Notes; Literally every default macOS app (Mail, Messages, Maps, Calendar, Photos, Music, TV, etc.); Window manager (drag, resize, minimize, maximize, fullscreen)"
+      },
+      {
+        "question": "What does 'every app and menu should be working' mean to you?",
+        "answer": "Visually faithful and interactively functional within the simulated OS (no real backend / accounts)"
+      },
+      {
+        "question": "Should I deliver this in phases (Desktop/Dock/Menu Bar + Finder first, then additional apps), or do you want all apps built together in one block? I strongly recommend phased delivery so each layer can be verified.",
+        "answer": "Phased: shell and core apps first, then remaining apps in groups"
+      },
+      {
+        "question": "How should simulated data (files, folders, notes, settings) persist across reloads?",
+        "answer": "No persistence: fresh demo state on every reload"
+      },
+      {
+        "question": "What browsers/devices should this support?",
+        "answer": "Modern Chrome, Safari, Edge desktop only"
+      },
+      {
+        "question": "What automated testing do you want? Visual fidelity is hard to unit-test, so I recommend unit tests for state/logic plus manual QA checklists for UI behavior.",
+        "answer": "Unit tests for state/logic + manual QA checklist for UI behavior"
+      },
+      {
+        "question": "Where should this be deployable?",
+        "answer": "No specific deployment target; local dev only"
+      }
+    ],
+    "sourcePath": "Ferment-Full-Kimi2.7",
+    "buildCommand": "npm run build",
+    "entryPoint": "dist/index.html",
+    "agent": "kimchi",
+    "model": "Kimi K2.7",
+    "durationMs": 8987544,
+    "cost": null,
+    "fermentId": "019fd294-8e66-72bb-bf75-0ec02d410b9a"
+  },
+  {
+    "id": "ferment-kimi2-7",
+    "title": "macOS Tahoe — Core Shell",
+    "approach": "Core desktop shell",
+    "workflow": "ferment",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "What level of functional depth are you aiming for?",
+        "answer": "Interactive UI shell: menus launch apps, windows open/drag/resize, but most app contents are simulated/stubbed"
+      },
+      {
+        "question": "Do you have a preferred technology stack?",
+        "answer": "React (e.g., Vite + React)"
+      },
+      {
+        "question": "Which bundled macOS apps and system areas are must-haves vs. can be stubbed/skipped?",
+        "answer": "Finder (file manager); Dock; Menu Bar (global menu); Control Center / System Settings; Spotlight / Search; Basic apps (Calculator, Notes, Calendar, Clock, Safari shell)"
+      },
+      {
+        "question": "macOS Tahoe is not yet released. What visual reference should drive the design?",
+        "answer": "Use publicly available Tahoe leaks/announcements and extrapolate from current macOS design language"
+      },
+      {
+        "question": "Should window positions, open apps, and user-created data (e.g., Notes) persist across page reloads?",
+        "answer": "No, start fresh on every reload"
+      }
+    ],
+    "sourcePath": "Ferment-Kimi2.7",
+    "buildCommand": "npm run build",
+    "entryPoint": "dist/index.html",
+    "agent": "kimchi",
+    "model": "Kimi K2.7",
+    "durationMs": 2746557,
+    "cost": null,
+    "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5"
+  },
+  {
+    "id": "singleshot-kimi2-7",
+    "title": "macOS Tahoe — Single Page",
+    "approach": "Single-page build",
+    "workflow": "oneshot",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Single-page build"
+      }
+    ],
+    "sourcePath": "Singleshot-Kimi2.7",
+    "buildCommand": "python3 -m http.server 8765",
+    "entryPoint": "index.html",
+    "agent": "kimchi",
+    "model": "Kimi K2.7",
+    "durationMs": 1257000,
+    "cost": null,
+    "fermentId": null
+  },
+  {
+    "id": "codex-gpt5-5",
+    "title": "macOS Tahoe — Codex GPT-5.5",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "codex",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Self-contained HTML/CSS/JS desktop"
+      }
+    ],
+    "sourcePath": "codex-gpt5.5",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "codex",
+    "model": "GPT-5.5",
+    "durationMs": 382000,
+    "cost": "$2.03",
+    "fermentId": null
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "name": "prompttest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8765",
+    "test": "node e2e.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "playwright": "^1.62.1"
+  }
+}

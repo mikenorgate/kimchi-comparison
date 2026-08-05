@@ -1,0 +1,2571 @@
+diff --git a/src/apps/facetime/FaceTime.test.tsx b/src/apps/facetime/FaceTime.test.tsx
+new file mode 100644
+index 0000000..6babe8a
+--- /dev/null
++++ b/src/apps/facetime/FaceTime.test.tsx
+@@ -0,0 +1,68 @@
++import { render, screen, fireEvent } from '@testing-library/react'
++import { act } from 'react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
++import { FaceTime } from './FaceTime'
++
++describe('FaceTime', () => {
++  beforeEach(() => {
++    render(<FaceTime />)
++  })
++
++  afterEach(() => {
++    vi.useRealTimers()
++  })
++
++  it('renders the contacts list', () => {
++    expect(screen.getByTestId('facetime-app')).toBeInTheDocument()
++    expect(screen.getByTestId('facetime-contact-c-1')).toBeInTheDocument()
++    expect(screen.getByTestId('facetime-contact-c-4')).toBeInTheDocument()
++  })
++
++  it('starts a call and shows the call UI', async () => {
++    await userEvent.click(screen.getByTestId('facetime-contact-c-1'))
++    expect(screen.getByTestId('facetime-call')).toBeInTheDocument()
++    expect(screen.getByTestId('facetime-call-name')).toHaveTextContent(
++      'Alice Johnson'
++    )
++    expect(screen.getByTestId('facetime-controls')).toBeInTheDocument()
++  })
++
++  it('increments the call duration', () => {
++    vi.useFakeTimers()
++    act(() => {
++      fireEvent.click(screen.getByTestId('facetime-contact-c-2'))
++    })
++    expect(screen.getByTestId('facetime-duration')).toHaveTextContent('00:00')
++    act(() => {
++      vi.advanceTimersByTime(2500)
++    })
++    expect(screen.getByTestId('facetime-duration')).toHaveTextContent('00:02')
++  })
++
++  it('toggles mute and video', async () => {
++    await userEvent.click(screen.getByTestId('facetime-contact-c-3'))
++    expect(screen.getByTestId('facetime-mute')).toHaveAttribute(
++      'aria-label',
++      'Mute'
++    )
++    await userEvent.click(screen.getByTestId('facetime-mute'))
++    expect(screen.getByTestId('facetime-mute')).toHaveAttribute(
++      'aria-label',
++      'Unmute'
++    )
++    await userEvent.click(screen.getByTestId('facetime-video'))
++    expect(screen.getByTestId('facetime-video')).toHaveAttribute(
++      'aria-label',
++      'Turn video on'
++    )
++  })
++
++  it('ends the call and returns to contacts', async () => {
++    await userEvent.click(screen.getByTestId('facetime-contact-c-4'))
++    expect(screen.getByTestId('facetime-call')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('facetime-end'))
++    expect(screen.queryByTestId('facetime-call')).not.toBeInTheDocument()
++    expect(screen.getByTestId('facetime-contact-c-4')).toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/facetime/FaceTime.tsx b/src/apps/facetime/FaceTime.tsx
+new file mode 100644
+index 0000000..7f111ee
+--- /dev/null
++++ b/src/apps/facetime/FaceTime.tsx
+@@ -0,0 +1,182 @@
++import { useEffect, useMemo, useState } from 'react'
++import {
++  Video,
++  VideoOff,
++  Mic,
++  MicOff,
++  PhoneOff,
++  Phone,
++} from 'lucide-react'
++import { contacts } from './data'
++
++function formatDuration(totalSeconds: number) {
++  const m = Math.floor(totalSeconds / 60)
++    .toString()
++    .padStart(2, '0')
++  const s = (totalSeconds % 60).toString().padStart(2, '0')
++  return `${m}:${s}`
++}
++
++export function FaceTime() {
++  const [activeContactId, setActiveContactId] = useState<string | null>(null)
++  const [isInCall, setIsInCall] = useState(false)
++  const [isMuted, setIsMuted] = useState(false)
++  const [isVideoOff, setIsVideoOff] = useState(false)
++  const [duration, setDuration] = useState(0)
++
++  const activeContact = useMemo(
++    () => contacts.find((c) => c.id === activeContactId) ?? null,
++    [activeContactId]
++  )
++
++  useEffect(() => {
++    if (!isInCall) return
++    setDuration(0)
++    const interval = setInterval(() => setDuration((d) => d + 1), 1000)
++    return () => clearInterval(interval)
++  }, [isInCall])
++
++  const startCall = (id: string) => {
++    setActiveContactId(id)
++    setIsInCall(true)
++    setIsMuted(false)
++    setIsVideoOff(false)
++    setDuration(0)
++  }
++
++  const endCall = () => {
++    setIsInCall(false)
++    setActiveContactId(null)
++    setIsMuted(false)
++    setIsVideoOff(false)
++    setDuration(0)
++  }
++
++  return (
++    <div
++      className="flex h-full w-full flex-col overflow-hidden bg-tahoe-glass/30 text-tahoe-text"
++      data-testid="facetime-app"
++    >
++      {!isInCall ? (
++        <div className="flex flex-1 flex-col">
++          <div className="flex h-12 items-center border-b border-tahoe-glass-border px-4 font-medium">
++            FaceTime
++          </div>
++          <div className="flex-1 overflow-y-auto p-4">
++            <h2 className="mb-3 px-2 text-sm font-semibold text-tahoe-text-secondary">
++              Contacts
++            </h2>
++            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
++              {contacts.map((contact) => (
++                <button
++                  key={contact.id}
++                  onClick={() => startCall(contact.id)}
++                  className="flex items-center gap-3 rounded-tahoe-sm p-2 text-left transition-colors hover:bg-white/5"
++                  data-testid={`facetime-contact-${contact.id}`}
++                >
++                  <div
++                    className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-white ${contact.color}`}
++                  >
++                    {contact.initials}
++                  </div>
++                  <div className="flex-1">
++                    <div className="font-medium">{contact.name}</div>
++                    <div className="text-xs text-tahoe-text-secondary">
++                      Video
++                    </div>
++                  </div>
++                  <div className="rounded-full bg-tahoe-green p-2 text-white">
++                    <Phone className="h-4 w-4" />
++                  </div>
++                </button>
++              ))}
++            </div>
++          </div>
++        </div>
++      ) : (
++        <div
++          className="relative flex flex-1 flex-col bg-black/80 text-white"
++          data-testid="facetime-call"
++        >
++          {/* Remote placeholder */}
++          <div
++            className="flex flex-1 flex-col items-center justify-center"
++            data-testid="facetime-remote-video"
++          >
++            {activeContact && (
++              <div
++                className={`mb-4 flex h-24 w-24 items-center justify-center rounded-full text-3xl font-semibold text-white ${activeContact.color}`}
++              >
++                {activeContact.initials}
++              </div>
++            )}
++            <div className="text-xl font-medium" data-testid="facetime-call-name">
++              {activeContact?.name}
++            </div>
++            <div
++              className="mt-1 text-sm text-white/70"
++              data-testid="facetime-duration"
++            >
++              {formatDuration(duration)}
++            </div>
++          </div>
++
++          {/* Local preview placeholder */}
++          <div
++            className={`absolute right-4 top-4 flex h-28 w-36 items-center justify-center rounded-tahoe-md border border-white/20 text-sm text-white/70 ${
++              isVideoOff ? 'bg-black' : 'bg-tahoe-text-secondary/30'
++            }`}
++            data-testid="facetime-local-video"
++          >
++            {isVideoOff ? 'Camera off' : 'Camera preview'}
++          </div>
++
++          {/* Controls */}
++          <div
++            className="flex items-center justify-center gap-6 pb-6"
++            data-testid="facetime-controls"
++          >
++            <button
++              onClick={() => setIsMuted((m) => !m)}
++              className={`rounded-full p-3 ${
++                isMuted ? 'bg-tahoe-red text-white' : 'bg-white/20 text-white'
++              }`}
++              data-testid="facetime-mute"
++              aria-label={isMuted ? 'Unmute' : 'Mute'}
++            >
++              {isMuted ? (
++                <MicOff className="h-6 w-6" />
++              ) : (
++                <Mic className="h-6 w-6" />
++              )}
++            </button>
++            <button
++              onClick={() => setIsVideoOff((v) => !v)}
++              className={`rounded-full p-3 ${
++                isVideoOff
++                  ? 'bg-tahoe-red text-white'
++                  : 'bg-white/20 text-white'
++              }`}
++              data-testid="facetime-video"
++              aria-label={isVideoOff ? 'Turn video on' : 'Turn video off'}
++            >
++              {isVideoOff ? (
++                <VideoOff className="h-6 w-6" />
++              ) : (
++                <Video className="h-6 w-6" />
++              )}
++            </button>
++            <button
++              onClick={endCall}
++              className="rounded-full bg-tahoe-red p-3 text-white hover:opacity-90"
++              data-testid="facetime-end"
++              aria-label="End call"
++            >
++              <PhoneOff className="h-6 w-6" />
++            </button>
++          </div>
++        </div>
++      )}
++    </div>
++  )
++}
+diff --git a/src/apps/facetime/data.ts b/src/apps/facetime/data.ts
+new file mode 100644
+index 0000000..49ce327
+--- /dev/null
++++ b/src/apps/facetime/data.ts
+@@ -0,0 +1,8 @@
++import type { Contact } from './types'
++
++export const contacts: Contact[] = [
++  { id: 'c-1', name: 'Alice Johnson', initials: 'AJ', color: 'bg-pink-500' },
++  { id: 'c-2', name: 'Bob Smith', initials: 'BS', color: 'bg-blue-500' },
++  { id: 'c-3', name: 'Carol White', initials: 'CW', color: 'bg-green-500' },
++  { id: 'c-4', name: 'Dan Lee', initials: 'DL', color: 'bg-orange-500' },
++]
+diff --git a/src/apps/facetime/types.ts b/src/apps/facetime/types.ts
+new file mode 100644
+index 0000000..05c28ec
+--- /dev/null
++++ b/src/apps/facetime/types.ts
+@@ -0,0 +1,6 @@
++export interface Contact {
++  id: string
++  name: string
++  initials: string
++  color: string
++}
+diff --git a/src/apps/index.tsx b/src/apps/index.tsx
+new file mode 100644
+index 0000000..233d23e
+--- /dev/null
++++ b/src/apps/index.tsx
+@@ -0,0 +1,84 @@
++import {
++  Folder,
++  Settings,
++  Globe,
++  Terminal as TerminalIcon,
++  Calculator as CalculatorIcon,
++  StickyNote,
++  Mail as MailIcon,
++  MessageSquare,
++  Calendar as CalendarIcon,
++  Image,
++  Music as MusicIcon,
++  Tv as TvIcon,
++  CloudSun,
++  Clock as ClockIcon,
++  Map as MapIcon,
++  Video,
++  CheckCircle2,
++  BookOpen,
++  AppWindow,
++  Contact,
++  Newspaper,
++  TrendingUp,
++  Home,
++  Mic,
++  LayoutGrid,
++  Lock,
++} from 'lucide-react'
++import { registerApp } from './registry'
++import { StubApp } from './StubApp'
++import { Finder } from './finder/Finder'
++import { SystemSettings } from './system-settings/SystemSettings'
++import { Safari } from './safari/Safari'
++import { Terminal } from './terminal/Terminal'
++import { Calculator } from './calculator/Calculator'
++import { Notes } from './notes/Notes'
++import { Calendar } from './calendar/Calendar'
++import { Reminders } from './reminders/Reminders'
++import { Clock } from './clock/Clock'
++import { Weather } from './weather/Weather'
++import { Mail } from './mail/Mail'
++import { Messages } from './messages/Messages'
++import { Photos } from './photos/Photos'
++import { Music } from './music/Music'
++import { Tv } from './tv/Tv'
++import { Maps } from './maps/Maps'
++import { FaceTime } from './facetime/FaceTime'
++
++function stubFor(appId: string) {
++  return function Stub() {
++    return <StubApp appId={appId} />
++  }
++}
++
++export function registerDefaultApps() {
++  registerApp({ id: 'finder', name: 'Finder', icon: Folder, component: Finder, defaultSize: { width: 820, height: 520 } })
++  registerApp({ id: 'settings', name: 'System Settings', icon: Settings, component: SystemSettings, defaultSize: { width: 760, height: 520 } })
++  registerApp({ id: 'safari', name: 'Safari', icon: Globe, component: Safari, defaultSize: { width: 1024, height: 700 } })
++  registerApp({ id: 'terminal', name: 'Terminal', icon: TerminalIcon, component: Terminal, defaultSize: { width: 720, height: 460 } })
++  registerApp({ id: 'calculator', name: 'Calculator', icon: CalculatorIcon, component: Calculator, defaultSize: { width: 280, height: 420 } })
++  registerApp({ id: 'notes', name: 'Notes', icon: StickyNote, component: Notes, defaultSize: { width: 720, height: 520 } })
++  registerApp({ id: 'mail', name: 'Mail', icon: MailIcon, component: Mail, defaultSize: { width: 960, height: 620 } })
++  registerApp({ id: 'messages', name: 'Messages', icon: MessageSquare, component: Messages, defaultSize: { width: 720, height: 540 } })
++  registerApp({ id: 'calendar', name: 'Calendar', icon: CalendarIcon, component: Calendar, defaultSize: { width: 820, height: 620 } })
++  registerApp({ id: 'photos', name: 'Photos', icon: Image, component: Photos, defaultSize: { width: 900, height: 640 } })
++  registerApp({ id: 'music', name: 'Music', icon: MusicIcon, component: Music, defaultSize: { width: 900, height: 620 } })
++  registerApp({ id: 'maps', name: 'Maps', icon: MapIcon, component: Maps, defaultSize: { width: 900, height: 640 } })
++  registerApp({ id: 'tv', name: 'TV', icon: TvIcon, component: Tv, defaultSize: { width: 900, height: 620 } })
++  registerApp({ id: 'weather', name: 'Weather', icon: CloudSun, component: Weather, defaultSize: { width: 360, height: 560 } })
++  registerApp({ id: 'clock', name: 'Clock', icon: ClockIcon, component: Clock, defaultSize: { width: 360, height: 420 } })
++  registerApp({ id: 'facetime', name: 'FaceTime', icon: Video, component: FaceTime, defaultSize: { width: 720, height: 520 } })
++  registerApp({ id: 'reminders', name: 'Reminders', icon: CheckCircle2, component: Reminders, defaultSize: { width: 720, height: 520 } })
++  registerApp({ id: 'appstore', name: 'App Store', icon: AppWindow, component: stubFor('appstore'), defaultSize: { width: 900, height: 620 } })
++  registerApp({ id: 'contacts', name: 'Contacts', icon: Contact, component: stubFor('contacts'), defaultSize: { width: 720, height: 520 } })
++  registerApp({ id: 'books', name: 'Books', icon: BookOpen, component: stubFor('books'), defaultSize: { width: 820, height: 620 } })
++  registerApp({ id: 'news', name: 'News', icon: Newspaper, component: stubFor('news'), defaultSize: { width: 900, height: 620 } })
++  registerApp({ id: 'stocks', name: 'Stocks', icon: TrendingUp, component: stubFor('stocks'), defaultSize: { width: 820, height: 560 } })
++  registerApp({ id: 'home', name: 'Home', icon: Home, component: stubFor('home'), defaultSize: { width: 720, height: 560 } })
++  registerApp({ id: 'voicememos', name: 'Voice Memos', icon: Mic, component: stubFor('voicememos'), defaultSize: { width: 520, height: 420 } })
++  registerApp({ id: 'freeform', name: 'Freeform', icon: LayoutGrid, component: stubFor('freeform'), defaultSize: { width: 900, height: 640 } })
++  registerApp({ id: 'passwords', name: 'Passwords', icon: Lock, component: stubFor('passwords'), defaultSize: { width: 720, height: 520 } })
++}
++
++registerDefaultApps()
+diff --git a/src/apps/mail/Mail.test.tsx b/src/apps/mail/Mail.test.tsx
+new file mode 100644
+index 0000000..2f3712a
+--- /dev/null
++++ b/src/apps/mail/Mail.test.tsx
+@@ -0,0 +1,70 @@
++import { render, screen, within } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Mail } from './Mail'
++
++describe('Mail', () => {
++  beforeEach(() => {
++    render(<Mail />)
++  })
++
++  it('renders the inbox and folder sidebar', () => {
++    expect(screen.getByTestId('mail-app')).toBeInTheDocument()
++    expect(screen.getByTestId('mail-sidebar')).toBeInTheDocument()
++    expect(screen.getByTestId('mail-list')).toBeInTheDocument()
++    expect(screen.getByTestId('mail-folder-inbox')).toBeInTheDocument()
++  })
++
++  it('shows message list items and selects a message', async () => {
++    const item = screen.getByTestId('mail-item-em-1')
++    expect(item).toBeInTheDocument()
++    await userEvent.click(item)
++    expect(screen.getByTestId('mail-reading-pane')).toHaveTextContent(
++      'Welcome to your new Mac'
++    )
++    expect(screen.getByTestId('mail-reading-sender')).toHaveTextContent('Apple')
++  })
++
++  it('toggles a message flag', async () => {
++    const item = screen.getByTestId('mail-item-em-1')
++    const flag = within(item).getByTestId('mail-flag-em-1')
++    await userEvent.click(flag)
++    // Flag state changes; mainly asserting the button is present and clickable.
++    expect(flag).toBeInTheDocument()
++  })
++
++  it('deletes a message from inbox and shows it in trash', async () => {
++    expect(screen.getByTestId('mail-item-em-2')).toBeInTheDocument()
++    const item = screen.getByTestId('mail-item-em-2')
++    await userEvent.click(within(item).getByTestId('mail-delete-em-2'))
++    expect(screen.queryByTestId('mail-item-em-2')).not.toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('mail-folder-trash'))
++    expect(screen.getByTestId('mail-item-em-2')).toBeInTheDocument()
++  })
++
++  it('switches folders and shows empty state when appropriate', async () => {
++    await userEvent.click(screen.getByTestId('mail-folder-sent'))
++    expect(screen.getByTestId('mail-item-em-3')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('mail-folder-drafts'))
++    expect(screen.getByTestId('mail-item-em-4')).toBeInTheDocument()
++  })
++
++  it('composes and sends a new message', async () => {
++    await userEvent.click(screen.getByTestId('mail-compose'))
++    expect(screen.getByTestId('mail-compose-modal')).toBeInTheDocument()
++
++    await userEvent.type(
++      screen.getByTestId('mail-compose-subject'),
++      'Test subject'
++    )
++    await userEvent.type(
++      screen.getByTestId('mail-compose-body'),
++      'Hello from the test'
++    )
++    await userEvent.click(screen.getByTestId('mail-compose-send'))
++
++    expect(screen.queryByTestId('mail-compose-modal')).not.toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('mail-folder-sent'))
++    expect(screen.getByText('Test subject')).toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/mail/Mail.tsx b/src/apps/mail/Mail.tsx
+new file mode 100644
+index 0000000..12dd7b7
+--- /dev/null
++++ b/src/apps/mail/Mail.tsx
+@@ -0,0 +1,300 @@
++import { useState, useCallback } from 'react'
++import { Inbox, Send, FileText, Trash2, Star, Plus, X } from 'lucide-react'
++import type { Email, MailFolder } from './types'
++import { sampleEmails, folders } from './data'
++
++function generateId() {
++  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`
++}
++
++const folderIcons: Record<MailFolder, typeof Inbox> = {
++  inbox: Inbox,
++  sent: Send,
++  drafts: FileText,
++  trash: Trash2,
++}
++
++export function Mail() {
++  const [emails, setEmails] = useState<Email[]>(sampleEmails)
++  const [folder, setFolder] = useState<MailFolder>('inbox')
++  const [selectedId, setSelectedId] = useState<string | null>(null)
++  const [showCompose, setShowCompose] = useState(false)
++  const [composeTo, setComposeTo] = useState('')
++  const [composeSubject, setComposeSubject] = useState('')
++  const [composeBody, setComposeBody] = useState('')
++
++  const filteredEmails = emails.filter((email) => {
++    if (folder === 'trash') return email.folder === 'trash'
++    if (folder === 'inbox') return email.folder === 'inbox'
++    if (folder === 'sent') return email.folder === 'sent'
++    if (folder === 'drafts') return email.folder === 'drafts'
++    return true
++  })
++
++  const selectedEmail = emails.find((email) => email.id === selectedId) ?? null
++
++  const selectEmail = useCallback((id: string) => {
++    setSelectedId(id)
++    setEmails((prev) =>
++      prev.map((email) => (email.id === id ? { ...email, read: true } : email))
++    )
++  }, [])
++
++  const toggleFlag = useCallback((id: string) => {
++    setEmails((prev) =>
++      prev.map((email) =>
++        email.id === id ? { ...email, flagged: !email.flagged } : email
++      )
++    )
++  }, [])
++
++  const deleteEmail = useCallback((id: string) => {
++    setEmails((prev) => {
++      const target = prev.find((email) => email.id === id)
++      if (!target) return prev
++      if (target.folder === 'trash') {
++        return prev.filter((email) => email.id !== id)
++      }
++      return prev.map((email) =>
++        email.id === id ? { ...email, folder: 'trash' } : email
++      )
++    })
++    setSelectedId((current) => (current === id ? null : current))
++  }, [])
++
++  const sendEmail = useCallback(() => {
++    const subject = composeSubject.trim() || 'No Subject'
++    const newEmail: Email = {
++      id: generateId(),
++      sender: 'me',
++      subject,
++      preview: composeBody.slice(0, 80),
++      body: composeBody,
++      date: 'Just now',
++      read: true,
++      flagged: false,
++      folder: 'sent',
++    }
++    setEmails((prev) => [newEmail, ...prev])
++    setComposeTo('')
++    setComposeSubject('')
++    setComposeBody('')
++    setShowCompose(false)
++  }, [composeSubject, composeBody])
++
++  const unreadCount = (folderId: MailFolder) =>
++    emails.filter((email) => email.folder === folderId && !email.read).length
++
++  return (
++    <div
++      className="flex h-full w-full bg-tahoe-glass/30 text-tahoe-text overflow-hidden"
++      data-testid="mail-app"
++    >
++      {/* Sidebar */}
++      <div
++        className="w-48 flex-shrink-0 border-r border-tahoe-glass-border bg-tahoe-window/60 p-3 flex flex-col gap-1"
++        data-testid="mail-sidebar"
++      >
++        <button
++          onClick={() => setShowCompose(true)}
++          className="mb-3 flex items-center justify-center gap-2 rounded-tahoe-xs bg-tahoe-accent px-4 py-2 text-sm font-medium text-white hover:brightness-110"
++          data-testid="mail-compose"
++        >
++          <Plus className="w-4 h-4" />
++          Compose
++        </button>
++        {folders.map(({ id, label }) => {
++          const Icon = folderIcons[id]
++          const count = unreadCount(id)
++          return (
++            <button
++              key={id}
++              onClick={() => {
++                setFolder(id)
++                setSelectedId(null)
++              }}
++              className={`flex items-center justify-between rounded-tahoe-xs px-3 py-2 text-sm transition-colors ${
++                folder === id
++                  ? 'bg-tahoe-accent/20 text-tahoe-text'
++                  : 'hover:bg-white/5 text-tahoe-text-secondary'
++              }`}
++              data-testid={`mail-folder-${id}`}
++            >
++              <span className="flex items-center gap-2">
++                <Icon className="w-4 h-4" />
++                {label}
++              </span>
++              {count > 0 && (
++                <span className="rounded-full bg-tahoe-accent px-2 py-0.5 text-xs text-white">
++                  {count}
++                </span>
++              )}
++            </button>
++          )
++        })}
++      </div>
++
++      {/* Message list */}
++      <div
++        className="w-72 flex-shrink-0 border-r border-tahoe-glass-border bg-tahoe-window/40 overflow-y-auto"
++        data-testid="mail-list"
++      >
++        {filteredEmails.length === 0 ? (
++          <div
++            className="flex h-full items-center justify-center text-sm text-tahoe-text-secondary"
++            data-testid="mail-empty-list"
++          >
++            No messages
++          </div>
++        ) : (
++          filteredEmails.map((email) => (
++            <div
++              key={email.id}
++              onClick={() => selectEmail(email.id)}
++              className={`cursor-pointer border-b border-tahoe-glass-border p-3 transition-colors ${
++                selectedId === email.id
++                  ? 'bg-tahoe-accent/10'
++                  : 'hover:bg-white/5'
++              } ${email.read ? 'opacity-90' : 'font-semibold'}`}
++              data-testid={`mail-item-${email.id}`}
++            >
++              <div className="flex items-center justify-between gap-2">
++                <span className="truncate text-sm">{email.sender}</span>
++                <span className="text-xs text-tahoe-text-secondary whitespace-nowrap">
++                  {email.date}
++                </span>
++              </div>
++              <div className="truncate text-sm">{email.subject}</div>
++              <div className="truncate text-xs text-tahoe-text-secondary">
++                {email.preview}
++              </div>
++              <div className="mt-2 flex items-center gap-2">
++                <button
++                  onClick={(e) => {
++                    e.stopPropagation()
++                    toggleFlag(email.id)
++                  }}
++                  className="p-1 rounded hover:bg-white/10"
++                  data-testid={`mail-flag-${email.id}`}
++                  aria-label="Flag"
++                >
++                  <Star
++                    className={`w-4 h-4 ${
++                      email.flagged
++                        ? 'fill-tahoe-yellow text-tahoe-yellow'
++                        : 'text-tahoe-text-secondary'
++                    }`}
++                  />
++                </button>
++                <button
++                  onClick={(e) => {
++                    e.stopPropagation()
++                    deleteEmail(email.id)
++                  }}
++                  className="p-1 rounded hover:bg-white/10 text-tahoe-text-secondary hover:text-tahoe-red"
++                  data-testid={`mail-delete-${email.id}`}
++                  aria-label="Delete"
++                >
++                  <Trash2 className="w-4 h-4" />
++                </button>
++              </div>
++            </div>
++          ))
++        )}
++      </div>
++
++      {/* Reading pane */}
++      <div
++        className="flex flex-1 flex-col bg-tahoe-window/80"
++        data-testid="mail-reading-pane"
++      >
++        {selectedEmail ? (
++          <>
++            <div className="border-b border-tahoe-glass-border p-4">
++              <h2 className="text-lg font-semibold">{selectedEmail.subject}</h2>
++              <div className="mt-1 flex items-center justify-between text-sm text-tahoe-text-secondary">
++                <span data-testid="mail-reading-sender">
++                  From: {selectedEmail.sender}
++                </span>
++                <span>{selectedEmail.date}</span>
++              </div>
++            </div>
++            <div className="flex-1 overflow-y-auto p-4 whitespace-pre-wrap text-sm">
++              {selectedEmail.body}
++            </div>
++          </>
++        ) : (
++          <div
++            className="flex flex-1 items-center justify-center text-sm text-tahoe-text-secondary"
++            data-testid="mail-empty-reading"
++          >
++            Select a message to read
++          </div>
++        )}
++      </div>
++
++      {/* Compose modal */}
++      {showCompose && (
++        <div
++          className="absolute inset-0 z-50 flex items-center justify-center bg-black/40"
++          data-testid="mail-compose-modal"
++        >
++          <div className="w-[480px] rounded-tahoe-lg bg-tahoe-window p-4 shadow-window border border-tahoe-glass-border">
++            <div className="mb-3 flex items-center justify-between">
++              <h3 className="font-semibold">New Message</h3>
++              <button
++                onClick={() => setShowCompose(false)}
++                className="p-1 rounded hover:bg-white/10"
++                aria-label="Close"
++              >
++                <X className="w-4 h-4" />
++              </button>
++            </div>
++            <div className="space-y-3">
++              <input
++                type="text"
++                placeholder="To"
++                value={composeTo}
++                onChange={(e) => setComposeTo(e.target.value)}
++                className="w-full rounded-tahoe-xs bg-white/5 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-tahoe-accent placeholder:text-tahoe-text-secondary"
++                data-testid="mail-compose-to"
++              />
++              <input
++                type="text"
++                placeholder="Subject"
++                value={composeSubject}
++                onChange={(e) => setComposeSubject(e.target.value)}
++                className="w-full rounded-tahoe-xs bg-white/5 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-tahoe-accent placeholder:text-tahoe-text-secondary"
++                data-testid="mail-compose-subject"
++              />
++              <textarea
++                rows={6}
++                placeholder="Message"
++                value={composeBody}
++                onChange={(e) => setComposeBody(e.target.value)}
++                className="w-full resize-none rounded-tahoe-xs bg-white/5 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-tahoe-accent placeholder:text-tahoe-text-secondary"
++                data-testid="mail-compose-body"
++              />
++              <div className="flex justify-end gap-2">
++                <button
++                  onClick={() => setShowCompose(false)}
++                  className="rounded-tahoe-xs px-4 py-2 text-sm hover:bg-white/5"
++                  data-testid="mail-compose-cancel"
++                >
++                  Cancel
++                </button>
++                <button
++                  onClick={sendEmail}
++                  className="rounded-tahoe-xs bg-tahoe-accent px-4 py-2 text-sm font-medium text-white hover:brightness-110"
++                  data-testid="mail-compose-send"
++                >
++                  Send
++                </button>
++              </div>
++            </div>
++          </div>
++        </div>
++      )}
++    </div>
++  )
++}
+diff --git a/src/apps/mail/data.ts b/src/apps/mail/data.ts
+new file mode 100644
+index 0000000..ed75380
+--- /dev/null
++++ b/src/apps/mail/data.ts
+@@ -0,0 +1,55 @@
++import type { Email, MailFolder } from './types'
++
++export const folders: { id: MailFolder; label: string }[] = [
++  { id: 'inbox', label: 'Inbox' },
++  { id: 'sent', label: 'Sent' },
++  { id: 'drafts', label: 'Drafts' },
++  { id: 'trash', label: 'Trash' },
++]
++
++export const sampleEmails: Email[] = [
++  {
++    id: 'em-1',
++    sender: 'Apple',
++    subject: 'Welcome to your new Mac',
++    preview: 'Set up your Mac and explore macOS Tahoe.',
++    body: 'Welcome!\n\nYour new Mac is ready. Set up your Mac and explore everything macOS Tahoe has to offer.',
++    date: 'Today, 9:41 AM',
++    read: false,
++    flagged: true,
++    folder: 'inbox',
++  },
++  {
++    id: 'em-2',
++    sender: 'Tim Cook',
++    subject: 'Tahoe launch event',
++    preview: 'Join us for the special event next week.',
++    body: 'Hi team,\n\nJoin us for the Tahoe launch event next week. We have exciting updates to share.',
++    date: 'Today, 8:15 AM',
++    read: true,
++    flagged: false,
++    folder: 'inbox',
++  },
++  {
++    id: 'em-3',
++    sender: 'me',
++    subject: 'Project notes',
++    preview: 'Draft of the project notes.',
++    body: 'Here is the draft of the project notes. Let me know if you have any feedback.',
++    date: 'Yesterday',
++    read: true,
++    flagged: false,
++    folder: 'sent',
++  },
++  {
++    id: 'em-4',
++    sender: 'me',
++    subject: 'Meeting follow-up',
++    preview: 'Draft follow-up email.',
++    body: 'Draft follow-up email after the meeting.',
++    date: 'Yesterday',
++    read: false,
++    flagged: false,
++    folder: 'drafts',
++  },
++]
+diff --git a/src/apps/mail/types.ts b/src/apps/mail/types.ts
+new file mode 100644
+index 0000000..f5ae14e
+--- /dev/null
++++ b/src/apps/mail/types.ts
+@@ -0,0 +1,13 @@
++export type MailFolder = 'inbox' | 'sent' | 'drafts' | 'trash'
++
++export interface Email {
++  id: string
++  sender: string
++  subject: string
++  preview: string
++  body: string
++  date: string
++  read: boolean
++  flagged: boolean
++  folder: MailFolder
++}
+diff --git a/src/apps/maps/Maps.test.tsx b/src/apps/maps/Maps.test.tsx
+new file mode 100644
+index 0000000..7b67e08
+--- /dev/null
++++ b/src/apps/maps/Maps.test.tsx
+@@ -0,0 +1,54 @@
++import { render, screen } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Maps } from './Maps'
++
++describe('Maps', () => {
++  beforeEach(() => {
++    render(<Maps />)
++  })
++
++  it('renders the sidebar, search, and map canvas', () => {
++    expect(screen.getByTestId('maps-app')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-sidebar')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-search')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-canvas')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-location-loc-1')).toBeInTheDocument()
++  })
++
++  it('filters the location list when searching', async () => {
++    const search = screen.getByTestId('maps-search')
++    await userEvent.type(search, 'tahoe')
++    expect(screen.getByTestId('maps-location-loc-4')).toBeInTheDocument()
++    expect(screen.queryByTestId('maps-location-loc-1')).not.toBeInTheDocument()
++  })
++
++  it('shows an info card when a location is selected', async () => {
++    await userEvent.click(screen.getByTestId('maps-location-loc-2'))
++    expect(screen.getByTestId('maps-info-card')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-info-title')).toHaveTextContent(
++      'Golden Gate Bridge'
++    )
++  })
++
++  it('shows an info card when a map pin is clicked', async () => {
++    await userEvent.click(screen.getByTestId('maps-pin-loc-3'))
++    expect(screen.getByTestId('maps-info-card')).toBeInTheDocument()
++    expect(screen.getByTestId('maps-info-title')).toHaveTextContent(
++      'Downtown Coffee'
++    )
++  })
++
++  it('closes the info card', async () => {
++    await userEvent.click(screen.getByTestId('maps-location-loc-1'))
++    expect(screen.getByTestId('maps-info-card')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('maps-info-close'))
++    expect(screen.queryByTestId('maps-info-card')).not.toBeInTheDocument()
++  })
++
++  it('shows an empty state for no results', async () => {
++    const search = screen.getByTestId('maps-search')
++    await userEvent.type(search, 'xyz-no-match')
++    expect(screen.getByTestId('maps-empty')).toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/maps/Maps.tsx b/src/apps/maps/Maps.tsx
+new file mode 100644
+index 0000000..bbab462
+--- /dev/null
++++ b/src/apps/maps/Maps.tsx
+@@ -0,0 +1,171 @@
++import { useMemo, useState } from 'react'
++import {
++  Map as MapIcon,
++  Search,
++  MapPin,
++  Navigation,
++  X,
++} from 'lucide-react'
++import { locations } from './data'
++
++export function Maps() {
++  const [query, setQuery] = useState('')
++  const [selectedId, setSelectedId] = useState<string | null>(null)
++
++  const filtered = useMemo(() => {
++    const q = query.trim().toLowerCase()
++    if (!q) return locations
++    return locations.filter(
++      (l) =>
++        l.name.toLowerCase().includes(q) ||
++        l.address.toLowerCase().includes(q) ||
++        l.category.toLowerCase().includes(q)
++    )
++  }, [query])
++
++  const selected = useMemo(
++    () => locations.find((l) => l.id === selectedId) ?? null,
++    [selectedId]
++  )
++
++  return (
++    <div
++      className="relative flex h-full w-full overflow-hidden bg-tahoe-glass/30 text-tahoe-text"
++      data-testid="maps-app"
++    >
++      {/* Sidebar */}
++      <div
++        className="z-10 flex w-64 flex-shrink-0 flex-col border-r border-tahoe-glass-border bg-tahoe-window/80 backdrop-blur-tahoe"
++        data-testid="maps-sidebar"
++      >
++        <div className="flex h-12 items-center gap-2 border-b border-tahoe-glass-border px-3">
++          <MapIcon className="h-5 w-5 text-tahoe-accent" />
++          <span className="font-medium">Maps</span>
++        </div>
++        <div className="relative border-b border-tahoe-glass-border p-3">
++          <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-tahoe-text-secondary" />
++          <input
++            type="text"
++            value={query}
++            onChange={(e) => setQuery(e.target.value)}
++            placeholder="Search places"
++            className="w-full rounded-tahoe-sm bg-tahoe-glass/30 py-2 pl-9 pr-3 text-sm text-tahoe-text placeholder-tahoe-text-secondary outline-none focus:ring-1 focus:ring-tahoe-accent"
++            data-testid="maps-search"
++            aria-label="Search places"
++          />
++        </div>
++        <div className="flex-1 overflow-y-auto" data-testid="maps-results">
++          {filtered.length === 0 ? (
++            <div
++              className="p-4 text-sm text-tahoe-text-secondary"
++              data-testid="maps-empty"
++            >
++              No places found
++            </div>
++          ) : (
++            filtered.map((location) => (
++              <button
++                key={location.id}
++                onClick={() => setSelectedId(location.id)}
++                className={`flex w-full items-start gap-3 border-b border-tahoe-glass-border p-3 text-left transition-colors hover:bg-white/5 ${
++                  selectedId === location.id ? 'bg-white/10' : ''
++                }`}
++                data-testid={`maps-location-${location.id}`}
++              >
++                <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-tahoe-red" />
++                <div className="min-w-0">
++                  <div className="truncate font-medium">{location.name}</div>
++                  <div className="truncate text-xs text-tahoe-text-secondary">
++                    {location.address}
++                  </div>
++                  <div className="mt-1 inline-block rounded-tahoe-xs bg-tahoe-glass/40 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-tahoe-text-secondary">
++                    {location.category}
++                  </div>
++                </div>
++              </button>
++            ))
++          )}
++        </div>
++      </div>
++
++      {/* Map area */}
++      <div className="relative flex-1 bg-tahoe-glass/20" data-testid="maps-canvas">
++        <div className="absolute inset-0 opacity-20">
++          <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
++            <defs>
++              <pattern
++                id="grid"
++                width="40"
++                height="40"
++                patternUnits="userSpaceOnUse"
++              >
++                <path
++                  d="M 40 0 L 0 0 0 40"
++                  fill="none"
++                  stroke="currentColor"
++                  strokeWidth="1"
++                />
++              </pattern>
++            </defs>
++            <rect width="100%" height="100%" fill="url(#grid)" />
++          </svg>
++        </div>
++        {filtered.map((location) => (
++          <button
++            key={location.id}
++            onClick={() => setSelectedId(location.id)}
++            className="absolute -translate-x-1/2 -translate-y-1/2"
++            style={{ left: `${location.x}%`, top: `${location.y}%` }}
++            data-testid={`maps-pin-${location.id}`}
++            aria-label={location.name}
++          >
++            <MapPin
++              className={`h-7 w-7 drop-shadow ${
++                selectedId === location.id
++                  ? 'fill-tahoe-accent text-tahoe-accent'
++                  : 'fill-tahoe-red text-tahoe-red'
++              }`}
++            />
++          </button>
++        ))}
++      </div>
++
++      {/* Info card */}
++      {selected && (
++        <div
++          className="absolute bottom-4 right-4 z-20 w-64 rounded-tahoe-lg border border-tahoe-glass-border bg-tahoe-window/90 p-4 shadow-tahoe backdrop-blur-tahoe"
++          data-testid="maps-info-card"
++        >
++          <div className="mb-2 flex items-start justify-between">
++            <div>
++              <div className="font-medium" data-testid="maps-info-title">
++                {selected.name}
++              </div>
++              <div className="text-sm text-tahoe-text-secondary">
++                {selected.category}
++              </div>
++            </div>
++            <button
++              onClick={() => setSelectedId(null)}
++              className="rounded-full p-1 hover:bg-white/10"
++              data-testid="maps-info-close"
++              aria-label="Close"
++            >
++              <X className="h-4 w-4" />
++            </button>
++          </div>
++          <div className="mb-3 text-sm text-tahoe-text-secondary">
++            {selected.address}
++          </div>
++          <button
++            className="flex w-full items-center justify-center gap-2 rounded-tahoe-sm bg-tahoe-accent py-2 text-sm font-medium text-white hover:opacity-90"
++            data-testid="maps-info-directions"
++          >
++            <Navigation className="h-4 w-4" />
++            Directions
++          </button>
++        </div>
++      )}
++    </div>
++  )
++}
+diff --git a/src/apps/maps/data.ts b/src/apps/maps/data.ts
+new file mode 100644
+index 0000000..ae3ab0e
+--- /dev/null
++++ b/src/apps/maps/data.ts
+@@ -0,0 +1,44 @@
++import type { Location } from './types'
++
++export const locations: Location[] = [
++  {
++    id: 'loc-1',
++    name: 'Apple Park',
++    address: 'One Apple Park Way, Cupertino, CA',
++    category: 'Landmark',
++    x: 28,
++    y: 55,
++  },
++  {
++    id: 'loc-2',
++    name: 'Golden Gate Bridge',
++    address: 'San Francisco, CA',
++    category: 'Landmark',
++    x: 18,
++    y: 38,
++  },
++  {
++    id: 'loc-3',
++    name: 'Downtown Coffee',
++    address: '123 Market St, San Francisco, CA',
++    category: 'Coffee',
++    x: 22,
++    y: 42,
++  },
++  {
++    id: 'loc-4',
++    name: 'Lake Tahoe',
++    address: 'Tahoe City, CA',
++    category: 'Nature',
++    x: 60,
++    y: 30,
++  },
++  {
++    id: 'loc-5',
++    name: 'Big Sur',
++    address: 'Big Sur, CA',
++    category: 'Nature',
++    x: 35,
++    y: 70,
++  },
++]
+diff --git a/src/apps/maps/types.ts b/src/apps/maps/types.ts
+new file mode 100644
+index 0000000..8e3dd70
+--- /dev/null
++++ b/src/apps/maps/types.ts
+@@ -0,0 +1,8 @@
++export interface Location {
++  id: string
++  name: string
++  address: string
++  category: string
++  x: number
++  y: number
++}
+diff --git a/src/apps/messages/Messages.test.tsx b/src/apps/messages/Messages.test.tsx
+new file mode 100644
+index 0000000..1002bc2
+--- /dev/null
++++ b/src/apps/messages/Messages.test.tsx
+@@ -0,0 +1,48 @@
++import { render, screen, within } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Messages } from './Messages'
++
++describe('Messages', () => {
++  beforeEach(() => {
++    render(<Messages />)
++  })
++
++  it('renders the conversation list and chat view', () => {
++    expect(screen.getByTestId('messages-app')).toBeInTheDocument()
++    expect(screen.getByTestId('messages-sidebar')).toBeInTheDocument()
++    expect(screen.getByTestId('messages-list')).toBeInTheDocument()
++    expect(screen.getByTestId('messages-conversation-conv-1')).toBeInTheDocument()
++  })
++
++  it('selects a conversation and shows its messages', async () => {
++    await userEvent.click(screen.getByTestId('messages-conversation-conv-2'))
++    expect(screen.getByTestId('messages-header')).toHaveTextContent('Bob')
++    expect(screen.getByTestId('messages-message-m-3')).toBeInTheDocument()
++  })
++
++  it('marks the selected conversation as read', async () => {
++    const first = screen.getByTestId('messages-conversation-conv-1')
++    expect(within(first).getByTestId('messages-unread-conv-1')).toBeInTheDocument()
++    await userEvent.click(first)
++    expect(within(first).queryByTestId('messages-unread-conv-1')).not.toBeInTheDocument()
++  })
++
++  it('sends a new message', async () => {
++    await userEvent.type(screen.getByTestId('messages-input'), 'Hello Alice')
++    await userEvent.click(screen.getByTestId('messages-send'))
++    expect(within(screen.getByTestId('messages-list')).getByText('Hello Alice')).toBeInTheDocument()
++    expect(screen.getByTestId('messages-input')).toHaveValue('')
++  })
++
++  it('does not send an empty message', async () => {
++    const sendButton = screen.getByTestId('messages-send')
++    expect(sendButton).toBeDisabled()
++  })
++
++  it('sends a message by pressing Enter', async () => {
++    const input = screen.getByTestId('messages-input')
++    await userEvent.type(input, 'Quick reply{enter}')
++    expect(within(screen.getByTestId('messages-list')).getByText('Quick reply')).toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/messages/Messages.tsx b/src/apps/messages/Messages.tsx
+new file mode 100644
+index 0000000..6304472
+--- /dev/null
++++ b/src/apps/messages/Messages.tsx
+@@ -0,0 +1,182 @@
++import { useState, useCallback, useRef, useEffect } from 'react'
++import { Send, Smile } from 'lucide-react'
++import type { Conversation, Message } from './types'
++import { sampleConversations } from './data'
++
++function generateId() {
++  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`
++}
++
++function formatTime() {
++  const now = new Date()
++  return now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
++}
++
++export function Messages() {
++  const [conversations, setConversations] = useState<Conversation[]>(sampleConversations)
++  const [selectedId, setSelectedId] = useState<string>(sampleConversations[0].id)
++  const [draft, setDraft] = useState('')
++  const listRef = useRef<HTMLDivElement>(null)
++
++  const selected = conversations.find((c) => c.id === selectedId) ?? conversations[0]
++
++  const selectConversation = useCallback((id: string) => {
++    setSelectedId(id)
++    setConversations((prev) =>
++      prev.map((c) => (c.id === id ? { ...c, unread: false } : c))
++    )
++  }, [])
++
++  const sendMessage = useCallback(() => {
++    const text = draft.trim()
++    if (!text) return
++    const newMessage: Message = {
++      id: generateId(),
++      sender: 'me',
++      text,
++      timestamp: formatTime(),
++    }
++    setConversations((prev) =>
++      prev.map((c) =>
++        c.id === selectedId
++          ? { ...c, messages: [...c.messages, newMessage] }
++          : c
++      )
++    )
++    setDraft('')
++  }, [draft, selectedId])
++
++  useEffect(() => {
++    const el = listRef.current
++    if (el) {
++      if (typeof el.scrollTo === 'function') {
++        el.scrollTo({ top: el.scrollHeight })
++      } else {
++        el.scrollTop = el.scrollHeight
++      }
++    }
++  }, [selected.messages])
++
++  return (
++    <div
++      className="flex h-full w-full bg-tahoe-glass/30 text-tahoe-text overflow-hidden"
++      data-testid="messages-app"
++    >
++      {/* Conversation list */}
++      <div
++        className="w-56 flex-shrink-0 border-r border-tahoe-glass-border bg-tahoe-window/60 overflow-y-auto"
++        data-testid="messages-sidebar"
++      >
++        {conversations.map((conversation) => (
++          <button
++            key={conversation.id}
++            onClick={() => selectConversation(conversation.id)}
++            className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors border-b border-tahoe-glass-border ${
++              selectedId === conversation.id
++                ? 'bg-tahoe-accent/20'
++                : 'hover:bg-white/5'
++            }`}
++            data-testid={`messages-conversation-${conversation.id}`}
++          >
++            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-tahoe-accent text-white font-semibold">
++              {conversation.avatarInitial}
++            </div>
++            <div className="min-w-0 flex-1">
++              <div className="flex items-center justify-between">
++                <span className="truncate text-sm font-medium">
++                  {conversation.name}
++                </span>
++                {conversation.unread && (
++                  <span
++                    className="ml-2 h-2 w-2 flex-shrink-0 rounded-full bg-tahoe-accent"
++                    data-testid={`messages-unread-${conversation.id}`}
++                  />
++                )}
++              </div>
++              <div className="truncate text-xs text-tahoe-text-secondary">
++                {conversation.messages.at(-1)?.text ?? ''}
++              </div>
++            </div>
++          </button>
++        ))}
++      </div>
++
++      {/* Chat view */}
++      <div className="flex flex-1 flex-col bg-tahoe-window/80">
++        <div
++          className="flex h-14 items-center gap-3 border-b border-tahoe-glass-border px-4"
++          data-testid="messages-header"
++        >
++          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-tahoe-accent text-white font-semibold">
++            {selected.avatarInitial}
++          </div>
++          <span className="font-medium">{selected.name}</span>
++        </div>
++
++        <div
++          ref={listRef}
++          className="flex-1 overflow-y-auto p-4 space-y-3"
++          data-testid="messages-list"
++        >
++          {selected.messages.map((message) => (
++            <div
++              key={message.id}
++              className={`flex ${
++                message.sender === 'me' ? 'justify-end' : 'justify-start'
++              }`}
++              data-testid={`messages-message-${message.id}`}
++            >
++              <div
++                className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
++                  message.sender === 'me'
++                    ? 'bg-tahoe-accent text-white rounded-br-md'
++                    : 'bg-tahoe-glass/50 rounded-bl-md'
++                }`}
++              >
++                <div>{message.text}</div>
++                <div
++                  className={`mt-1 text-right text-xs ${
++                    message.sender === 'me'
++                      ? 'text-white/70'
++                      : 'text-tahoe-text-secondary'
++                  }`}
++                >
++                  {message.timestamp}
++                </div>
++              </div>
++            </div>
++          ))}
++        </div>
++
++        <div className="flex items-center gap-2 border-t border-tahoe-glass-border p-3">
++          <button
++            className="p-2 rounded-full hover:bg-white/10 text-tahoe-text-secondary"
++            aria-label="Emoji"
++          >
++            <Smile className="w-5 h-5" />
++          </button>
++          <input
++            type="text"
++            placeholder="iMessage"
++            value={draft}
++            onChange={(e) => setDraft(e.target.value)}
++            onKeyDown={(e) => {
++              if (e.key === 'Enter') sendMessage()
++            }}
++            className="flex-1 rounded-full bg-white/10 px-4 py-2 text-sm outline-none focus:ring-1 focus:ring-tahoe-accent placeholder:text-tahoe-text-secondary"
++            data-testid="messages-input"
++          />
++          <button
++            onClick={sendMessage}
++            disabled={!draft.trim()}
++            className="p-2 rounded-full bg-tahoe-accent text-white disabled:opacity-40 hover:brightness-110"
++            data-testid="messages-send"
++            aria-label="Send"
++          >
++            <Send className="w-5 h-5" />
++          </button>
++        </div>
++      </div>
++    </div>
++  )
++}
+diff --git a/src/apps/messages/data.ts b/src/apps/messages/data.ts
+new file mode 100644
+index 0000000..4c2e674
+--- /dev/null
++++ b/src/apps/messages/data.ts
+@@ -0,0 +1,33 @@
++import type { Conversation } from './types'
++
++export const sampleConversations: Conversation[] = [
++  {
++    id: 'conv-1',
++    name: 'Alice',
++    avatarInitial: 'A',
++    unread: true,
++    messages: [
++      { id: 'm-1', sender: 'them', text: 'Hey, are we still on for lunch?', timestamp: '10:30 AM' },
++      { id: 'm-2', sender: 'me', text: 'Yes, see you at noon!', timestamp: '10:32 AM' },
++    ],
++  },
++  {
++    id: 'conv-2',
++    name: 'Bob',
++    avatarInitial: 'B',
++    unread: false,
++    messages: [
++      { id: 'm-3', sender: 'them', text: 'Can you send me the report?', timestamp: 'Yesterday' },
++    ],
++  },
++  {
++    id: 'conv-3',
++    name: 'Team Chat',
++    avatarInitial: 'T',
++    unread: false,
++    messages: [
++      { id: 'm-4', sender: 'them', text: 'Great work on the demo today.', timestamp: 'Yesterday' },
++      { id: 'm-5', sender: 'me', text: 'Thanks everyone!', timestamp: 'Yesterday' },
++    ],
++  },
++]
+diff --git a/src/apps/messages/types.ts b/src/apps/messages/types.ts
+new file mode 100644
+index 0000000..f28899f
+--- /dev/null
++++ b/src/apps/messages/types.ts
+@@ -0,0 +1,14 @@
++export interface Message {
++  id: string
++  sender: 'me' | 'them'
++  text: string
++  timestamp: string
++}
++
++export interface Conversation {
++  id: string
++  name: string
++  avatarInitial: string
++  messages: Message[]
++  unread: boolean
++}
+diff --git a/src/apps/music/Music.test.tsx b/src/apps/music/Music.test.tsx
+new file mode 100644
+index 0000000..cf79346
+--- /dev/null
++++ b/src/apps/music/Music.test.tsx
+@@ -0,0 +1,64 @@
++import { render, screen, within } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Music } from './Music'
++
++describe('Music', () => {
++  beforeEach(() => {
++    render(<Music />)
++  })
++
++  it('renders the sidebar and track list', () => {
++    expect(screen.getByTestId('music-app')).toBeInTheDocument()
++    expect(screen.getByTestId('music-sidebar')).toBeInTheDocument()
++    expect(screen.getByTestId('music-track-list')).toBeInTheDocument()
++    expect(screen.getByTestId('music-track-tr-1')).toBeInTheDocument()
++  })
++
++  it('selects a track and starts playback', async () => {
++    await userEvent.click(screen.getByTestId('music-track-tr-1'))
++    expect(screen.getByTestId('music-current-title')).toHaveTextContent(
++      'Midnight City'
++    )
++    expect(screen.getByTestId('music-play-pause')).toHaveAttribute(
++      'aria-label',
++      'Pause'
++    )
++  })
++
++  it('pauses and resumes playback', async () => {
++    await userEvent.click(screen.getByTestId('music-track-tr-2'))
++    await userEvent.click(screen.getByTestId('music-play-pause'))
++    expect(screen.getByTestId('music-play-pause')).toHaveAttribute(
++      'aria-label',
++      'Play'
++    )
++    await userEvent.click(screen.getByTestId('music-play-pause'))
++    expect(screen.getByTestId('music-play-pause')).toHaveAttribute(
++      'aria-label',
++      'Pause'
++    )
++  })
++
++  it('navigates to the next track', async () => {
++    await userEvent.click(screen.getByTestId('music-track-tr-1'))
++    expect(screen.getByTestId('music-current-title')).toHaveTextContent(
++      'Midnight City'
++    )
++    await userEvent.click(screen.getByTestId('music-next'))
++    expect(screen.getByTestId('music-current-title')).toHaveTextContent(
++      'Blinding Lights'
++    )
++  })
++
++  it('toggles favorite and filters the favorites playlist', async () => {
++    await userEvent.click(
++      within(screen.getByTestId('music-track-tr-3')).getByTestId(
++        'music-favorite-tr-3'
++      )
++    )
++    await userEvent.click(screen.getByTestId('music-playlist-favorites'))
++    expect(screen.getByTestId('music-track-tr-3')).toBeInTheDocument()
++    expect(screen.queryByTestId('music-track-tr-1')).not.toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/music/Music.tsx b/src/apps/music/Music.tsx
+new file mode 100644
+index 0000000..40d7bfe
+--- /dev/null
++++ b/src/apps/music/Music.tsx
+@@ -0,0 +1,307 @@
++import { useState, useMemo, useCallback, useEffect } from 'react'
++import {
++  Music as MusicIcon,
++  Play,
++  Pause,
++  SkipBack,
++  SkipForward,
++  Shuffle,
++  Repeat,
++  Heart,
++} from 'lucide-react'
++import { playlists, sampleTracks } from './data'
++
++function formatDuration(seconds: number) {
++  const m = Math.floor(seconds / 60)
++  const s = seconds % 60
++  return `${m}:${s.toString().padStart(2, '0')}`
++}
++
++export function Music() {
++  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>(
++    playlists[0].id
++  )
++  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null)
++  const [isPlaying, setIsPlaying] = useState(false)
++  const [progress, setProgress] = useState(0)
++  const [favorites, setFavorites] = useState<Set<string>>(new Set())
++  const [shuffle, setShuffle] = useState(false)
++
++  const tracks = useMemo(() => {
++    if (selectedPlaylistId === 'favorites')
++      return sampleTracks.filter((t) => favorites.has(t.id))
++    if (selectedPlaylistId === 'recently-played')
++      return [...sampleTracks].reverse()
++    return sampleTracks
++  }, [selectedPlaylistId, favorites])
++
++  const currentTrack = useMemo(
++    () => sampleTracks.find((t) => t.id === currentTrackId) ?? null,
++    [currentTrackId]
++  )
++
++  const currentIndex = useMemo(
++    () => tracks.findIndex((t) => t.id === currentTrackId),
++    [tracks, currentTrackId]
++  )
++
++  const playTrack = useCallback((id: string) => {
++    setCurrentTrackId(id)
++    setIsPlaying(true)
++    setProgress(0)
++  }, [])
++
++  const togglePlay = useCallback(() => {
++    setIsPlaying((p) => !p)
++  }, [])
++
++  const playNext = useCallback(() => {
++    if (tracks.length === 0) return
++    let nextIndex: number
++    if (shuffle) {
++      nextIndex = Math.floor(Math.random() * tracks.length)
++    } else {
++      nextIndex =
++        currentIndex >= 0 ? (currentIndex + 1) % tracks.length : 0
++    }
++    playTrack(tracks[nextIndex].id)
++  }, [tracks, currentIndex, shuffle, playTrack])
++
++  const playPrev = useCallback(() => {
++    if (tracks.length === 0) return
++    const prevIndex =
++      currentIndex >= 0
++        ? (currentIndex - 1 + tracks.length) % tracks.length
++        : 0
++    playTrack(tracks[prevIndex].id)
++  }, [tracks, currentIndex, playTrack])
++
++  const toggleFavorite = useCallback((id: string) => {
++    setFavorites((prev) => {
++      const next = new Set(prev)
++      if (next.has(id)) next.delete(id)
++      else next.add(id)
++      return next
++    })
++  }, [])
++
++  useEffect(() => {
++    if (!isPlaying || !currentTrack) return
++    const interval = setInterval(() => {
++      setProgress((p) => {
++        if (p >= currentTrack.duration) {
++          clearInterval(interval)
++          return currentTrack.duration
++        }
++        return p + 1
++      })
++    }, 1000)
++    return () => clearInterval(interval)
++  }, [isPlaying, currentTrack])
++
++  return (
++    <div
++      className="flex h-full w-full flex-col overflow-hidden bg-tahoe-glass/30 text-tahoe-text"
++      data-testid="music-app"
++    >
++      <div className="flex flex-1 overflow-hidden">
++        {/* Sidebar */}
++        <div
++          className="w-44 flex-shrink-0 border-r border-tahoe-glass-border bg-tahoe-window/60 p-3"
++          data-testid="music-sidebar"
++        >
++          <h2 className="mb-3 px-3 text-xs font-semibold uppercase tracking-wide text-tahoe-text-secondary">
++            Library
++          </h2>
++          {playlists.map((playlist) => (
++            <button
++              key={playlist.id}
++              onClick={() => setSelectedPlaylistId(playlist.id)}
++              className={`flex w-full items-center gap-2 rounded-tahoe-xs px-3 py-2 text-left text-sm transition-colors ${
++                selectedPlaylistId === playlist.id
++                  ? 'bg-tahoe-accent/20 text-tahoe-text'
++                  : 'hover:bg-white/5 text-tahoe-text-secondary'
++              }`}
++              data-testid={`music-playlist-${playlist.id}`}
++            >
++              <MusicIcon className="w-4 h-4" />
++              {playlist.name}
++            </button>
++          ))}
++        </div>
++
++        {/* Track list */}
++        <div className="flex flex-1 flex-col bg-tahoe-window/80">
++          <div className="flex h-12 items-center justify-between border-b border-tahoe-glass-border px-4">
++            <span className="font-medium">
++              {playlists.find((p) => p.id === selectedPlaylistId)?.name}
++            </span>
++            <span className="text-sm text-tahoe-text-secondary">
++              {tracks.length} song{tracks.length === 1 ? '' : 's'}
++            </span>
++          </div>
++          {tracks.length === 0 ? (
++            <div
++              className="flex flex-1 items-center justify-center text-sm text-tahoe-text-secondary"
++              data-testid="music-empty"
++            >
++              No songs in this playlist
++            </div>
++          ) : (
++            <div
++              className="flex-1 overflow-y-auto"
++              data-testid="music-track-list"
++            >
++              {tracks.map((track, index) => (
++                <div
++                  key={track.id}
++                  className={`flex cursor-pointer items-center gap-3 border-b border-tahoe-glass-border px-4 py-2 transition-colors hover:bg-white/5 ${
++                    currentTrackId === track.id
++                      ? 'bg-white/10'
++                      : ''
++                  }`}
++                  onClick={() => playTrack(track.id)}
++                  data-testid={`music-track-${track.id}`}
++                >
++                  <span className="w-5 text-center text-sm text-tahoe-text-secondary">
++                    {currentTrackId === track.id && isPlaying ? '♪' : index + 1}
++                  </span>
++                  <div
++                    className={`h-10 w-10 rounded-tahoe-xs bg-gradient-to-br ${track.cover}`}
++                  />
++                  <div className="flex-1 min-w-0">
++                    <div className="truncate font-medium">{track.title}</div>
++                    <div className="truncate text-sm text-tahoe-text-secondary">
++                      {track.artist} — {track.album}
++                    </div>
++                  </div>
++                  <button
++                    onClick={(e) => {
++                      e.stopPropagation()
++                      toggleFavorite(track.id)
++                    }}
++                    className="p-1"
++                    data-testid={`music-favorite-${track.id}`}
++                    aria-label="Favorite"
++                  >
++                    <Heart
++                      className={`h-4 w-4 ${
++                        favorites.has(track.id)
++                          ? 'fill-tahoe-red text-tahoe-red'
++                          : 'text-tahoe-text-secondary'
++                      }`}
++                    />
++                  </button>
++                  <span className="text-sm text-tahoe-text-secondary">
++                    {formatDuration(track.duration)}
++                  </span>
++                </div>
++              ))}
++            </div>
++          )}
++        </div>
++      </div>
++
++      {/* Player */}
++      <div
++        className="flex h-20 items-center gap-4 border-t border-tahoe-glass-border bg-tahoe-window/90 px-4"
++        data-testid="music-player"
++      >
++        {currentTrack ? (
++          <>
++            <div className="flex w-1/3 items-center gap-3">
++              <div
++                className={`h-10 w-10 rounded-tahoe-xs bg-gradient-to-br ${currentTrack.cover}`}
++              />
++              <div className="min-w-0">
++                <div className="truncate font-medium" data-testid="music-current-title">
++                  {currentTrack.title}
++                </div>
++                <div className="truncate text-sm text-tahoe-text-secondary">
++                  {currentTrack.artist}
++                </div>
++              </div>
++            </div>
++            <div className="flex flex-1 flex-col items-center gap-1">
++              <div className="flex items-center gap-3">
++                <button
++                  onClick={() => setShuffle((s) => !s)}
++                  className={`p-1 ${shuffle ? 'text-tahoe-accent' : 'text-tahoe-text-secondary'}`}
++                  data-testid="music-shuffle"
++                  aria-label="Shuffle"
++                >
++                  <Shuffle className="w-4 h-4" />
++                </button>
++                <button
++                  onClick={playPrev}
++                  className="p-1 text-tahoe-text-secondary hover:text-tahoe-text"
++                  data-testid="music-prev"
++                  aria-label="Previous"
++                >
++                  <SkipBack className="w-5 h-5" />
++                </button>
++                <button
++                  onClick={togglePlay}
++                  className="rounded-full bg-tahoe-text p-2 text-tahoe-window hover:opacity-90"
++                  data-testid="music-play-pause"
++                  aria-label={isPlaying ? 'Pause' : 'Play'}
++                >
++                  {isPlaying ? (
++                    <Pause className="w-5 h-5 fill-current" />
++                  ) : (
++                    <Play className="w-5 h-5 fill-current" />
++                  )}
++                </button>
++                <button
++                  onClick={playNext}
++                  className="p-1 text-tahoe-text-secondary hover:text-tahoe-text"
++                  data-testid="music-next"
++                  aria-label="Next"
++                >
++                  <SkipForward className="w-5 h-5" />
++                </button>
++                <button
++                  className="p-1 text-tahoe-text-secondary"
++                  data-testid="music-repeat"
++                  aria-label="Repeat"
++                >
++                  <Repeat className="w-4 h-4" />
++                </button>
++              </div>
++              <div className="flex w-full max-w-md items-center gap-2 text-xs text-tahoe-text-secondary">
++                <span>{formatDuration(progress)}</span>
++                <div
++                  className="relative h-1 flex-1 cursor-pointer rounded-full bg-white/20"
++                  data-testid="music-progress"
++                  onClick={(e) => {
++                    const rect = e.currentTarget.getBoundingClientRect()
++                    const pct = (e.clientX - rect.left) / rect.width
++                    setProgress(
++                      Math.min(
++                        Math.max(0, Math.floor(pct * currentTrack.duration)),
++                        currentTrack.duration
++                      )
++                    )
++                  }}
++                >
++                  <div
++                    className="absolute left-0 top-0 h-full rounded-full bg-tahoe-accent"
++                    style={{
++                      width: `${(progress / currentTrack.duration) * 100}%`,
++                    }}
++                  />
++                </div>
++                <span>{formatDuration(currentTrack.duration)}</span>
++              </div>
++            </div>
++            <div className="w-1/3" />
++          </>
++        ) : (
++          <div className="text-sm text-tahoe-text-secondary">
++            Select a song to start playing
++          </div>
++        )}
++      </div>
++    </div>
++  )
++}
+diff --git a/src/apps/music/data.ts b/src/apps/music/data.ts
+new file mode 100644
+index 0000000..c581fd7
+--- /dev/null
++++ b/src/apps/music/data.ts
+@@ -0,0 +1,42 @@
++import type { Playlist, Track } from './types'
++
++export const playlists: Playlist[] = [
++  { id: 'library', name: 'Library' },
++  { id: 'recently-played', name: 'Recently Played' },
++  { id: 'favorites', name: 'Favorites' },
++]
++
++export const sampleTracks: Track[] = [
++  {
++    id: 'tr-1',
++    title: 'Midnight City',
++    artist: 'M83',
++    album: 'Hurry Up, We\'re Dreaming',
++    duration: 243,
++    cover: 'from-pink-400 to-purple-600',
++  },
++  {
++    id: 'tr-2',
++    title: 'Blinding Lights',
++    artist: 'The Weeknd',
++    album: 'After Hours',
++    duration: 200,
++    cover: 'from-red-500 to-orange-600',
++  },
++  {
++    id: 'tr-3',
++    title: 'Levitating',
++    artist: 'Dua Lipa',
++    album: 'Future Nostalgia',
++    duration: 203,
++    cover: 'from-blue-400 to-indigo-600',
++  },
++  {
++    id: 'tr-4',
++    title: 'Good 4 U',
++    artist: 'Olivia Rodrigo',
++    album: 'SOUR',
++    duration: 178,
++    cover: 'from-violet-400 to-fuchsia-600',
++  },
++]
+diff --git a/src/apps/music/types.ts b/src/apps/music/types.ts
+new file mode 100644
+index 0000000..1055dad
+--- /dev/null
++++ b/src/apps/music/types.ts
+@@ -0,0 +1,13 @@
++export interface Track {
++  id: string
++  title: string
++  artist: string
++  album: string
++  duration: number
++  cover: string
++}
++
++export interface Playlist {
++  id: string
++  name: string
++}
+diff --git a/src/apps/photos/Photos.test.tsx b/src/apps/photos/Photos.test.tsx
+new file mode 100644
+index 0000000..e245a1c
+--- /dev/null
++++ b/src/apps/photos/Photos.test.tsx
+@@ -0,0 +1,49 @@
++import { render, screen, within } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Photos } from './Photos'
++
++describe('Photos', () => {
++  beforeEach(() => {
++    render(<Photos />)
++  })
++
++  it('renders the albums sidebar and photo grid', () => {
++    expect(screen.getByTestId('photos-app')).toBeInTheDocument()
++    expect(screen.getByTestId('photos-sidebar')).toBeInTheDocument()
++    expect(screen.getByTestId('photos-grid')).toBeInTheDocument()
++    expect(screen.getByTestId('photos-album-library')).toBeInTheDocument()
++  })
++
++  it('switches albums and filters photos', async () => {
++    expect(screen.getByTestId('photos-photo-ph-1')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('photos-album-favorites'))
++    expect(screen.getByTestId('photos-photo-ph-1')).toBeInTheDocument()
++    expect(screen.queryByTestId('photos-photo-ph-2')).not.toBeInTheDocument()
++  })
++
++  it('opens and closes the photo viewer', async () => {
++    await userEvent.click(screen.getByTestId('photos-photo-ph-1'))
++    expect(screen.getByTestId('photos-viewer')).toBeInTheDocument()
++    expect(screen.getByTestId('photos-viewer-image')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('photos-viewer-close'))
++    expect(screen.queryByTestId('photos-viewer')).not.toBeInTheDocument()
++  })
++
++  it('navigates to the next photo in the viewer', async () => {
++    await userEvent.click(screen.getByTestId('photos-photo-ph-1'))
++    expect(screen.getByTestId('photos-viewer-title')).toHaveTextContent('Golden Gate')
++    await userEvent.click(screen.getByTestId('photos-viewer-next'))
++    expect(screen.getByTestId('photos-viewer-title')).toHaveTextContent('Ocean Waves')
++  })
++
++  it('toggles favorite status for a photo', async () => {
++    const grid = screen.getByTestId('photos-grid')
++    expect(within(grid).queryByTestId('photos-viewer-favorite')).not.toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('photos-photo-ph-3'))
++    await userEvent.click(screen.getByTestId('photos-viewer-favorite'))
++    await userEvent.click(screen.getByTestId('photos-viewer-close'))
++    await userEvent.click(screen.getByTestId('photos-album-favorites'))
++    expect(screen.getByTestId('photos-photo-ph-3')).toBeInTheDocument()
++  })
++})
+diff --git a/src/apps/photos/Photos.tsx b/src/apps/photos/Photos.tsx
+new file mode 100644
+index 0000000..5230d03
+--- /dev/null
++++ b/src/apps/photos/Photos.tsx
+@@ -0,0 +1,220 @@
++import { useState, useCallback, useEffect, useMemo } from 'react'
++import { Image as ImageIcon, Heart, X, ChevronLeft, ChevronRight } from 'lucide-react'
++import { albums, samplePhotos } from './data'
++
++export function Photos() {
++  const [selectedAlbumId, setSelectedAlbumId] = useState<string>(albums[0].id)
++  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null)
++  const [favorites, setFavorites] = useState<Set<string>>(
++    () => new Set(samplePhotos.filter((p) => p.albums.includes('favorites')).map((p) => p.id))
++  )
++
++  const filteredPhotos = useMemo(() => {
++    if (selectedAlbumId === 'library') return samplePhotos
++    if (selectedAlbumId === 'favorites')
++      return samplePhotos.filter((p) => favorites.has(p.id))
++    return samplePhotos.filter((p) => p.albums.includes(selectedAlbumId))
++  }, [selectedAlbumId, favorites])
++
++  const selectedIndex = useMemo(
++    () => filteredPhotos.findIndex((p) => p.id === selectedPhotoId),
++    [filteredPhotos, selectedPhotoId]
++  )
++
++  const closeViewer = useCallback(() => setSelectedPhotoId(null), [])
++
++  const showNext = useCallback(() => {
++    if (selectedIndex < 0 || filteredPhotos.length === 0) return
++    const nextIndex = (selectedIndex + 1) % filteredPhotos.length
++    setSelectedPhotoId(filteredPhotos[nextIndex].id)
++  }, [filteredPhotos, selectedIndex])
++
++  const showPrev = useCallback(() => {
++    if (selectedIndex < 0 || filteredPhotos.length === 0) return
++    const prevIndex =
++      (selectedIndex - 1 + filteredPhotos.length) % filteredPhotos.length
++    setSelectedPhotoId(filteredPhotos[prevIndex].id)
++  }, [filteredPhotos, selectedIndex])
++
++  const toggleFavorite = useCallback((id: string) => {
++    setFavorites((prev) => {
++      const next = new Set(prev)
++      if (next.has(id)) next.delete(id)
++      else next.add(id)
++      return next
++    })
++  }, [])
++
++  useEffect(() => {
++    function handleKeyDown(e: KeyboardEvent) {
++      if (!selectedPhotoId) return
++      if (e.key === 'Escape') closeViewer()
++      if (e.key === 'ArrowRight') showNext()
++      if (e.key === 'ArrowLeft') showPrev()
++    }
++    window.addEventListener('keydown', handleKeyDown)
++    return () => window.removeEventListener('keydown', handleKeyDown)
++  }, [selectedPhotoId, closeViewer, showNext, showPrev])
++
++  return (
++    <div
++      className="flex h-full w-full bg-tahoe-glass/30 text-tahoe-text overflow-hidden"
++      data-testid="photos-app"
++    >
++      {/* Album sidebar */}
++      <div
++        className="w-48 flex-shrink-0 border-r border-tahoe-glass-border bg-tahoe-window/60 p-3"
++        data-testid="photos-sidebar"
++      >
++        <h2 className="mb-3 px-3 text-xs font-semibold uppercase tracking-wide text-tahoe-text-secondary">
++          Albums
++        </h2>
++        {albums.map((album) => (
++          <button
++            key={album.id}
++            onClick={() => {
++              setSelectedAlbumId(album.id)
++              setSelectedPhotoId(null)
++            }}
++            className={`flex w-full items-center gap-2 rounded-tahoe-xs px-3 py-2 text-left text-sm transition-colors ${
++              selectedAlbumId === album.id
++                ? 'bg-tahoe-accent/20 text-tahoe-text'
++                : 'hover:bg-white/5 text-tahoe-text-secondary'
++            }`}
++            data-testid={`photos-album-${album.id}`}
++          >
++            <ImageIcon className="w-4 h-4" />
++            {album.name}
++          </button>
++        ))}
++      </div>
++
++      {/* Grid */}
++      <div className="flex flex-1 flex-col bg-tahoe-window/80">
++        <div className="flex h-12 items-center justify-between border-b border-tahoe-glass-border px-4">
++          <span className="font-medium">
++            {albums.find((a) => a.id === selectedAlbumId)?.name}
++          </span>
++          <span className="text-sm text-tahoe-text-secondary">
++            {filteredPhotos.length} photo
++            {filteredPhotos.length === 1 ? '' : 's'}
++          </span>
++        </div>
++        {filteredPhotos.length === 0 ? (
++          <div
++            className="flex flex-1 items-center justify-center text-sm text-tahoe-text-secondary"
++            data-testid="photos-empty"
++          >
++            No photos in this album
++          </div>
++        ) : (
++          <div
++            className="grid flex-1 grid-cols-3 gap-2 overflow-y-auto p-4 sm:grid-cols-4 lg:grid-cols-5"
++            data-testid="photos-grid"
++          >
++            {filteredPhotos.map((photo) => (
++              <div
++                key={photo.id}
++                className="group relative aspect-square cursor-pointer overflow-hidden rounded-tahoe-xs"
++                onClick={() => setSelectedPhotoId(photo.id)}
++                data-testid={`photos-photo-${photo.id}`}
++              >
++                <div
++                  className={`h-full w-full bg-gradient-to-br ${photo.gradient}`}
++                />
++                <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
++                  <span className="text-xs text-white">{photo.title}</span>
++                </div>
++                {favorites.has(photo.id) && (
++                  <Heart className="absolute right-2 top-2 h-4 w-4 fill-tahoe-red text-tahoe-red" />
++                )}
++              </div>
++            ))}
++          </div>
++        )}
++      </div>
++
++      {/* Viewer modal */}
++      {selectedPhotoId && (
++        <div
++          className="absolute inset-0 z-50 flex items-center justify-center bg-black/80"
++          data-testid="photos-viewer"
++          onClick={closeViewer}
++        >
++          <button
++            onClick={(e) => {
++              e.stopPropagation()
++              closeViewer()
++            }}
++            className="absolute right-4 top-4 rounded-full bg-black/40 p-2 text-white hover:bg-black/60"
++            data-testid="photos-viewer-close"
++            aria-label="Close"
++          >
++            <X className="w-5 h-5" />
++          </button>
++          <button
++            onClick={(e) => {
++              e.stopPropagation()
++              showPrev()
++            }}
++            className="absolute left-4 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 disabled:opacity-30"
++            data-testid="photos-viewer-prev"
++            aria-label="Previous"
++            disabled={filteredPhotos.length <= 1}
++          >
++            <ChevronLeft className="w-6 h-6" />
++          </button>
++          <button
++            onClick={(e) => {
++              e.stopPropagation()
++              showNext()
++            }}
++            className="absolute right-4 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 disabled:opacity-30"
++            data-testid="photos-viewer-next"
++            aria-label="Next"
++            disabled={filteredPhotos.length <= 1}
++          >
++            <ChevronRight className="w-6 h-6" />
++          </button>
++          <div
++            className="flex max-h-[80%] max-w-[80%] flex-col items-center"
++            onClick={(e) => e.stopPropagation()}
++          >
++            <div
++              className={`h-[60vh] w-[70vw] max-w-2xl rounded-tahoe-lg bg-gradient-to-br ${
++                filteredPhotos[selectedIndex]?.gradient ?? ''
++              }`}
++              data-testid="photos-viewer-image"
++            />
++            <div className="mt-3 flex w-full items-center justify-between text-white">
++              <div>
++                <div className="font-medium" data-testid="photos-viewer-title">
++                  {filteredPhotos[selectedIndex]?.title}
++                </div>
++                <div className="text-sm text-white/70" data-testid="photos-viewer-date">
++                  {filteredPhotos[selectedIndex]?.date}
++                </div>
++              </div>
++              <button
++                onClick={() =>
++                  selectedPhotoId && toggleFavorite(selectedPhotoId)
++                }
++                className="p-2 rounded-full hover:bg-white/10"
++                data-testid="photos-viewer-favorite"
++                aria-label="Favorite"
++              >
++                <Heart
++                  className={`h-5 w-5 ${
++                    selectedPhotoId && favorites.has(selectedPhotoId)
++                      ? 'fill-tahoe-red text-tahoe-red'
++                      : 'text-white'
++                  }`}
++                />
++              </button>
++            </div>
++          </div>
++        </div>
++      )}
++    </div>
++  )
++}
+diff --git a/src/apps/photos/data.ts b/src/apps/photos/data.ts
+new file mode 100644
+index 0000000..19ab181
+--- /dev/null
++++ b/src/apps/photos/data.ts
+@@ -0,0 +1,52 @@
++import type { Album, Photo } from './types'
++
++export const albums: Album[] = [
++  { id: 'library', name: 'Library' },
++  { id: 'favorites', name: 'Favorites' },
++  { id: 'recently-added', name: 'Recently Added' },
++]
++
++export const samplePhotos: Photo[] = [
++  {
++    id: 'ph-1',
++    title: 'Golden Gate',
++    date: 'Aug 1, 2026',
++    albums: ['library', 'favorites'],
++    gradient: 'from-orange-300 to-red-500',
++  },
++  {
++    id: 'ph-2',
++    title: 'Ocean Waves',
++    date: 'Jul 28, 2026',
++    albums: ['library', 'recently-added'],
++    gradient: 'from-blue-300 to-cyan-500',
++  },
++  {
++    id: 'ph-3',
++    title: 'Mountain Peak',
++    date: 'Jul 20, 2026',
++    albums: ['library'],
++    gradient: 'from-emerald-300 to-green-600',
++  },
++  {
++    id: 'ph-4',
++    title: 'City Lights',
++    date: 'Jul 15, 2026',
++    albums: ['library', 'recently-added', 'favorites'],
++    gradient: 'from-purple-300 to-indigo-600',
++  },
++  {
++    id: 'ph-5',
++    title: 'Desert Dunes',
++    date: 'Jul 10, 2026',
++    albums: ['library'],
++    gradient: 'from-yellow-200 to-amber-500',
++  },
++  {
++    id: 'ph-6',
++    title: 'Forest Path',
++    date: 'Jul 5, 2026',
++    albums: ['library', 'favorites'],
++    gradient: 'from-lime-300 to-teal-600',
++  },
++]
+diff --git a/src/apps/photos/types.ts b/src/apps/photos/types.ts
+new file mode 100644
+index 0000000..81a9714
+--- /dev/null
++++ b/src/apps/photos/types.ts
+@@ -0,0 +1,12 @@
++export interface Album {
++  id: string
++  name: string
++}
++
++export interface Photo {
++  id: string
++  title: string
++  date: string
++  albums: string[]
++  gradient: string
++}
+diff --git a/src/apps/tv/Tv.test.tsx b/src/apps/tv/Tv.test.tsx
+new file mode 100644
+index 0000000..20113c1
+--- /dev/null
++++ b/src/apps/tv/Tv.test.tsx
+@@ -0,0 +1,45 @@
++import { render, screen } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { describe, expect, it, beforeEach } from 'vitest'
++import { Tv } from './Tv'
++
++describe('TV', () => {
++  beforeEach(() => {
++    render(<Tv />)
++  })
++
++  it('renders the featured hero and category rows', () => {
++    expect(screen.getByTestId('tv-app')).toBeInTheDocument()
++    expect(screen.getByTestId('tv-hero')).toBeInTheDocument()
++    expect(screen.getByTestId('tv-row-cat-watch-now')).toBeInTheDocument()
++    expect(screen.getAllByTestId('tv-item-cat-watch-now-mv-1').length).toBeGreaterThanOrEqual(1)
++  })
++
++  it('opens the player when a movie is clicked', async () => {
++    await userEvent.click(screen.getAllByTestId('tv-item-cat-watch-now-mv-2')[0])
++    expect(screen.getByTestId('tv-player')).toBeInTheDocument()
++    expect(screen.getByTestId('tv-player-title')).toHaveTextContent(
++      'Coastal Dreams'
++    )
++  })
++
++  it('closes the player', async () => {
++    await userEvent.click(screen.getAllByTestId('tv-item-cat-action-mv-3')[0])
++    expect(screen.getByTestId('tv-player')).toBeInTheDocument()
++    await userEvent.click(screen.getByTestId('tv-player-close'))
++    expect(screen.queryByTestId('tv-player')).not.toBeInTheDocument()
++  })
++
++  it('toggles play and pause in the player', async () => {
++    await userEvent.click(screen.getByTestId('tv-play-mv-1'))
++    expect(screen.getByTestId('tv-player-play')).toHaveAttribute(
++      'aria-label',
++      'Play'
++    )
++    await userEvent.click(screen.getByTestId('tv-player-play'))
++    expect(screen.getByTestId('tv-player-play')).toHaveAttribute(
++      'aria-label',
++      'Pause'
++    )
++  })
++})
+diff --git a/src/apps/tv/Tv.tsx b/src/apps/tv/Tv.tsx
+new file mode 100644
+index 0000000..6367b18
+--- /dev/null
++++ b/src/apps/tv/Tv.tsx
+@@ -0,0 +1,182 @@
++import { useState, useMemo, useCallback } from 'react'
++import {
++  Play,
++  X,
++  Volume2,
++  Maximize,
++  SkipBack,
++  SkipForward,
++  Pause,
++} from 'lucide-react'
++import { categories, movies } from './data'
++
++export function Tv() {
++  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null)
++  const [isPlaying, setIsPlaying] = useState(false)
++
++  const featured = useMemo(
++    () => movies.find((m) => m.featured) ?? movies[0],
++    []
++  )
++  const selectedMovie = useMemo(
++    () => movies.find((m) => m.id === selectedMovieId) ?? null,
++    [selectedMovieId]
++  )
++
++  const openMovie = useCallback((id: string) => {
++    setSelectedMovieId(id)
++    setIsPlaying(false)
++  }, [])
++
++  const closeMovie = useCallback(() => {
++    setSelectedMovieId(null)
++    setIsPlaying(false)
++  }, [])
++
++  const togglePlay = useCallback(() => {
++    setIsPlaying((p) => !p)
++  }, [])
++
++  return (
++    <div
++      className="flex h-full w-full flex-col overflow-y-auto bg-tahoe-glass/30 text-tahoe-text"
++      data-testid="tv-app"
++    >
++      {/* Hero */}
++      <div
++        className="relative mx-4 mt-4 h-56 overflow-hidden rounded-tahoe-lg"
++        data-testid="tv-hero"
++      >
++        <div
++          className={`absolute inset-0 bg-gradient-to-br ${featured.gradient}`}
++        />
++        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent p-6">
++          <span className="mb-1 text-xs font-semibold uppercase tracking-wide text-white/80">
++            Featured
++          </span>
++          <h2 className="text-2xl font-bold text-white">{featured.title}</h2>
++          <p className="max-w-lg text-sm text-white/80">
++            {featured.description}
++          </p>
++          <button
++            onClick={() => openMovie(featured.id)}
++            className="mt-3 flex w-fit items-center gap-2 rounded-tahoe-xs bg-white px-4 py-2 font-medium text-black hover:bg-white/90"
++            data-testid={`tv-play-${featured.id}`}
++          >
++            <Play className="w-4 h-4 fill-current" />
++            Play
++          </button>
++        </div>
++      </div>
++
++      {/* Categories */}
++      {categories.map((category) => (
++        <div
++          key={category.id}
++          className="mt-4 px-4"
++          data-testid={`tv-row-${category.id}`}
++        >
++          <h3 className="mb-2 text-sm font-semibold">{category.name}</h3>
++          <div className="flex gap-3 overflow-x-auto pb-2">
++            {category.movieIds
++              .map((id) => movies.find((m) => m.id === id))
++              .filter(Boolean)
++              .map((movie) => (
++                <button
++                  key={movie!.id}
++                  onClick={() => openMovie(movie!.id)}
++                  className="flex-shrink-0 text-left"
++                  data-testid={`tv-item-${category.id}-${movie!.id}`}
++                >
++                  <div
++                    className={`h-28 w-44 rounded-tahoe-xs bg-gradient-to-br ${movie!.gradient}`}
++                  />
++                  <div className="mt-1 max-w-[11rem] truncate text-xs font-medium">
++                    {movie!.title}
++                  </div>
++                  <div className="text-xs text-tahoe-text-secondary">
++                    {movie!.genre}
++                  </div>
++                </button>
++              ))}
++          </div>
++        </div>
++      ))}
++
++      {/* Player modal */}
++      {selectedMovie && (
++        <div
++          className="absolute inset-0 z-50 flex items-center justify-center bg-black/85 p-8"
++          data-testid="tv-player"
++        >
++          <button
++            onClick={closeMovie}
++            className="absolute right-4 top-4 rounded-full bg-black/40 p-2 text-white hover:bg-black/60"
++            data-testid="tv-player-close"
++            aria-label="Close"
++          >
++            <X className="w-5 h-5" />
++          </button>
++          <div className="flex w-full max-w-3xl flex-col items-center">
++            <div
++              className={`h-[50vh] w-full rounded-tahoe-lg bg-gradient-to-br ${selectedMovie.gradient}`}
++              data-testid="tv-player-screen"
++            />
++            <div className="mt-4 flex w-full items-center justify-between text-white">
++              <div>
++                <div className="text-lg font-semibold" data-testid="tv-player-title">
++                  {selectedMovie.title}
++                </div>
++                <div className="text-sm text-white/70">
++                  {selectedMovie.genre} • {selectedMovie.duration}
++                </div>
++              </div>
++              <div className="flex items-center gap-2">
++                <button
++                  onClick={togglePlay}
++                  className="rounded-full bg-white/20 p-2 hover:bg-white/30"
++                  data-testid="tv-player-play"
++                  aria-label={isPlaying ? 'Pause' : 'Play'}
++                >
++                  {isPlaying ? (
++                    <Pause className="w-5 h-5 fill-current" />
++                  ) : (
++                    <Play className="w-5 h-5 fill-current" />
++                  )}
++                </button>
++                <button
++                  className="rounded-full bg-white/20 p-2 hover:bg-white/30"
++                  data-testid="tv-player-forward"
++                  aria-label="Forward"
++                >
++                  <SkipForward className="w-5 h-5" />
++                </button>
++                <button
++                  className="rounded-full bg-white/20 p-2 hover:bg-white/30"
++                  data-testid="tv-player-back"
++                  aria-label="Back"
++                >
++                  <SkipBack className="w-5 h-5" />
++                </button>
++                <button
++                  className="rounded-full bg-white/20 p-2 hover:bg-white/30"
++                  data-testid="tv-player-volume"
++                  aria-label="Volume"
++                >
++                  <Volume2 className="w-5 h-5" />
++                </button>
++                <button
++                  className="rounded-full bg-white/20 p-2 hover:bg-white/30"
++                  data-testid="tv-player-fullscreen"
++                  aria-label="Full screen"
++                >
++                  <Maximize className="w-5 h-5" />
++                </button>
++              </div>
++            </div>
++          </div>
++        </div>
++      )}
++    </div>
++  )
++}
+diff --git a/src/apps/tv/data.ts b/src/apps/tv/data.ts
+new file mode 100644
+index 0000000..21874c5
+--- /dev/null
++++ b/src/apps/tv/data.ts
+@@ -0,0 +1,56 @@
++import type { Category, Movie } from './types'
++
++export const movies: Movie[] = [
++  {
++    id: 'mv-1',
++    title: 'Starlight Voyage',
++    genre: 'Sci-Fi',
++    duration: '2h 14m',
++    description:
++      'A crew of explorers ventures beyond the edge of the known galaxy.',
++    gradient: 'from-indigo-500 to-purple-700',
++    featured: true,
++  },
++  {
++    id: 'mv-2',
++    title: 'Coastal Dreams',
++    genre: 'Drama',
++    duration: '1h 52m',
++    description:
++      'Two strangers reconnect in a quiet seaside town over one summer.',
++    gradient: 'from-cyan-400 to-blue-600',
++  },
++  {
++    id: 'mv-3',
++    title: 'Midnight Heist',
++    genre: 'Thriller',
++    duration: '2h 05m',
++    description:
++      'A master thief assembles a team for one last impossible job.',
++    gradient: 'from-red-500 to-slate-800',
++  },
++  {
++    id: 'mv-4',
++    title: 'Garden of Letters',
++    genre: 'Romance',
++    duration: '1h 45m',
++    description: 'A poet and a gardener exchange letters across the seasons.',
++    gradient: 'from-emerald-400 to-teal-600',
++  },
++  {
++    id: 'mv-5',
++    title: 'Pixel Quest',
++    genre: 'Animation',
++    duration: '1h 38m',
++    description:
++      'A video-game hero jumps out of the screen to save the arcade.',
++    gradient: 'from-yellow-400 to-orange-500',
++  },
++]
++
++export const categories: Category[] = [
++  { id: 'cat-watch-now', name: 'Watch Now', movieIds: ['mv-1', 'mv-2'] },
++  { id: 'cat-action', name: 'Action & Adventure', movieIds: ['mv-3', 'mv-1'] },
++  { id: 'cat-drama', name: 'Drama', movieIds: ['mv-2', 'mv-4'] },
++  { id: 'cat-kids', name: 'Kids & Family', movieIds: ['mv-5'] },
++]
+diff --git a/src/apps/tv/types.ts b/src/apps/tv/types.ts
+new file mode 100644
+index 0000000..dcb95d1
+--- /dev/null
++++ b/src/apps/tv/types.ts
+@@ -0,0 +1,15 @@
++export interface Movie {
++  id: string
++  title: string
++  genre: string
++  duration: string
++  description: string
++  gradient: string
++  featured?: boolean
++}
++
++export interface Category {
++  id: string
++  name: string
++  movieIds: string[]
++}

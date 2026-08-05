@@ -1,0 +1,86 @@
+import type { Room, Accessory } from './types'
+
+export const rooms: Room[] = [
+  { id: 'room-living', name: 'Living Room', icon: 'living' },
+  { id: 'room-bedroom', name: 'Bedroom', icon: 'bed' },
+  { id: 'room-kitchen', name: 'Kitchen', icon: 'kitchen' },
+  { id: 'room-office', name: 'Office', icon: 'office' },
+]
+
+export const accessories: Accessory[] = [
+  {
+    id: 'acc-1',
+    roomId: 'room-living',
+    name: 'Ceiling Light',
+    type: 'light',
+    isOn: true,
+    value: 75,
+    unit: '%',
+  },
+  {
+    id: 'acc-2',
+    roomId: 'room-living',
+    name: 'Sofa Lamp',
+    type: 'light',
+    isOn: false,
+    value: 40,
+    unit: '%',
+  },
+  {
+    id: 'acc-3',
+    roomId: 'room-living',
+    name: 'Front Door',
+    type: 'lock',
+    isOn: true,
+  },
+  {
+    id: 'acc-4',
+    roomId: 'room-bedroom',
+    name: 'Bedside Light',
+    type: 'light',
+    isOn: false,
+    value: 30,
+    unit: '%',
+  },
+  {
+    id: 'acc-5',
+    roomId: 'room-bedroom',
+    name: 'Thermostat',
+    type: 'thermostat',
+    isOn: true,
+    value: 72,
+    unit: '°F',
+  },
+  {
+    id: 'acc-6',
+    roomId: 'room-kitchen',
+    name: 'Counter Lights',
+    type: 'light',
+    isOn: true,
+    value: 90,
+    unit: '%',
+  },
+  {
+    id: 'acc-7',
+    roomId: 'room-kitchen',
+    name: 'Coffee Maker',
+    type: 'switch',
+    isOn: false,
+  },
+  {
+    id: 'acc-8',
+    roomId: 'room-office',
+    name: 'Desk Lamp',
+    type: 'light',
+    isOn: true,
+    value: 60,
+    unit: '%',
+  },
+  {
+    id: 'acc-9',
+    roomId: 'room-office',
+    name: 'Motion Sensor',
+    type: 'sensor',
+    isOn: true,
+  },
+]
