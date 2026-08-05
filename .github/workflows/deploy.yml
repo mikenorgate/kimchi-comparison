@@ -40,6 +40,8 @@ jobs:
       # those local sessions.
       - name: Build examples
         run: npm run build:examples
+        env:
+          GITHUB_PAGES_BASE: /${{ github.event.repository.name }}/
 
       - name: Build site
         run: npm run build:site

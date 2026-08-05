@@ -56,15 +56,20 @@ async function copyDir(src, dest, { ignore = [] } = {}) {
   });
 }
 
-async function buildImplementation(dir, publicDir) {
+async function buildImplementation(dir, publicDir, id) {
   const pkgPath = join(dir.path, 'package.json');
   const pkg = await readJson(pkgPath);
   const isVite = pkg?.devDependencies?.vite || pkg?.dependencies?.vite;
 
   if (isVite && pkg?.scripts?.build) {
     console.log(`Building ${dir.name} with npm...`);
+    const repoBase = process.env.GITHUB_PAGES_BASE || '/';
+    const basePath = `${repoBase.replace(/\/$/, '')}/${id}/`;
     await execFileAsync('npm', ['install'], { cwd: dir.path, stdio: 'inherit' });
-    await execFileAsync('npm', ['run', 'build'], { cwd: dir.path, stdio: 'inherit' });
+    await execFileAsync('npm', ['run', 'build', '--', '--base', basePath], {
+      cwd: dir.path,
+      stdio: 'inherit',
+    });
     const distDir = join(dir.path, 'dist');
     if (await pathExists(distDir)) {
       await copyDir(distDir, publicDir);
@@ -111,7 +116,7 @@ async function main() {
     validateId(meta.id, dir.name);
     const publicDir = join(sitePublicDir, meta.id);
     await mkdir(publicDir, { recursive: true });
-    await buildImplementation(dir, publicDir);
+    await buildImplementation(dir, publicDir, meta.id);
     console.log(`Prepared ${publicDir}`);
   }
 }
