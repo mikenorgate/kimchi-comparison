@@ -71,8 +71,9 @@ const COST_MAP = {
   // 272K input tokens, so standard short-context rates apply throughout:
   // $5/M uncached input + $0.50/M cached input + $30/M output.
   'codex-gpt5-5': '$1.15',
-  // GPT-5.6 Luna: sum of 14 per-request costs, all under 272K input.
-  // Standard rates: $0.20/M uncached + $0.02/M cached + $1.20/M output.
+  // GPT-5.6 Luna: 14 requests. Uncached input = cache writes (tokens become
+  // cached on next request). Rates: $0.25/M cache write + $0.02/M cache read +
+  // $1.20/M output. GPT-5.5 has no cache write charge (pricing shows "-").
   'codex-gpt5-6-luna': '$0.04',
   // Kimi K2.7: per-request token costs from harness session logs.
   // Pricing: $0.95/M uncached input + $0.19/M cache read + $4.00/M output.
