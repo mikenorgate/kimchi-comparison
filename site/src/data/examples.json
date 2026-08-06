@@ -286,5 +286,47 @@
     "cost": "$2.92",
     "fermentId": null,
     "thinkingLevel": "xhigh"
+  },
+  {
+    "id": "singleshot-kimi2-7-max",
+    "title": "macOS Tahoe — Kimi K2.7 (max thinking)",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "oneshot",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Which built-in apps and menus do you want implemented? Pick a realistic subset; 'everything' is too broad for a single session.",
+        "answer": "Menu bar (Apple, app, status menus); Dock with app launching and window minimization; Finder-style file manager; Desktop with icons and wallpaper; System Settings; Calculator; Notes / TextEdit; Safari browser mock; Terminal; Calendar; Photos viewer; App Store mock"
+      },
+      {
+        "question": "What level of visual/functional fidelity do you want?",
+        "answer": "Functional apps — Calculator adds, Notes saves, Finder navigates mock folders, Terminal accepts commands, etc."
+      },
+      {
+        "question": "What tech stack do you prefer?",
+        "answer": "Vanilla HTML/CSS/JS"
+      },
+      {
+        "question": "How should window management behave?",
+        "answer": "Multiple overlapping, draggable, resizable windows with z-order"
+      },
+      {
+        "question": "Should user data persist across reloads?",
+        "answer": "No persistence, reset on reload"
+      },
+      {
+        "question": "Should it work on mobile/tablet screen sizes, or desktop only?",
+        "answer": "No, desktop only"
+      }
+    ],
+    "sourcePath": "Singleshot-Kimi2.7-max",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "kimchi",
+    "model": "Kimi K2.7",
+    "durationMs": 521831,
+    "cost": "$0.65",
+    "fermentId": null,
+    "thinkingLevel": "max"
   }
 ]
