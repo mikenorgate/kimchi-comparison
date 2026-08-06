@@ -16,7 +16,7 @@
 }
 
 .app {
-  max-width: 1080px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 80px 24px 120px;
 }
@@ -147,6 +147,18 @@
 
 .group-title--others {
   color: var(--agent-claude);
+}
+
+.model-subgroup {
+  margin-bottom: 32px;
+}
+
+.subgroup-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 16px;
+  opacity: 0.7;
 }
 
 .example-list {
