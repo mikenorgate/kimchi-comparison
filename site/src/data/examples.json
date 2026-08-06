@@ -264,5 +264,27 @@
     "cost": "$1.02",
     "fermentId": null,
     "thinkingLevel": "default"
+  },
+  {
+    "id": "codex-gpt5-6-sol-xhigh",
+    "title": "macOS Tahoe — Codex GPT-5.6 Sol (xhigh)",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "oneshot",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Self-contained HTML/CSS/JS desktop"
+      }
+    ],
+    "sourcePath": "codex-gpt5.6-sol-xhigh",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "codex",
+    "model": "GPT-5.6 Sol",
+    "durationMs": 346000,
+    "cost": "$2.92",
+    "fermentId": null,
+    "thinkingLevel": "xhigh"
   }
 ]
