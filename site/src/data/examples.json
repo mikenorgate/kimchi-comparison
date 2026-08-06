@@ -170,7 +170,7 @@
     "fermentId": null
   },
   {
-    "id": "ferment-full-multimodel",
+    "id": "singleshot-multimodel",
     "title": "macOS Tahoe — Multi-Model Oneshot",
     "approach": "Full desktop built with multi-model orchestration (Kimi K2.7 orchestrator + MiniMax M3 subagents)",
     "workflow": "oneshot",
@@ -205,7 +205,7 @@
         "answer": "Build the full thing"
       }
     ],
-    "sourcePath": "ferment-full-multimodel",
+    "sourcePath": "Singleshot-MultiModel",
     "buildCommand": "npm run build",
     "entryPoint": "index.html",
     "agent": "kimchi",
