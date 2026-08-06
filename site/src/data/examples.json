@@ -171,9 +171,9 @@
   },
   {
     "id": "ferment-full-multimodel",
-    "title": "macOS Tahoe — Multi-Model Ferment",
+    "title": "macOS Tahoe — Multi-Model Oneshot",
     "approach": "Full desktop built with multi-model orchestration (Kimi K2.7 orchestrator + MiniMax M3 subagents)",
-    "workflow": "ferment",
+    "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
     "questionsAndAnswers": [
       {
@@ -209,7 +209,7 @@
     "buildCommand": "npm run build",
     "entryPoint": "index.html",
     "agent": "kimchi",
-    "model": "Kimi K2.7 + MiniMax M3",
+    "model": "Multi-model",
     "durationMs": 2457433,
     "cost": "$2.56",
     "fermentId": "019fd606-85c8-72d6-a8fa-112a25a78c2b"
