@@ -1,6 +1,6 @@
 {
   "id": "codex-gpt5-6-sol",
-  "title": "macOS Tahoe — Codex GPT-5.6 Sol",
+  "title": "macOS Tahoe \u2014 Codex GPT-5.6 Sol",
   "approach": "Self-contained HTML/CSS/JS desktop",
   "workflow": "oneshot",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",

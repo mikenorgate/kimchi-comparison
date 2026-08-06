@@ -28,6 +28,9 @@ export function ExampleCard({ example }: ExampleCardProps) {
       <header className="example-card__header">
         <span className={`agent-badge ${agentClass(example.agent)}`}>{agentLabel(example)}</span>
         <span className={`workflow-badge ${workflowClass(example.workflow)}`}>{example.workflow}</span>
+        {example.thinkingLevel && (
+          <span className="thinking-badge">{example.thinkingLevel}</span>
+        )}
       </header>
 
       <h3 className="example-card__title">

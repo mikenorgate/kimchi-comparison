@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4778e5" />
+  <title>macOS Tahoe — Web Desktop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="boot" aria-live="polite">
+    <div class="boot-mark" aria-label="Apple">●</div>
+    <div class="boot-track"><i></i></div>
+  </div>
+
+  <main id="desktop" aria-label="macOS Tahoe desktop">
+    <div class="wallpaper-light wallpaper-orb orb-a"></div>
+    <div class="wallpaper-light wallpaper-orb orb-b"></div>
+    <div class="wallpaper-light wallpaper-orb orb-c"></div>
+
+    <header id="menu-bar">
+      <nav class="menu-left" aria-label="Application menu">
+        <button class="menu-trigger apple-menu" data-menu="apple" aria-label="Apple menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.05 12.54c.03 3.26 2.86 4.35 2.89 4.37-.02.08-.45 1.54-1.49 3.05-.9 1.31-1.84 2.61-3.31 2.64-1.44.03-1.91-.86-3.57-.86-1.65 0-2.18.83-3.55.89-1.43.05-2.51-1.42-3.42-2.72-1.86-2.69-3.28-7.59-1.37-10.91a5.31 5.31 0 0 1 4.51-2.73c1.41-.03 2.74.95 3.58.95.85 0 2.43-1.18 4.1-1.01.7.03 2.66.28 3.92 2.13-.1.06-2.34 1.37-2.31 4.2ZM14.33 4.45c.75-.91 1.26-2.18 1.12-3.45-1.08.04-2.4.72-3.18 1.63-.7.8-1.31 2.09-1.15 3.33 1.21.09 2.44-.61 3.21-1.51Z"/></svg>
+        </button>
+        <button class="menu-trigger active-app-name" data-menu="app">Finder</button>
+        <button class="menu-trigger" data-menu="file">File</button>
+        <button class="menu-trigger" data-menu="edit">Edit</button>
+        <button class="menu-trigger" data-menu="view">View</button>
+        <button class="menu-trigger" data-menu="go">Go</button>
+        <button class="menu-trigger" data-menu="window">Window</button>
+        <button class="menu-trigger" data-menu="help">Help</button>
+      </nav>
+      <nav class="menu-right" aria-label="System status">
+        <button id="focus-pill" class="status-pill live-pill" title="Live Activity"><span class="pulse-dot"></span><span>Focus</span><small>42:18</small></button>
+        <button class="status-button" id="battery-button" title="Battery: 86%"><span class="battery"><i></i></span></button>
+        <button class="status-button" id="wifi-button" title="Wi‑Fi">
+          <svg viewBox="0 0 24 24"><path d="M2.7 8.3a14.2 14.2 0 0 1 18.6 0M5.8 11.6a9.7 9.7 0 0 1 12.4 0M8.9 15a5.1 5.1 0 0 1 6.2 0M12 19h.01"/></svg>
+        </button>
+        <button class="status-button" id="spotlight-button" title="Spotlight (⌘ Space)">
+          <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        </button>
+        <button class="status-button" id="control-button" title="Control Center">
+          <svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        </button>
+        <button class="clock-button" id="clock-button"><span id="clock-day">Wed 6 Aug</span>&nbsp;&nbsp;<span id="clock-time">12:15</span></button>
+      </nav>
+    </header>
+
+    <section id="desktop-area" aria-label="Desktop items">
+      <div id="desktop-widgets">
+        <button class="widget weather-widget" data-open-app="weather">
+          <span class="widget-place">London</span><span class="widget-temp">21°</span>
+          <span class="weather-sun">☀︎</span><span class="widget-detail">Mostly Sunny<br>H:23° L:14°</span>
+        </button>
+        <button class="widget calendar-widget" data-open-app="calendar">
+          <span class="calendar-weekday" id="widget-weekday">WEDNESDAY</span>
+          <span class="calendar-date" id="widget-date">6</span>
+          <span class="calendar-event"><i></i>10:00&nbsp; Design review</span>
+          <span class="calendar-event"><i class="purple"></i>14:30&nbsp; Project sync</span>
+        </button>
+      </div>
+
+      <div class="desktop-icons">
+        <button class="desktop-item" data-open-app="finder" data-finder-view="icloud">
+          <span class="desktop-icon folder-icon"><span>☁</span></span><span>iCloud Drive</span>
+        </button>
+        <button class="desktop-item" data-open-app="finder" data-finder-view="projects">
+          <span class="desktop-icon folder-icon coral"><span>⌘</span></span><span>Projects</span>
+        </button>
+        <button class="desktop-item" data-open-app="photos">
+          <span class="desktop-icon image-file"><i></i></span><span>Tahoe Trip</span>
+        </button>
+        <button class="desktop-item" data-open-app="trash">
+          <span class="desktop-icon trash-desktop">♲</span><span>Trash</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="window-layer" aria-live="polite"></section>
+
+    <aside id="notification-center" class="side-panel" aria-hidden="true">
+      <div class="panel-date"><strong id="panel-weekday">Wednesday</strong><span id="panel-date">6 August</span></div>
+      <div class="notification-stack">
+        <article class="notification"><div class="mini-app-icon messages-mini">●</div><div><b>Messages</b><time>now</time><strong>Alex</strong><p>That Tahoe mockup looks incredible!</p></div></article>
+        <article class="notification"><div class="mini-app-icon calendar-mini">6</div><div><b>Calendar</b><time>9m</time><strong>Design review</strong><p>10:00–10:45 · Studio</p></div></article>
+        <article class="notification"><div class="mini-app-icon mail-mini">✉</div><div><b>Mail</b><time>18m</time><strong>Flight confirmation</strong><p>Your trip to San Francisco is confirmed.</p></div></article>
+      </div>
+      <button class="clear-notifications">Clear All</button>
+    </aside>
+
+    <aside id="control-center" class="glass-popover" aria-hidden="true">
+      <div class="control-grid">
+        <button class="control-tile active" data-toggle-control="wifi"><span class="control-round wifi-symbol">◔</span><span><b>Wi‑Fi</b><small>Studio 5G</small></span></button>
+        <button class="control-tile active" data-toggle-control="bluetooth"><span class="control-round">ᛒ</span><span><b>Bluetooth</b><small>On</small></span></button>
+        <button class="control-tile focus-control" data-toggle-control="focus"><span class="control-round">☾</span><span><b>Focus</b><small>Work</small></span></button>
+        <button class="control-tile" data-toggle-control="airdrop"><span class="control-round">◉</span><span><b>AirDrop</b><small>Contacts Only</small></span></button>
+      </div>
+      <div class="slider-card"><label><span>☀︎</span> Display</label><input id="brightness-slider" type="range" min="35" max="100" value="88"></div>
+      <div class="slider-card"><label><span>🔊</span> Sound</label><input id="volume-slider" type="range" min="0" max="100" value="68"></div>
+      <div class="now-playing-mini"><div class="album-mini"></div><span><b>Horizon</b><small>Tycho</small></span><button id="cc-play">▶</button><button>››</button></div>
+      <div class="control-footer"><button data-open-app="settings">⚙</button><button id="lock-screen-button">◉</button><button id="power-button">⏻</button></div>
+    </aside>
+
+    <section id="spotlight" class="spotlight" aria-hidden="true">
+      <div class="spotlight-search">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="spotlight-input" autocomplete="off" spellcheck="false" placeholder="Spotlight Search" />
+        <kbd>esc</kbd>
+      </div>
+      <div id="spotlight-results"></div>
+    </section>
+
+    <div id="context-menu" class="context-menu" aria-hidden="true"></div>
+    <div id="menu-popover" class="context-menu top-menu" aria-hidden="true"></div>
+
+    <div id="toast-region" aria-live="polite"></div>
+
+    <nav id="dock-wrap" aria-label="Dock">
+      <div id="dock">
+        <button class="dock-item" data-app="finder" aria-label="Finder"><span class="dock-tooltip">Finder</span><span class="app-icon finder-icon"><i></i><b>⌒</b></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="safari" aria-label="Safari"><span class="dock-tooltip">Safari</span><span class="app-icon safari-icon"><i></i><b>➤</b></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="messages" aria-label="Messages"><span class="dock-tooltip">Messages</span><span class="app-icon messages-icon"><i></i></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="mail" aria-label="Mail"><span class="dock-tooltip">Mail</span><span class="app-icon mail-icon"><span>⌁</span></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="maps" aria-label="Maps"><span class="dock-tooltip">Maps</span><span class="app-icon maps-icon"><i></i><b>➤</b></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="photos" aria-label="Photos"><span class="dock-tooltip">Photos</span><span class="app-icon photos-icon"><i></i></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="phone" aria-label="Phone"><span class="dock-tooltip">Phone</span><span class="app-icon phone-icon">●</span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="music" aria-label="Music"><span class="dock-tooltip">Music</span><span class="app-icon music-icon">♪</span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="notes" aria-label="Notes"><span class="dock-tooltip">Notes</span><span class="app-icon notes-icon"><i></i></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="calendar" aria-label="Calendar"><span class="dock-tooltip">Calendar</span><span class="app-icon calendar-icon"><b>AUG</b><i id="dock-date">6</i></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="terminal" aria-label="Terminal"><span class="dock-tooltip">Terminal</span><span class="app-icon terminal-icon"><b>›_</b></span><i class="running-dot"></i></button>
+        <span class="dock-separator"></span>
+        <button class="dock-item" data-app="apps" aria-label="Applications"><span class="dock-tooltip">Applications</span><span class="app-icon apps-icon"><i></i></span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="settings" aria-label="System Settings"><span class="dock-tooltip">System Settings</span><span class="app-icon settings-icon">⚙</span><i class="running-dot"></i></button>
+        <button class="dock-item" data-app="trash" aria-label="Trash"><span class="dock-tooltip">Trash</span><span class="app-icon trash-icon"><i></i></span><i class="running-dot"></i></button>
+      </div>
+    </nav>
+  </main>
+
+  <section id="lock-screen" aria-hidden="true">
+    <div class="lock-status">Wednesday, 6 August</div><div class="lock-time">12:15</div>
+    <div class="user-avatar">M</div><strong>Mike</strong>
+    <button id="unlock-button">Click to unlock</button>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "id": "ccgoal-fable",
-  "title": "macOS Tahoe — Static Build",
+  "title": "macOS Tahoe \u2014 Static Build",
   "approach": "Static build",
   "workflow": "/goal",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
