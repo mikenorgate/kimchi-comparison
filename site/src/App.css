@@ -16,9 +16,10 @@
 }
 
 .app {
-  max-width: 1600px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
-  padding: 80px 24px 120px;
+  padding: 80px 48px 120px;
 }
 
 .hero {
