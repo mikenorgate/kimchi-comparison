@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1685e5" />
+  <title>Tahoe — Web Desktop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="desktop" aria-label="Tahoe desktop">
+    <header id="menubar">
+      <div class="menu-left">
+        <button class="menu-trigger apple" data-menu="apple-menu" aria-label="System menu">◆</button>
+        <button class="menu-trigger active-app-name" data-menu="app-menu">Finder</button>
+        <button class="menu-trigger" data-menu="file-menu">File</button>
+        <button class="menu-trigger" data-menu="edit-menu">Edit</button>
+        <button class="menu-trigger" data-menu="view-menu">View</button>
+        <button class="menu-trigger" data-menu="go-menu">Go</button>
+        <button class="menu-trigger" data-menu="window-menu">Window</button>
+        <button class="menu-trigger" data-menu="help-menu">Help</button>
+      </div>
+      <div class="menu-right">
+        <button id="focus-button" class="status-button" title="Focus">☾</button>
+        <button id="wifi-button" class="status-button" title="Wi-Fi">⌁</button>
+        <button id="spotlight-button" class="status-button" title="Spotlight">⌕</button>
+        <button id="control-button" class="status-button" title="Control Center">◉</button>
+        <button id="clock-button" class="clock" title="Notification Center"><span id="menu-date"></span> <span id="menu-time"></span></button>
+      </div>
+    </header>
+
+    <section class="desktop-icons" aria-label="Desktop files">
+      <button class="desktop-icon" data-open="finder"><span class="folder-icon">▰</span><span>Projects</span></button>
+      <button class="desktop-icon" data-open="photos"><span class="photo-file">◉</span><span>Tahoe Trip</span></button>
+      <button class="desktop-icon" data-open="notes"><span class="doc-icon">≡</span><span>Ideas.txt</span></button>
+    </section>
+
+    <section id="widgets" aria-label="Widgets">
+      <article class="widget weather-widget">
+        <div><span class="eyebrow">LONDON</span><strong>21°</strong><span>Mostly Sunny</span></div><span class="sun">☀</span>
+        <div class="forecast"><span>Now<br><b>21°</b></span><span>2 PM<br><b>22°</b></span><span>4 PM<br><b>20°</b></span><span>6 PM<br><b>18°</b></span></div>
+      </article>
+      <article class="widget calendar-widget" data-open="calendar">
+        <div class="cal-date"><span id="widget-day">THURSDAY</span><strong id="widget-date">6</strong></div>
+        <div><b>Today</b><p><i></i> Design review <span>10:00</span></p><p><i class="purple"></i> Flight to SFO <span>18:40</span></p></div>
+      </article>
+    </section>
+
+    <section id="window-layer" aria-live="polite"></section>
+
+    <nav id="dock" aria-label="Dock">
+      <div class="dock-apps">
+        <button class="dock-icon finder" data-open="finder" data-label="Finder"><span>◕</span></button>
+        <button class="dock-icon safari" data-open="safari" data-label="Safari"><span>⌁</span></button>
+        <button class="dock-icon messages" data-open="messages" data-label="Messages"><span>●</span></button>
+        <button class="dock-icon mail" data-open="mail" data-label="Mail"><span>✉</span></button>
+        <button class="dock-icon maps" data-open="maps" data-label="Maps"><span>⌖</span></button>
+        <button class="dock-icon photos" data-open="photos" data-label="Photos"><span>✿</span></button>
+        <button class="dock-icon facetime" data-open="facetime" data-label="FaceTime"><span>▰</span></button>
+        <button class="dock-icon calendar" data-open="calendar" data-label="Calendar"><small>THU</small><b id="dock-date">6</b></button>
+        <button class="dock-icon notes" data-open="notes" data-label="Notes"><span>≡</span></button>
+        <button class="dock-icon music" data-open="music" data-label="Music"><span>♫</span></button>
+        <button class="dock-icon settings" data-open="settings" data-label="System Settings"><span>⚙</span></button>
+        <span class="dock-separator"></span>
+        <button class="dock-icon downloads" data-open="downloads" data-label="Downloads"><span>↓</span></button>
+        <button class="dock-icon trash" data-open="trash" data-label="Trash"><span>♲</span></button>
+      </div>
+    </nav>
+
+    <div id="menu-popover" class="popover hidden"></div>
+
+    <aside id="control-center" class="glass-panel hidden" aria-label="Control Center">
+      <div class="control-grid">
+        <button class="control-tile wide toggle on" data-toggle><span class="control-round">⌁</span><span><b>Wi‑Fi</b><small>Tahoe House</small></span></button>
+        <button class="control-tile wide toggle on" data-toggle><span class="control-round">ᛒ</span><span><b>Bluetooth</b><small>On</small></span></button>
+        <button class="control-tile wide toggle" data-toggle><span class="control-round">☾</span><span><b>Focus</b><small>Off</small></span></button>
+        <button class="control-tile compact" id="stage-toggle"><span>▣</span><small>Stage Manager</small></button>
+        <button class="control-tile compact toggle" data-toggle><span>▱</span><small>Screen Mirroring</small></button>
+      </div>
+      <label class="slider-card"><span>Display</span><input type="range" min="35" max="100" value="82" id="brightness"></label>
+      <label class="slider-card"><span>Sound</span><input type="range" min="0" max="100" value="62" id="volume"></label>
+      <div class="now-playing"><span class="album-art">♫</span><span><b id="cc-song">Dreams</b><small>Fleetwood Mac</small></span><button id="cc-play">▶</button><button id="cc-next">›</button></div>
+    </aside>
+
+    <aside id="notification-center" class="hidden" aria-label="Notification Center">
+      <div class="notification-heading"><b>Notifications</b><button id="clear-notifications">Clear</button></div>
+      <article class="notification"><span class="mini-app messages">●</span><div><b>Messages</b><small>now</small><p>Alex: The Tahoe prototype looks beautiful!</p></div></article>
+      <article class="notification"><span class="mini-app calendar">6</span><div><b>Calendar</b><small>9m ago</small><p>Design review in 15 minutes</p></div></article>
+    </aside>
+
+    <section id="spotlight" class="hidden" aria-label="Spotlight Search">
+      <div class="spotlight-search"><span>⌕</span><input id="spotlight-input" placeholder="Spotlight Search" autocomplete="off" /><kbd>esc</kbd></div>
+      <div id="spotlight-results"></div>
+    </section>
+
+    <div id="toast" class="hidden"></div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
