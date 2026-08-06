@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>macOS Tahoe Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles-extra.css" />
+</head>
+<body>
+  <main id="desktop" aria-label="macOS desktop">
+    <div class="wallpaper"></div>
+    <header class="menubar">
+      <div class="menubar-left">
+        <button class="apple-mark" data-menu="apple" aria-label="Apple menu">●</button>
+        <button data-menu="finder">Finder</button>
+        <button data-menu="file">File</button>
+        <button data-menu="edit">Edit</button>
+        <button data-menu="view">View</button>
+        <button data-menu="go">Go</button>
+        <button data-menu="window">Window</button>
+        <button data-menu="help">Help</button>
+      </div>
+      <div class="menubar-right">
+        <button id="spotlight-btn" class="top-icon" aria-label="Spotlight">⌕</button>
+        <button class="top-icon" aria-label="Control Center" id="control-btn">◒</button>
+        <button class="status-pill" id="battery">▰  82%</button>
+        <span class="menubar-date" id="clock">Wed Aug 5  10:09</span>
+      </div>
+    </header>
+
+    <section id="desktop-icons" class="desktop-icons">
+      <button class="desktop-icon" data-open="Finder"><span class="folder-icon">⌂</span><b>Macintosh HD</b></button>
+      <button class="desktop-icon" data-open="Notes"><span class="file-icon notes-color">N</span><b>Meeting notes</b></button>
+      <button class="desktop-icon" data-open="Photos"><span class="file-icon photos-color">✿</span><b>Photo Library</b></button>
+    </section>
+
+    <section id="windows" aria-live="polite"></section>
+
+    <aside id="dock" class="dock" aria-label="Dock">
+      <button class="dock-app finder-app" data-open="Finder" aria-label="Finder"><span>⌁</span></button>
+      <button class="dock-app" data-open="Safari" aria-label="Safari"><span>◉</span></button>
+      <button class="dock-app mail-app" data-open="Mail" aria-label="Mail"><span>✉</span><i>3</i></button>
+      <button class="dock-app messages-app" data-open="Messages" aria-label="Messages"><span>⌁</span></button>
+      <button class="dock-app calendar-app" data-open="Calendar" aria-label="Calendar"><strong>5</strong><small>WED</small></button>
+      <button class="dock-app notes-app" data-open="Notes" aria-label="Notes"><span>≡</span></button>
+      <button class="dock-app photos-app" data-open="Photos" aria-label="Photos"><span>✿</span></button>
+      <button class="dock-app settings-app" data-open="System Settings" aria-label="System Settings"><span>⚙</span></button>
+      <button class="dock-app terminal-app" data-open="Terminal" aria-label="Terminal"><span>›_</span></button>
+      <button class="dock-app launchpad-app" data-action="launchpad" aria-label="Launchpad"><span>▦</span></button>
+      <span class="dock-divider"></span>
+      <button class="dock-app trash-app" data-action="trash" aria-label="Trash"><span>▥</span></button>
+    </aside>
+
+    <div id="launchpad" class="overlay launchpad hidden">
+      <div class="launchpad-top"><div class="launch-search">⌕ <input id="launch-search" placeholder="Search" /></div><button class="close-overlay" data-close="launchpad">×</button></div>
+      <div id="launch-grid" class="launch-grid"></div>
+    </div>
+    <div id="spotlight" class="overlay spotlight hidden">
+      <div class="spotlight-box"><span>⌕</span><input id="spotlight-input" autofocus placeholder="Spotlight Search" /></div>
+      <div id="spotlight-results"></div>
+    </div>
+    <div id="control-center" class="control-center hidden">
+      <div class="cc-row"><div class="cc-card connectivity"><strong>Connectivity</strong><button class="cc-toggle active">◉ <span>Wi-Fi</span><small>Home</small></button><button class="cc-toggle active">◒ <span>Bluetooth</span><small>On</small></button><button class="cc-toggle">✈ <span>AirDrop</span><small>Contacts Only</small></button></div><div class="cc-card media"><span class="media-art">♫</span><strong>Not Playing</strong><button>▶</button><button>◀</button><button>▶</button></div></div>
+      <div class="cc-card slider-card"><div><span>☼</span><input type="range" value="78" /></div><div><span>◒</span><input type="range" value="52" /></div></div>
+      <div class="cc-card quick-row"><button>▣<span>Focus</span></button><button>⌨<span>Keyboard Brightness</span></button><button>◴<span>Stage Manager</span></button></div>
+    </div>
+    <div id="context-menu" class="context-menu hidden"></div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

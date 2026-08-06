@@ -62,11 +62,11 @@
     ],
     "sourcePath": "Ferment-Full-Kimi2.7",
     "buildCommand": "npm run build",
-    "entryPoint": "dist/index.html",
+    "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "Kimi K2.7",
     "durationMs": 8987544,
-    "cost": null,
+    "cost": "$9.16",
     "fermentId": "019fd294-8e66-72bb-bf75-0ec02d410b9a"
   },
   {
@@ -99,11 +99,11 @@
     ],
     "sourcePath": "Ferment-Kimi2.7",
     "buildCommand": "npm run build",
-    "entryPoint": "dist/index.html",
+    "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "Kimi K2.7",
     "durationMs": 2746557,
-    "cost": null,
+    "cost": "$2.67",
     "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5"
   },
   {
@@ -124,7 +124,7 @@
     "agent": "kimchi",
     "model": "Kimi K2.7",
     "durationMs": 1257000,
-    "cost": null,
+    "cost": "$2.21",
     "fermentId": null
   },
   {
@@ -145,7 +145,28 @@
     "agent": "codex",
     "model": "GPT-5.5",
     "durationMs": 382000,
-    "cost": "$2.03",
+    "cost": "$1.15",
+    "fermentId": null
+  },
+  {
+    "id": "codex-gpt5-6-luna",
+    "title": "macOS Tahoe — Codex GPT-5.6 Luna",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "codex",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Self-contained HTML/CSS/JS desktop"
+      }
+    ],
+    "sourcePath": "codex-gpt5.6-luna",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "codex",
+    "model": "GPT-5.6 Luna",
+    "durationMs": 5862000,
+    "cost": "$0.04",
     "fermentId": null
   }
 ]

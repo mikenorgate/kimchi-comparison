@@ -28,6 +28,7 @@ const TITLE_MAP = {
   'singleshot-kimi2-7': 'macOS Tahoe — Single Page',
   'ccgoal-fable': 'macOS Tahoe — Static Build',
   'codex-gpt5-5': 'macOS Tahoe — Codex GPT-5.5',
+  'codex-gpt5-6-luna': 'macOS Tahoe — Codex GPT-5.6 Luna',
 };
 
 const STRATEGY_MAP = {
@@ -36,6 +37,7 @@ const STRATEGY_MAP = {
   'singleshot-kimi2-7': 'Single-page build',
   'ccgoal-fable': 'Static build',
   'codex-gpt5-5': 'Self-contained HTML/CSS/JS desktop',
+  'codex-gpt5-6-luna': 'Self-contained HTML/CSS/JS desktop',
 };
 
 const WORKFLOW_MAP = {
@@ -44,6 +46,7 @@ const WORKFLOW_MAP = {
   'singleshot-kimi2-7': 'oneshot',
   'ccgoal-fable': '/goal',
   'codex-gpt5-5': 'codex',
+  'codex-gpt5-6-luna': 'codex',
 };
 
 const MODEL_MAP = {
@@ -52,21 +55,30 @@ const MODEL_MAP = {
   'singleshot-kimi2-7': 'Kimi K2.7',
   'ccgoal-fable': 'Fable 5',
   'codex-gpt5-5': 'GPT-5.5',
+  'codex-gpt5-6-luna': 'GPT-5.6 Luna',
 };
 
 const DURATION_MS_MAP = {
   'ccgoal-fable': 19 * 60 * 1000,
   'singleshot-kimi2-7': 20 * 60 * 1000 + 57 * 1000,
   'codex-gpt5-5': 6 * 60 * 1000 + 22 * 1000,
+  'codex-gpt5-6-luna': 97 * 60 * 1000 + 42 * 1000,
 };
 
 const COST_MAP = {
   'ccgoal-fable': '$8.79',
-  // Codex GPT-5.5 session cost calculated from cumulative token usage:
-  // input 453119 (uncached 89983 + cached 363136), output 17150.
-  // Long-context tier applied because input > 272K:
-  // $10/M uncached input + $1/M cached input + $45/M output.
-  'codex-gpt5-5': '$2.03',
+  // GPT-5.5: sum of 15 per-request costs. No single request exceeded
+  // 272K input tokens, so standard short-context rates apply throughout:
+  // $5/M uncached input + $0.50/M cached input + $30/M output.
+  'codex-gpt5-5': '$1.15',
+  // GPT-5.6 Luna: sum of 14 per-request costs, all under 272K input.
+  // Standard rates: $0.20/M uncached + $0.02/M cached + $1.20/M output.
+  'codex-gpt5-6-luna': '$0.04',
+  // Kimi K2.7: per-request token costs from harness session logs.
+  // Pricing: $0.95/M uncached input + $0.19/M cache read + $4.00/M output.
+  'ferment-full-kimi2-7': '$9.16',
+  'ferment-kimi2-7': '$2.67',
+  'singleshot-kimi2-7': '$2.21',
 };
 
 const EXCLUDED_DIRS = new Set(['site', 'node_modules', '.git', '.github', 'scripts']);
@@ -361,11 +373,9 @@ function inferBuildCommand(pkg) {
 }
 
 function inferEntryPoint(pkg, dir) {
-  if (pkg?.scripts?.build) {
-    return existsSync(join(dir, 'vite.config.ts')) || existsSync(join(dir, 'vite.config.js'))
-      ? 'dist/index.html'
-      : 'build/index.html';
-  }
+  // build-examples.mjs flattens the build output (dist/ or build/) into
+  // site/public/<id>/, so the entry point is always index.html at the root
+  // of the served directory.
   return 'index.html';
 }
 

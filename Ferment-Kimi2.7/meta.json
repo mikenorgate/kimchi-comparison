@@ -28,10 +28,10 @@
   ],
   "sourcePath": "Ferment-Kimi2.7",
   "buildCommand": "npm run build",
-  "entryPoint": "dist/index.html",
+  "entryPoint": "index.html",
   "agent": "kimchi",
   "model": "Kimi K2.7",
   "durationMs": 2746557,
-  "cost": null,
+  "cost": "$2.67",
   "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5"
 }
