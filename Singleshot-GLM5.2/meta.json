@@ -1,6 +1,6 @@
 {
   "id": "singleshot-glm5-2",
-  "title": "macOS Tahoe — GLM 5.2",
+  "title": "macOS Tahoe \u2014 GLM 5.2",
   "approach": "Self-contained HTML/CSS/JS desktop",
   "workflow": "oneshot",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -17,6 +17,6 @@
   "model": "GLM 5.2",
   "durationMs": 815000,
   "cost": "$5.38",
-  "thinkingLevel": "medium",
+  "thinkingLevel": "enabled",
   "fermentId": null
 }

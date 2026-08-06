@@ -1,6 +1,6 @@
 {
   "id": "singleshot-glm5-2-max",
-  "title": "macOS Tahoe — GLM 5.2 (max thinking)",
+  "title": "macOS Tahoe \u2014 GLM 5.2 (max thinking)",
   "approach": "Self-contained HTML/CSS/JS desktop",
   "workflow": "oneshot",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -17,6 +17,6 @@
   "model": "GLM 5.2",
   "durationMs": 1688000,
   "cost": "$1.64",
-  "thinkingLevel": "max",
+  "thinkingLevel": "enabled",
   "fermentId": null
 }

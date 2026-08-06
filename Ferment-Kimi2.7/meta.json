@@ -1,6 +1,6 @@
 {
   "id": "ferment-kimi2-7",
-  "title": "macOS Tahoe — Core Shell",
+  "title": "macOS Tahoe \u2014 Core Shell",
   "approach": "Core desktop shell",
   "workflow": "ferment",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -33,6 +33,6 @@
   "model": "Kimi K2.7",
   "durationMs": 2746557,
   "cost": "$3.33",
-  "thinkingLevel": "medium",
+  "thinkingLevel": "enabled",
   "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5"
 }

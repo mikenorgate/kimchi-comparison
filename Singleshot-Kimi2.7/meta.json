@@ -1,6 +1,6 @@
 {
   "id": "singleshot-kimi2-7",
-  "title": "macOS Tahoe — Single Page",
+  "title": "macOS Tahoe \u2014 Single Page",
   "approach": "Single-page build",
   "workflow": "oneshot",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -17,6 +17,6 @@
   "model": "Kimi K2.7",
   "durationMs": 1257000,
   "cost": "$2.21",
-  "thinkingLevel": "medium",
+  "thinkingLevel": "enabled",
   "fermentId": null
 }

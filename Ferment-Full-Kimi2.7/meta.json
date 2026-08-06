@@ -1,6 +1,6 @@
 {
   "id": "ferment-full-kimi2-7",
-  "title": "macOS Tahoe — Full Desktop",
+  "title": "macOS Tahoe \u2014 Full Desktop",
   "approach": "Full desktop + bundled apps",
   "workflow": "ferment",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -45,6 +45,6 @@
   "model": "Kimi K2.7",
   "durationMs": 8987544,
   "cost": "$11.20",
-  "thinkingLevel": "medium",
+  "thinkingLevel": "enabled",
   "fermentId": "019fd294-8e66-72bb-bf75-0ec02d410b9a"
 }
