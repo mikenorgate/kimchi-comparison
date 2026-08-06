@@ -241,7 +241,7 @@
     "durationMs": 815000,
     "cost": "$5.38",
     "fermentId": null,
-    "thinkingLevel": "enabled"
+    "thinkingLevel": "medium"
   },
   {
     "id": "codex-gpt5-6-sol",
@@ -307,6 +307,6 @@
     "durationMs": 1688000,
     "cost": "$1.64",
     "fermentId": null,
-    "thinkingLevel": "enabled"
+    "thinkingLevel": "max"
   }
 ]
