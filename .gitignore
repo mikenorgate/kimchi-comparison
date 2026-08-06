@@ -5,7 +5,10 @@ node_modules/
 # Build outputs
 dist/
 build/
-site/public/
+# site/public/ is rebuilt by CI, but keep committed static assets
+site/public/*
+!site/public/favicon.svg
+!site/public/icons.svg
 
 # OS files
 .DS_Store
