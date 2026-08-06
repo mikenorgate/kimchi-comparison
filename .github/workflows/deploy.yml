@@ -34,10 +34,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # The metadata harvester needs local harness session files that only exist
-      # on the authoring machine, so we rely on the committed meta.json files and
-      # skip re-harvesting in CI. This preserves the ask_user Q&A extracted from
-      # those local sessions.
       - name: Build examples
         run: npm run build:examples
         env:
