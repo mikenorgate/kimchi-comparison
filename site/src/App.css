@@ -164,8 +164,9 @@
 
 .example-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, 340px);
   gap: 18px;
+  justify-content: center;
 }
 
 .example-card {
@@ -173,7 +174,6 @@
   flex-direction: column;
   gap: 18px;
   padding: 24px;
-  min-height: 280px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
