@@ -4,10 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "harvest": "node scripts/harvest-meta.mjs",
     "build:examples": "node scripts/build-examples.mjs",
     "build:site": "cd site && npm ci && npm run build",
-    "build": "npm run harvest && npm run build:examples && npm run build:site",
-    "test": "node scripts/test-auto-discovery.mjs"
+    "build": "npm run build:examples && npm run build:site"
   }
 }
