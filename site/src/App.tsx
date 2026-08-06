@@ -61,8 +61,8 @@ function LandingPage() {
           <span>Different agents.</span>
         </h1>
         <p className="hero-body">
-          Four implementations of the same macOS Tahoe web desktop, compared by
-          agent, time, and approach.
+          {examples.length} implementations of the same macOS Tahoe web desktop,
+          compared by agent, time, and approach.
         </p>
         <Stats />
       </header>
