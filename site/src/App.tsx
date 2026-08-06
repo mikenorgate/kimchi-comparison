@@ -63,7 +63,7 @@ const MODE_ORDER = ['max', 'xhigh', 'high', 'medium', 'low', 'minimal', 'enabled
 function buildGroups(agentFilter: string): Group[] {
   const filtered = examples.filter((e) => e.agent === agentFilter);
 
-  // Group by model, then by thinking level within each model
+  // Group by model only
   const byModel = new Map<string, Example[]>();
   for (const ex of filtered) {
     const model = ex.model || 'Unknown';
@@ -74,28 +74,15 @@ function buildGroups(agentFilter: string): Group[] {
   const groups: Group[] = [];
 
   for (const [model, modelExamples] of byModel) {
-    const byMode = new Map<string, Example[]>();
-    for (const ex of modelExamples) {
-      const mode = ex.thinkingLevel || 'default';
-      if (!byMode.has(mode)) byMode.set(mode, []);
-      byMode.get(mode)!.push(ex);
-    }
-
-    const sortedModes = [...byMode.entries()].sort((a, b) => {
-      const ai = MODE_ORDER.indexOf(a[0]);
-      const bi = MODE_ORDER.indexOf(b[0]);
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    // Sort within model by thinking level, then workflow, then duration
+    const sorted = [...modelExamples].sort((a, b) => {
+      const ai = MODE_ORDER.indexOf(a.thinkingLevel || 'default');
+      const bi = MODE_ORDER.indexOf(b.thinkingLevel || 'default');
+      if (ai !== bi) return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      if (a.workflow !== b.workflow) return a.workflow.localeCompare(b.workflow);
+      return (a.durationMs || 0) - (b.durationMs || 0);
     });
-
-    for (const [mode, modeExamples] of sortedModes) {
-      const sorted = [...modeExamples].sort((a, b) => {
-        if (a.workflow !== b.workflow) return a.workflow.localeCompare(b.workflow);
-        return (a.durationMs || 0) - (b.durationMs || 0);
-      });
-
-      const label = sortedModes.length > 1 ? `${model} (${mode})` : model;
-      groups.push({ key: `${model}-${mode}`, label, examples: sorted });
-    }
+    groups.push({ key: model, label: model, examples: sorted });
   }
 
   groups.sort((a, b) => b.examples.length - a.examples.length);
@@ -118,25 +105,14 @@ function LandingPage() {
 
   const othersGroups: Group[] = [];
   for (const [model, modelExamples] of othersByModel) {
-    const byMode = new Map<string, Example[]>();
-    for (const ex of modelExamples) {
-      const mode = ex.thinkingLevel || 'default';
-      if (!byMode.has(mode)) byMode.set(mode, []);
-      byMode.get(mode)!.push(ex);
-    }
-    const sortedModes = [...byMode.entries()].sort((a, b) => {
-      const ai = MODE_ORDER.indexOf(a[0]);
-      const bi = MODE_ORDER.indexOf(b[0]);
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    const sorted = [...modelExamples].sort((a, b) => {
+      const ai = MODE_ORDER.indexOf(a.thinkingLevel || 'default');
+      const bi = MODE_ORDER.indexOf(b.thinkingLevel || 'default');
+      if (ai !== bi) return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      if (a.workflow !== b.workflow) return a.workflow.localeCompare(b.workflow);
+      return (a.durationMs || 0) - (b.durationMs || 0);
     });
-    for (const [mode, modeExamples] of sortedModes) {
-      const sorted = [...modeExamples].sort((a, b) => {
-        if (a.workflow !== b.workflow) return a.workflow.localeCompare(b.workflow);
-        return (a.durationMs || 0) - (b.durationMs || 0);
-      });
-      const label = sortedModes.length > 1 ? `${model} (${mode})` : model;
-      othersGroups.push({ key: `${model}-${mode}`, label, examples: sorted });
-    }
+    othersGroups.push({ key: model, label: model, examples: sorted });
   }
   othersGroups.sort((a, b) => b.examples.length - a.examples.length);
 
