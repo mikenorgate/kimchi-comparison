@@ -17,7 +17,8 @@ function formatDuration(ms: number | null) {
 
 function agentLabel(example: Example) {
   if (example.agent === 'kimchi') return 'Kimchi';
-  if (example.agent === 'claude') return 'Claude';
+  if (example.agent === 'claude') return 'Claude Code';
+  if (example.agent === 'codex') return 'Codex';
   return 'Other';
 }
 
@@ -153,9 +154,7 @@ function LandingPage() {
 
         {othersGroups.length > 0 && (
           <div className="comparison-group">
-            <h2 className="group-title group-title--others">
-              {otherExamples.every((e) => e.agent === 'claude') ? 'Claude' : 'Other agents'}
-            </h2>
+            <h2 className="group-title group-title--others">Other Agents</h2>
             {othersGroups.map((group) => (
               <div key={group.key} className="model-subgroup">
                 <h3 className="subgroup-title">{group.label}</h3>

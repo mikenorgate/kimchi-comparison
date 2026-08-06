@@ -91,26 +91,35 @@
           "id": "step-3",
           "index": 3,
           "description": "Implement the window manager Zustand store + Window/WindowChrome components: open/close/focus/minimize/restore, drag, resize, z-order, traffic-light controls; per-window app mounting via the registry.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test window-manager",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-06T15:30:59.351Z"
+          "startedAt": "2026-08-06T15:30:59.351Z",
+          "completedAt": "2026-08-06T15:44:21.011Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T15:44:21.011Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Build desktop + wallpaper, the fully transparent menu bar with Apple menu and per-app menus reflecting the focused app, and the Dock with app icons, running indicators, and hover magnification.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "npx playwright test menubar",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T15:44:25.354Z"
         },
         {
           "id": "step-5",
@@ -371,7 +380,7 @@
   "decisions": [],
   "memories": [],
   "createdAt": "2026-08-06T15:12:49.873Z",
-  "updatedAt": "2026-08-06T15:30:59.351Z",
+  "updatedAt": "2026-08-06T15:44:25.354Z",
   "goal": "Recreate the macOS Tahoe (macOS 26) desktop — Liquid Glass shell, fully transparent menu bar, Dock, Control Center, Spotlight, window manager, and theming — plus 12 functional-core apps (Finder, Safari, Notes, Calculator, Terminal, System Settings, Mail, Messages, Calendar, Reminders, Photos, Weather) as a self-contained React + Vite + TypeScript + Tailwind web app with localStorage persistence.",
   "successCriteria": [
     "Dev server & shell: `npm run dev` starts clean; desktop renders wallpaper + transparent menu bar + Dock; a Playwright smoke test asserts the shell elements are present.",

@@ -224,6 +224,11 @@
   background: var(--agent-claude-bg);
 }
 
+.agent--codex {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
 .agent--unknown {
   color: var(--agent-unknown);
   background: var(--agent-unknown-bg);

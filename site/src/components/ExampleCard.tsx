@@ -9,6 +9,7 @@ interface ExampleCardProps {
 function agentClass(agent: string) {
   if (agent === 'kimchi') return 'agent--kimchi';
   if (agent === 'claude') return 'agent--claude';
+  if (agent === 'codex') return 'agent--codex';
   return 'agent--unknown';
 }
 
@@ -34,7 +35,7 @@ export function ExampleCard({ example }: ExampleCardProps) {
       </header>
 
       <h3 className="example-card__title">
-        {example.model ? `${example.workflow} — ${example.model}` : `${agentLabel(example)} ${example.workflow}`}
+        {example.model ? `${agentLabel(example)} — ${example.model}` : `${agentLabel(example)}`}
       </h3>
       <p className="example-card__strategy">{example.approach}</p>
 

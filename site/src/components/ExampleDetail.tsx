@@ -8,6 +8,7 @@ interface ExampleDetailProps {
 function agentClass(agent: string) {
   if (agent === 'kimchi') return 'agent--kimchi';
   if (agent === 'claude') return 'agent--claude';
+  if (agent === 'codex') return 'agent--codex';
   return 'agent--unknown';
 }
 
@@ -22,8 +23,8 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
   const base = import.meta.env.BASE_URL || '/';
   const demoUrl = `${base}${example.id}/${example.entryPoint}`.replace(/\/+/g, '/');
   const heading = example.model
-    ? `${example.workflow} — ${example.model}`
-    : `${agentLabel(example)} ${example.workflow}`;
+    ? `${agentLabel(example)} — ${example.model}`
+    : agentLabel(example);
 
   return (
     <article className="example-detail">
@@ -41,6 +42,10 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
       </header>
 
       <section className="detail-section metrics-row">
+        <div className="metric-card">
+          <span className="metric-card__label">Agent</span>
+          <span className="metric-card__value">{agentLabel(example)}</span>
+        </div>
         <div className="metric-card">
           <span className="metric-card__label">Model</span>
           <span className="metric-card__value">{example.model || '—'}</span>
