@@ -166,7 +166,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, 340px);
   gap: 18px;
-  justify-content: center;
+  justify-content: start;
 }
 
 .example-card {
