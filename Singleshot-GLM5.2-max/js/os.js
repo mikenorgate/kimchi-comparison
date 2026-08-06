@@ -404,6 +404,7 @@ OS.buildDock = function(){
   OS.addDockItem(dock, {id:'launchpad',name:'Launchpad',iconClass:'ic-launchpad',glyph:'◈',isLauncher:true});
   OS.dockApps.forEach(id=>{
     const app=window.Apps[id]; if(!app)return;
+    app.id = id; // stamp id onto the app object so dock click handlers can reference it
     OS.addDockItem(dock, app);
   });
   // separator + trash
