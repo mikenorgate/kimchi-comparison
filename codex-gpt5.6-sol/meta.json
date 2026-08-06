@@ -17,5 +17,6 @@
   "model": "GPT-5.6 Sol",
   "durationMs": 108000,
   "cost": "$1.02",
+  "thinkingLevel": "default",
   "fermentId": null
 }

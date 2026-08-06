@@ -1,7 +1,7 @@
 [
   {
     "id": "ccgoal-fable",
-    "title": "macOS Tahoe — Static Build",
+    "title": "macOS Tahoe \u2014 Static Build",
     "approach": "Static build",
     "workflow": "/goal",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -18,11 +18,12 @@
     "model": "Fable 5",
     "durationMs": 1140000,
     "cost": "$8.79",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "enabled"
   },
   {
     "id": "ferment-full-kimi2-7",
-    "title": "macOS Tahoe — Full Desktop",
+    "title": "macOS Tahoe \u2014 Full Desktop",
     "approach": "Full desktop + bundled apps",
     "workflow": "ferment",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -67,11 +68,12 @@
     "model": "Kimi K2.7",
     "durationMs": 8987544,
     "cost": "$11.20",
-    "fermentId": "019fd294-8e66-72bb-bf75-0ec02d410b9a"
+    "fermentId": "019fd294-8e66-72bb-bf75-0ec02d410b9a",
+    "thinkingLevel": "medium"
   },
   {
     "id": "ferment-kimi2-7",
-    "title": "macOS Tahoe — Core Shell",
+    "title": "macOS Tahoe \u2014 Core Shell",
     "approach": "Core desktop shell",
     "workflow": "ferment",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -104,11 +106,12 @@
     "model": "Kimi K2.7",
     "durationMs": 2746557,
     "cost": "$3.33",
-    "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5"
+    "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5",
+    "thinkingLevel": "medium"
   },
   {
     "id": "singleshot-kimi2-7",
-    "title": "macOS Tahoe — Single Page",
+    "title": "macOS Tahoe \u2014 Single Page",
     "approach": "Single-page build",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -125,11 +128,12 @@
     "model": "Kimi K2.7",
     "durationMs": 1257000,
     "cost": "$2.21",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "medium"
   },
   {
     "id": "codex-gpt5-5",
-    "title": "macOS Tahoe — Codex GPT-5.5",
+    "title": "macOS Tahoe \u2014 Codex GPT-5.5",
     "approach": "Self-contained HTML/CSS/JS desktop",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -146,11 +150,12 @@
     "model": "GPT-5.5",
     "durationMs": 382000,
     "cost": "$1.15",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "default"
   },
   {
     "id": "codex-gpt5-6-luna",
-    "title": "macOS Tahoe — Codex GPT-5.6 Luna",
+    "title": "macOS Tahoe \u2014 Codex GPT-5.6 Luna",
     "approach": "Self-contained HTML/CSS/JS desktop",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -167,11 +172,12 @@
     "model": "GPT-5.6 Luna",
     "durationMs": 5862000,
     "cost": "$0.04",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "default"
   },
   {
     "id": "singleshot-multimodel",
-    "title": "macOS Tahoe — Multi-Model Oneshot",
+    "title": "macOS Tahoe \u2014 Multi-Model Oneshot",
     "approach": "Full desktop built with multi-model orchestration (Kimi K2.7 orchestrator + MiniMax M3 subagents)",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -212,11 +218,12 @@
     "model": "Multi-model",
     "durationMs": 2457433,
     "cost": "$2.09",
-    "fermentId": "019fd606-85c8-72d6-a8fa-112a25a78c2b"
+    "fermentId": "019fd606-85c8-72d6-a8fa-112a25a78c2b",
+    "thinkingLevel": "medium"
   },
   {
     "id": "singleshot-glm5-2",
-    "title": "macOS Tahoe — GLM 5.2",
+    "title": "macOS Tahoe \u2014 GLM 5.2",
     "approach": "Self-contained HTML/CSS/JS desktop",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -233,11 +240,12 @@
     "model": "GLM 5.2",
     "durationMs": 815000,
     "cost": "$5.38",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "medium"
   },
   {
     "id": "codex-gpt5-6-sol",
-    "title": "macOS Tahoe — Codex GPT-5.6 Sol",
+    "title": "macOS Tahoe \u2014 Codex GPT-5.6 Sol",
     "approach": "Self-contained HTML/CSS/JS desktop",
     "workflow": "oneshot",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
@@ -254,6 +262,7 @@
     "model": "GPT-5.6 Sol",
     "durationMs": 108000,
     "cost": "$1.02",
-    "fermentId": null
+    "fermentId": null,
+    "thinkingLevel": "default"
   }
 ]

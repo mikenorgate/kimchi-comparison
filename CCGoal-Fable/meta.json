@@ -17,5 +17,6 @@
   "model": "Fable 5",
   "durationMs": 1140000,
   "cost": "$8.79",
+  "thinkingLevel": "enabled",
   "fermentId": null
 }

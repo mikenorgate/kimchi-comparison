@@ -17,5 +17,6 @@
   "model": "GLM 5.2",
   "durationMs": 815000,
   "cost": "$5.38",
+  "thinkingLevel": "medium",
   "fermentId": null
 }

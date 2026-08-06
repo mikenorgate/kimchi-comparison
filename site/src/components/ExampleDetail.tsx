@@ -53,6 +53,10 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
           <span className="metric-card__label">Cost</span>
           <span className="metric-card__value">{example.cost || '—'}</span>
         </div>
+        <div className="metric-card">
+          <span className="metric-card__label">Thinking</span>
+          <span className="metric-card__value">{example.thinkingLevel || '—'}</span>
+        </div>
       </section>
 
       <section className="detail-section">

@@ -17,5 +17,6 @@ export interface Example {
   model: string | null;
   durationMs: number | null;
   cost: string | null;
+  thinkingLevel: string | null;
   fermentId: string | null;
 }

@@ -17,5 +17,6 @@
   "model": "GPT-5.5",
   "durationMs": 382000,
   "cost": "$1.15",
+  "thinkingLevel": "default",
   "fermentId": null
 }
