@@ -1,0 +1,72 @@
+:root {
+  /* Colors — macOS Tahoe inspired palette */
+  --color-accent: #0a84ff;
+  --color-accent-hover: #409cff;
+
+  --color-text: #1d1d1f;
+  --color-text-secondary: #6e6e73;
+  --color-text-on-dark: #f5f5f7;
+
+  --color-window-bg: rgba(246, 246, 246, 0.85);
+  --color-menubar-bg: rgba(255, 255, 255, 0.2);
+  --color-dock-bg: rgba(245, 245, 245, 0.35);
+  --color-overlay-bg: rgba(28, 28, 30, 0.72);
+
+  --color-border: rgba(0, 0, 0, 0.12);
+  --color-divider: rgba(0, 0, 0, 0.08);
+
+  /* Traffic lights */
+  --color-traffic-red: #ff5f57;
+  --color-traffic-yellow: #febc2e;
+  --color-traffic-green: #28c840;
+
+  /* Wallpaper gradient (Tahoe-style) */
+  --wallpaper-gradient: linear-gradient(
+    135deg,
+    #1a2980 0%,
+    #26d0ce 35%,
+    #74e0bb 65%,
+    #f4d35e 100%
+  );
+
+  /* Sizing */
+  --menubar-height: 28px;
+  --dock-height: 64px;
+  --dock-icon-size: 48px;
+  --window-radius: 12px;
+  --window-titlebar-height: 52px;
+  --traffic-light-size: 12px;
+  --traffic-light-spacing: 8px;
+  --traffic-light-padding-left: 16px;
+
+  /* Shadows */
+  --shadow-window: 0 22px 70px rgba(0, 0, 0, 0.35);
+  --shadow-dock: 0 12px 36px rgba(0, 0, 0, 0.28);
+  --shadow-overlay: 0 18px 48px rgba(0, 0, 0, 0.45);
+  --shadow-icon: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Blur */
+  --blur-menubar: blur(20px) saturate(180%);
+  --blur-dock: blur(20px) saturate(180%);
+  --blur-window: blur(30px) saturate(180%);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.15s;
+  --duration-base: 0.22s;
+  --duration-slow: 0.32s;
+
+  /* Z-index scale */
+  --z-desktop: 0;
+  --z-window: 100;
+  --z-dock: 500;
+  --z-menubar: 1000;
+  --z-overlay: 1500;
+  --z-modal: 2000;
+}

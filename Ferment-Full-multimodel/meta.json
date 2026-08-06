@@ -1,0 +1,45 @@
+{
+  "id": "ferment-full-multimodel",
+  "title": "macOS Tahoe — Multi-Model Ferment",
+  "approach": "Full desktop built with multi-model orchestration (Kimi K2.7 orchestrator + MiniMax M3 subagents)",
+  "workflow": "ferment",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Which macOS version should I target?",
+      "answer": "macOS 26 Tahoe (developer/public beta preview)"
+    },
+    {
+      "question": "Which bundled apps must actually be interactive? Pick your top priorities.",
+      "answer": "Finder (files, windows, Dock, menus, drag/drop); Dock + Launchpad; System menu bar (Apple, status icons, Control Center, Spotlight); Safari (address bar, tabs, bookmarks, basic web view); Terminal (emulator + shell history, no real OS shell); Notes / Reminders / Calendar / Mail; Music / Photos / TV / Podcasts; System Settings (macOS-style preference panes); Calculator / Clock / Weather / Stocks / Maps"
+    },
+    {
+      "question": "How should user data be handled?",
+      "answer": "Mock/sample data only; nothing persists"
+    },
+    {
+      "question": "Preferred web stack?",
+      "answer": "React + Vite + TypeScript"
+    },
+    {
+      "question": "How faithful must it be?",
+      "answer": "Pixel-perfect visual match with animations"
+    },
+    {
+      "question": "What is your realistic budget (in dollars or developer-hours) and timeline?",
+      "answer": "(no response)"
+    },
+    {
+      "question": "What should I produce first?",
+      "answer": "Build the full thing"
+    }
+  ],
+  "sourcePath": "ferment-full-multimodel",
+  "buildCommand": "npm run build",
+  "entryPoint": "index.html",
+  "agent": "kimchi",
+  "model": "Kimi K2.7 + MiniMax M3",
+  "durationMs": 2457433,
+  "cost": "$2.56",
+  "fermentId": "019fd606-85c8-72d6-a8fa-112a25a78c2b"
+}
