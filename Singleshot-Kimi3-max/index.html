@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tahoe Web — macOS 26 in the browser</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- Boot screen -->
+<div id="boot">
+  <div class="boot-inner">
+    <div class="boot-apple" id="boot-apple"></div>
+    <div class="boot-bar"><div class="boot-bar-fill" id="boot-fill"></div></div>
+  </div>
+</div>
+
+<!-- Lock / login screen -->
+<div id="lock" class="gone">
+  <div class="lock-clock" id="lock-clock">9:41</div>
+  <div class="lock-date" id="lock-date">Monday, January 1</div>
+  <div class="lock-user">
+    <div class="lock-avatar" id="lock-avatar"></div>
+    <div class="lock-name" id="lock-name">mike</div>
+    <div class="lock-hint">Click or press any key to log in</div>
+  </div>
+</div>
+
+<!-- Powered off -->
+<div id="off" class="gone"><div class="off-hint">Click to turn on your Mac</div></div>
+
+<!-- The desktop -->
+<div id="screen" class="gone">
+  <div id="wallpaper"></div>
+  <div id="desktop-icons"></div>
+  <div id="windows"></div>
+
+  <header id="menubar">
+    <nav id="mb-left"></nav>
+    <nav id="mb-right"></nav>
+  </header>
+
+  <div id="menu-layer" class="gone"></div>
+
+  <div id="dock-wrap">
+    <div id="dock"></div>
+  </div>
+
+  <div id="banners"></div>
+
+  <!-- overlays -->
+  <div id="cc" class="overlay gone"></div>
+  <div id="nc" class="overlay gone"></div>
+  <div id="spotlight" class="overlay gone"></div>
+  <div id="launchpad" class="overlay gone"></div>
+  <div id="mission" class="overlay gone"></div>
+  <div id="switcher" class="overlay gone"></div>
+  <div id="siri-bubble" class="gone"></div>
+  <div id="modal-root"></div>
+
+  <div id="brightness-overlay"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/core.js"></script>
+<script src="js/apps1.js"></script>
+<script src="js/apps2.js"></script>
+<script src="js/apps3.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

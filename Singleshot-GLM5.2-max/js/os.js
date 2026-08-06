@@ -14,6 +14,25 @@ const OS = window.OS = {
   },
 };
 
+/* ---------- Toast notification ---------- */
+OS.toast = function(msg, dur){
+  dur = dur||2200;
+  let t = document.getElementById('os-toast');
+  if(!t){
+    t = document.createElement('div'); t.id='os-toast';
+    t.style.cssText='position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:99999;'+
+      'background:rgba(40,40,52,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);'+
+      'border:0.5px solid rgba(255,255,255,0.18);border-radius:12px;padding:10px 18px;color:#fff;'+
+      'font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,0.4);'+
+      'opacity:0;transition:opacity .2s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity='1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.style.opacity='0', dur);
+};
+
 /* ---------- Utilities ---------- */
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];

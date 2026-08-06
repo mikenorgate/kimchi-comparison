@@ -328,5 +328,27 @@
     "cost": "$0.65",
     "fermentId": null,
     "thinkingLevel": "max"
+  },
+  {
+    "id": "singleshot-glm5-2-max",
+    "title": "macOS Tahoe — GLM 5.2 (max thinking)",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "oneshot",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Self-contained HTML/CSS/JS desktop"
+      }
+    ],
+    "sourcePath": "Singleshot-GLM5.2-max",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "kimchi",
+    "model": "GLM 5.2",
+    "durationMs": 451863,
+    "cost": "$1.64",
+    "fermentId": null,
+    "thinkingLevel": "max"
   }
 ]

@@ -51,8 +51,7 @@ const FS = {
       'System':{type:'folder',children:{
         'Library':{type:'folder',children:{}},
       }},
-    }}
-  },
+    }},
   resolve(path){
     if(path==='/')return this['/'];
     const parts=path.split('/').filter(Boolean);
