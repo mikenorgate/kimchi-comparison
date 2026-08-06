@@ -1,0 +1,63 @@
+.calculator {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1c1c1e;
+  padding: 12px;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.calc-display {
+  color: white;
+  font-size: 44px;
+  font-weight: 300;
+  text-align: right;
+  padding: 8px 10px 0;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: -apple-system, 'SF Pro Display', Helvetica, sans-serif;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.calc-btn {
+  border: none;
+  border-radius: 999px;
+  background: #333336;
+  color: white;
+  font-size: 20px;
+  padding: 14px 0;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+.calc-btn:hover {
+  filter: brightness(1.25);
+}
+.calc-btn:active {
+  filter: brightness(1.5);
+}
+
+.calc-func {
+  background: #a5a5aa;
+  color: #1c1c1e;
+}
+
+.calc-op {
+  background: #ff9f0a;
+}
+
+.calc-zero {
+  grid-column: span 2;
+  border-radius: 999px;
+  text-align: left;
+  padding-left: 24px;
+}

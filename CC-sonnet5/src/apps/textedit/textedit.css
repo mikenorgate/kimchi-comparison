@@ -1,0 +1,43 @@
+.textedit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+
+.textedit-toolbar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f6f6f6;
+}
+
+.textedit-toolbar button {
+  border: none;
+  background: #e8e8e8;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  min-width: 26px;
+}
+
+.textedit-divider {
+  width: 1px;
+  height: 18px;
+  background: #ddd;
+  margin: 0 4px;
+}
+
+.textedit-body {
+  flex: 1;
+  padding: 20px 26px;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-y: auto;
+  font-family: -apple-system, Helvetica, sans-serif;
+  white-space: pre-wrap;
+}

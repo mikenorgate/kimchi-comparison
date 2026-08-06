@@ -1,0 +1,90 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  max-width: none;
+  border: none;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  user-select: none;
+  color-scheme: light;
+}
+
+input,
+textarea,
+[contenteditable] {
+  user-select: text;
+}
+
+button {
+  font-family: inherit;
+}
+
+:root[data-theme='dark'] .menubar {
+  background: rgba(30, 30, 32, 0.6);
+  color: #f2f2f2;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme='dark'] .menu-dropdown {
+  background: rgba(45, 45, 48, 0.95);
+  color: #f2f2f2;
+}
+
+:root[data-theme='dark'] .menu-separator {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme='dark'] .window-titlebar {
+  background: #3a3a3c;
+  border-bottom: 1px solid #262628;
+}
+
+:root[data-theme='dark'] .window-frame:not(.focused) .window-titlebar {
+  background: #333335;
+}
+
+:root[data-theme='dark'] .window-title {
+  color: #e5e5e5;
+}
+
+:root[data-theme='dark'] .modal-box {
+  background: rgba(45, 45, 48, 0.98);
+  color: #f2f2f2;
+}
+
+:root[data-theme='dark'] .cc-panel {
+  background: rgba(45, 45, 48, 0.85);
+  color: #f2f2f2;
+}
+
+:root[data-theme='dark'] .cc-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f2f2f2;
+}
+
+:root[data-theme='dark'] .spotlight-box {
+  background: rgba(40, 40, 42, 0.92);
+  color: #f2f2f2;
+}
+
+:root[data-theme='dark'] .spotlight-results {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme='dark'] .desktop-context,
+:root[data-theme='dark'] .wallpaper-picker,
+:root[data-theme='dark'] .dock-context {
+  background: rgba(45, 45, 48, 0.95);
+  color: #f2f2f2;
+}

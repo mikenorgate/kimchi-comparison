@@ -1,0 +1,22 @@
+{
+  "id": "cc-sonnet5",
+  "title": "macOS Tahoe — Claude Sonnet 5",
+  "approach": "React + Vite + TypeScript desktop with Zustand state",
+  "workflow": "oneshot",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Approach",
+      "answer": "React + Vite + TypeScript desktop with Zustand state"
+    }
+  ],
+  "sourcePath": "CC-sonnet5",
+  "buildCommand": "npm run build",
+  "entryPoint": "index.html",
+  "agent": "claude",
+  "model": "Claude Sonnet 5",
+  "durationMs": 1345405,
+  "cost": "$8.78",
+  "thinkingLevel": "enabled",
+  "fermentId": null
+}

@@ -1,0 +1,57 @@
+.cc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 19000;
+}
+
+.cc-panel {
+  position: absolute;
+  top: 32px;
+  right: 12px;
+  width: 260px;
+  background: rgba(240, 240, 240, 0.85);
+  backdrop-filter: blur(30px) saturate(180%);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cc-row {
+  display: flex;
+  gap: 8px;
+}
+
+.cc-toggle {
+  flex: 1;
+  border: none;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 10px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cc-toggle.wide {
+  flex: none;
+  width: 100%;
+}
+
+.cc-toggle.on {
+  background: #0a84ff;
+  color: white;
+}
+
+.cc-slider-block label {
+  font-size: 11px;
+  color: #555;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cc-slider-block input {
+  width: 100%;
+}

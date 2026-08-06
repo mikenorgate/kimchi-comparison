@@ -1,0 +1,76 @@
+.spotlight-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 25000;
+  display: flex;
+  justify-content: center;
+  padding-top: 14vh;
+}
+
+.spotlight-box {
+  width: 560px;
+  max-height: 60vh;
+  background: rgba(245, 245, 245, 0.92);
+  backdrop-filter: blur(30px) saturate(180%);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.spotlight-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+}
+
+.spotlight-icon {
+  font-size: 20px;
+  opacity: 0.6;
+}
+
+.spotlight-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 22px;
+}
+
+.spotlight-results {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.spotlight-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.spotlight-result.active {
+  background: #0a84ff;
+  color: white;
+}
+.spotlight-result.active .spotlight-result-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.spotlight-result-icon {
+  font-size: 22px;
+}
+
+.spotlight-result-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.spotlight-result-sub {
+  font-size: 11px;
+  color: #888;
+}
