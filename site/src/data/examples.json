@@ -352,5 +352,27 @@
     "cost": "$17.38",
     "fermentId": "019fd7a2-5cd1-724c-9a3a-3354b77b43dc",
     "thinkingLevel": "max"
+  },
+  {
+    "id": "opencode-glm5-2",
+    "title": "macOS Tahoe — OpenCode GLM 5.2",
+    "approach": "Self-contained HTML/CSS/JS desktop",
+    "workflow": "oneshot",
+    "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "questionsAndAnswers": [
+      {
+        "question": "Approach",
+        "answer": "Self-contained HTML/CSS/JS desktop"
+      }
+    ],
+    "sourcePath": "opencode-glm5.2",
+    "buildCommand": "python3 -m http.server 8080",
+    "entryPoint": "index.html",
+    "agent": "opencode",
+    "model": "GLM 5.2",
+    "durationMs": 3238705,
+    "cost": "$4.15",
+    "fermentId": null,
+    "thinkingLevel": "default"
   }
 ]

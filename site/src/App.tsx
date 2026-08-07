@@ -19,6 +19,7 @@ function agentLabel(example: Example) {
   if (example.agent === 'kimchi') return 'Kimchi';
   if (example.agent === 'claude') return 'Claude Code';
   if (example.agent === 'codex') return 'Codex';
+  if (example.agent === 'opencode') return 'OpenCode';
   return 'Other';
 }
 

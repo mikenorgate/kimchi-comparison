@@ -229,6 +229,11 @@
   background: rgba(52, 211, 153, 0.12);
 }
 
+.agent--opencode {
+  color: #f9a8d4;
+  background: rgba(249, 168, 212, 0.12);
+}
+
 .agent--unknown {
   color: var(--agent-unknown);
   background: var(--agent-unknown-bg);

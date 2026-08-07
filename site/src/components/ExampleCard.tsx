@@ -10,6 +10,7 @@ function agentClass(agent: string) {
   if (agent === 'kimchi') return 'agent--kimchi';
   if (agent === 'claude') return 'agent--claude';
   if (agent === 'codex') return 'agent--codex';
+  if (agent === 'opencode') return 'agent--opencode';
   return 'agent--unknown';
 }
 

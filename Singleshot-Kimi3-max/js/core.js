@@ -72,11 +72,11 @@ function winRectFor(def){
 }
 function mruTouch(appId){ const i = MRU.indexOf(appId); if (i>=0) MRU.splice(i,1); MRU.unshift(appId); }
 
-function openApp(appId, payload){
+function openApp(appId, payload, opts){
   const def = Apps[appId];
   if (!def){ console.warn('no app', appId); return null; }
   pushRecent('apps', def.name, { app:appId });
-  if (def.single !== false){
+  if (!opts?.newWindow){
     const existing = WINS.find(w => w.appId === appId);
     if (existing){
       existing.hidden = false; HIDDEN_APPS.delete(appId);

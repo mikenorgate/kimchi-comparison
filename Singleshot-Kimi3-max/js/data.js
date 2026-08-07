@@ -263,7 +263,7 @@ function svgArt(seed, w=800, h=600){
     ['#0f2027','#203a43','#2c5364','#5f9ea0','#8fd3c7'],
   ];
   const night = rnd() < 0.22;
-  const pal = night ? ['#0b1026','#1b2340','#41295a','#2F0743','#0b1026'] : pick(rnd, pal);
+  const pal = night ? ['#0b1026','#1b2340','#41295a','#2F0743','#0b1026'] : pick(rnd, palettes);
   const sunX = 15 + rnd()*70, sunY = 12 + rnd()*30, sunR = 8 + rnd()*7;
   const peaks = (base, amp, color, op) => {
     let pts = `0,${base}`;
