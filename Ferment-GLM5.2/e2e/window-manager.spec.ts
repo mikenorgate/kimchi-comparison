@@ -7,15 +7,15 @@ import { test, expect } from '@playwright/test'
 test.describe('Window manager', () => {
   test('opens a window from the Dock', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     await expect(page.getByTestId('window')).toBeVisible()
     await expect(page.getByTestId('window-chrome')).toBeVisible()
-    await expect(page.getByTestId('test-app-content')).toBeVisible()
+    await expect(page.getByTestId('calculator-content')).toBeVisible()
   })
 
   test('close button removes the window', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     const win = page.getByTestId('window')
     await expect(win).toBeVisible()
     await page.getByTestId('traffic-close').click()
@@ -24,7 +24,7 @@ test.describe('Window manager', () => {
 
   test('minimize hides the window', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     const win = page.getByTestId('window')
     await expect(win).toBeVisible()
     await page.getByTestId('traffic-minimize').click()
@@ -33,7 +33,7 @@ test.describe('Window manager', () => {
 
   test('zoom toggles the window to fill the screen and back', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     const win = page.getByTestId('window')
     const before = await win.evaluate((el) => el.getBoundingClientRect().width)
     await page.getByTestId('traffic-maximize').click()
@@ -48,7 +48,7 @@ test.describe('Window manager', () => {
 
   test('dragging the titlebar moves the window', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     const chrome = page.getByTestId('window-chrome')
     const box = await chrome.boundingBox()
     expect(box).not.toBeNull()
@@ -76,7 +76,7 @@ test.describe('Window manager', () => {
 
   test('resizing via the SE handle grows the window', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
+    await page.getByTestId('dock-icon-calculator').click()
     const handle = page.getByTestId('resize-se')
     const box = await handle.boundingBox()
     expect(box).not.toBeNull()
@@ -103,8 +103,9 @@ test.describe('Window manager', () => {
 
   test('clicking a background window focuses it and raises z-order', async ({ page }) => {
     await page.goto('/')
-    await page.getByTestId('dock-icon-test').click()
-    await page.getByTestId('dock-icon-test').click()
+    // Single-instance Dock: open two *different* apps so two windows exist.
+    await page.getByTestId('dock-icon-calculator').click()
+    await page.getByTestId('dock-icon-notes').click()
     const wins = page.getByTestId('window')
     await expect(wins).toHaveCount(2)
 

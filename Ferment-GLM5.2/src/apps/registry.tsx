@@ -1,27 +1,103 @@
-import { AppWindow } from 'lucide-react'
-import { registerApp, type AppDefinition } from '../lib/registry'
+import { Calendar as CalendarIcon, Calculator as CalcIcon, CheckSquare, Cloud, Compass, Folder, Image as ImageIcon, Mail as MailIcon, MessageSquare, Settings as SettingsIcon, StickyNote, Terminal as TerminalIcon } from 'lucide-react'
+import { registerApp } from '../lib/registry'
+import { Finder } from './Finder'
+import { Terminal } from './Terminal'
+import { Calculator } from './Calculator'
+import { Notes } from './Notes'
+import { Settings } from './Settings'
+import { Mail } from './Mail'
+import { Messages } from './Messages'
+import { Calendar } from './Calendar'
+import { Reminders } from './Reminders'
+import { Safari } from './Safari'
+import { Photos } from './Photos'
+import { Weather } from './Weather'
 
-/**
- * Step-3 stub app so the window manager has something to mount and the Dock
- * has an icon to launch. Step 5 replaces this with the 12 real apps.
- */
-function TestAppContent() {
-  return (
-    <div className="p-6 text-[13px]" data-testid="test-app-content">
-      <h1 className="text-lg font-semibold">Test App</h1>
-      <p className="mt-2 text-black/60">
-        A stub application mounted inside a window. Real apps arrive in step 5.
-      </p>
-    </div>
-  )
-}
+const apps = [
+  {
+    appId: 'finder',
+    title: 'Finder',
+    icon: <Folder size={28} />,
+    defaultSize: { w: 720, h: 480 },
+    render: () => <Finder />,
+  },
+  {
+    appId: 'calculator',
+    title: 'Calculator',
+    icon: <CalcIcon size={28} />,
+    defaultSize: { w: 320, h: 480 },
+    render: () => <Calculator />,
+  },
+  {
+    appId: 'notes',
+    title: 'Notes',
+    icon: <StickyNote size={28} />,
+    defaultSize: { w: 640, h: 460 },
+    render: () => <Notes />,
+  },
+  {
+    appId: 'terminal',
+    title: 'Terminal',
+    icon: <TerminalIcon size={28} />,
+    defaultSize: { w: 640, h: 400 },
+    render: () => <Terminal />,
+  },
+  {
+    appId: 'mail',
+    title: 'Mail',
+    icon: <MailIcon size={28} />,
+    defaultSize: { w: 800, h: 520 },
+    render: () => <Mail />,
+  },
+  {
+    appId: 'messages',
+    title: 'Messages',
+    icon: <MessageSquare size={28} />,
+    defaultSize: { w: 640, h: 480 },
+    render: () => <Messages />,
+  },
+  {
+    appId: 'calendar',
+    title: 'Calendar',
+    icon: <CalendarIcon size={28} />,
+    defaultSize: { w: 720, h: 500 },
+    render: () => <Calendar />,
+  },
+  {
+    appId: 'weather',
+    title: 'Weather',
+    icon: <Cloud size={28} />,
+    defaultSize: { w: 640, h: 520 },
+    render: () => <Weather />,
+  },
+  {
+    appId: 'photos',
+    title: 'Photos',
+    icon: <ImageIcon size={28} />,
+    defaultSize: { w: 720, h: 520 },
+    render: () => <Photos />,
+  },
+  {
+    appId: 'safari',
+    title: 'Safari',
+    icon: <Compass size={28} />,
+    defaultSize: { w: 800, h: 560 },
+    render: () => <Safari />,
+  },
+  {
+    appId: 'reminders',
+    title: 'Reminders',
+    icon: <CheckSquare size={28} />,
+    defaultSize: { w: 560, h: 440 },
+    render: () => <Reminders />,
+  },
+  {
+    appId: 'settings',
+    title: 'System Settings',
+    icon: <SettingsIcon size={28} />,
+    defaultSize: { w: 640, h: 480 },
+    render: () => <Settings />,
+  },
+]
 
-const testApp: AppDefinition = {
-  appId: 'test',
-  title: 'Test App',
-  icon: <AppWindow size={28} />,
-  defaultSize: { w: 560, h: 400 },
-  render: () => <TestAppContent />,
-}
-
-registerApp(testApp)
+apps.forEach(registerApp)

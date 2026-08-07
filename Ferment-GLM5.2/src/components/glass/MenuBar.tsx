@@ -29,7 +29,7 @@ export function MenuBar({ children, className, style, testId }: MenuBarProps) {
   return (
     <header
       className={cn(
-        'absolute inset-x-0 top-0 z-50 flex h-7 items-center px-3',
+        'absolute inset-x-0 top-0 z-[1000000] flex h-7 items-center px-3',
         'text-[13px] text-white/90',
         className,
       )}

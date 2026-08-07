@@ -71,3 +71,19 @@ body,
   -moz-osx-font-smoothing: grayscale;
   user-select: none;
 }
+
+/*
+ * Appearance wiring (step 6):
+ *  - html[data-theme] marks the resolved light/dark; components can key off it.
+ *  - --accent is set inline by App from the theme store's accent color.
+ *  - 'clear' icon style desaturates Dock icons (monochrome look).
+ */
+html[data-icon-style="clear"] .dock-icon {
+  filter: grayscale(1);
+  opacity: 0.9;
+}
+
+/* The accent variable defaults to blue until the theme effect runs. */
+:root {
+  --accent: var(--color-accent-blue);
+}

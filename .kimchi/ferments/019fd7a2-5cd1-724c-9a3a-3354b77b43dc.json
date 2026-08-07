@@ -2,7 +2,7 @@
   "id": "019fd7a2-5cd1-724c-9a3a-3354b77b43dc",
   "name": "macOS Tahoe Web Replica",
   "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
-  "status": "running",
+  "status": "complete",
   "worktree": {
     "path": "/Users/mike/tmp",
     "branch": "main",
@@ -43,7 +43,7 @@
       ],
       "budget": "250k tokens",
       "parallel": false,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -112,41 +112,74 @@
           "id": "step-4",
           "index": 4,
           "description": "Build desktop + wallpaper, the fully transparent menu bar with Apple menu and per-app menus reflecting the focused app, and the Dock with app icons, running indicators, and hover magnification.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test menubar",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-06T15:44:25.354Z"
+          "startedAt": "2026-08-06T15:44:25.354Z",
+          "completedAt": "2026-08-06T15:55:37.368Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T15:55:37.368Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Build Spotlight (Cmd+Space, app/action filtering, Enter launches) and Control Center (Wi-Fi/Bluetooth toggles, Brightness/Volume sliders mutating a system store), plus the app-registry/launcher contract.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test spotlight control-center",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T15:56:22.491Z",
+          "completedAt": "2026-08-06T16:01:49.197Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:01:49.197Z"
+          }
         },
         {
           "id": "step-6",
           "index": 6,
           "description": "Implement the theming store (Light/Dark/Auto, accent color, icon style tinted/clear, wallpaper) and a usePersistentState hook over localStorage; wire appearance to the shell and verify it persists across reload.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test appearance",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:03:48.723Z",
+          "completedAt": "2026-08-06T16:11:17.915Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:11:17.915Z"
+          }
         }
       ],
-      "startedAt": "2026-08-06T15:21:21.937Z"
+      "startedAt": "2026-08-06T15:21:21.937Z",
+      "completedAt": "2026-08-06T16:13:12.945Z",
+      "summary": "Phase 1 (Foundation & Desktop Shell) complete. The Tahoe desktop shell is fully scaffolded and the shell layer is functional end-to-end: (1) Vite 8 + React 19 + TS 6 + Tailwind v4 (CSS-first @theme tokens) project with oxlint/Vitest(jsdom)/Playwright(chromium) tooling all green. (2) Liquid Glass design system — GlassPanel/Dock/MenuBar components with backdrop-blur+saturate translucency, specular top-edge highlights, soft shadows; MenuBar is intentionally fully transparent per Tahoe. (3) Window manager — Zustand store (open/close/focus/minimize/restore/toggleMaximize/setBounds, monotonic zCounter, topmost-refocus on close/minimize) + WindowChrome (traffic-light controls, drag, double-click zoom) + Window (8-edge resize, app mounting via registry). (4) Desktop shell — Wallpaper (4 bundled gradients), transparent MenuBar with Apple menu + per-app menus reflecting the focused app (hover-switch, click-toggle, click-away/Esc close, action→window-manager resolution), Dock with framer-motion fisheye magnification + running indicators. (5) Spotlight (Cmd+Space, app filtering, Arrow/Enter/click launch, Esc/click-away close) + Control Center (Wi-Fi/Bluetooth/AirDrop/Focus toggles + Brightness/Volume sliders mutating a Zustand system store) + StatusBar (Spotlight/CC triggers + live clock). (6) Theming store (Light/Dark/Auto via matchMedia, 8 accent colors, tinted/clear icon style, wallpaper) persisted to localStorage via a generic usePersistentState hook, applied live to <html> (data-theme/data-appearance/data-accent/data-icon-style + --accent var) and surviving page.reload(). (7) App-registry interface (registerApp/getApp/listApps) with 4 stub apps. Verification: lint 0 errors, build ✓, 15/15 unit tests, 43/43 e2e across 6 spec files (shell smoke, window-manager, menubar, spotlight, control-center, appearance). Stub apps (Finder/Calculator/Notes/Test) and the System Settings appearance UI are intentionally deferred to later phases — the registry + theme-store contracts they need are complete.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All phase deliverables verified independently with real runtime evidence: lint 0 errors, build green, 15/15 unit tests pass, 43/43 Playwright e2e tests pass across 6 spec files. Source review confirms every phase-goal component is wired into the production App.tsx path — Liquid Glass design system (GlassPanel/Dock/MenuBar with backdrop-blur+saturate+specular highlights, MenuBar intentionally transparent), window manager Zustand store (open/close/focus/minimize/restore/toggleMaximize/setBounds + monotonic zCounter + topmost refocus), transparent menu bar with Apple + per-app menus reflecting focused app (hover-switch/click-toggle/click-away/Esc/action resolution), Dock with framer-motion fisheye magnification + running indicators, Spotlight (Cmd+Space/filter/Arrow/Enter/click/Esc/no-results",
+        "gradedAt": "2026-08-06T16:13:12.943Z"
+      }
     },
     {
       "id": "phase-2",
@@ -160,69 +193,122 @@
       ],
       "budget": "200k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Implement the virtual filesystem store: tree of folders/files, CRUD, path resolution, seed data, persistence via usePersistentState.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx vitest run src/store/vfs.test.ts",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:15:01.720Z",
+          "completedAt": "2026-08-06T16:19:48.076Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:19:48.076Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Build Finder: sidebar, browser view, back/forward navigation, open file dispatches to the owning app, create/delete/rename.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test finder",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:21:57.605Z",
+          "completedAt": "2026-08-06T16:30:01.270Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:30:01.270Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Build Terminal: command parser over the VFS (ls, cd, pwd, cat, mkdir, touch, echo, clear, help), prompt, command history.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test terminal",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:33:39.964Z",
+          "completedAt": "2026-08-06T16:36:28.144Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:36:28.144Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Build Calculator: basic arithmetic with correct chaining/precedence, keyboard input, Tahoe-styled button grid.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test calculator",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:38:35.283Z",
+          "completedAt": "2026-08-06T16:41:28.519Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:41:28.519Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Build Notes: note list + editor, create/edit/delete/search, autosave to localStorage.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test notes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:45:40.781Z",
+          "completedAt": "2026-08-06T16:48:19.822Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:48:19.822Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-06T16:14:52.560Z",
+      "completedAt": "2026-08-06T16:50:49.504Z",
+      "summary": "Phase 2 (Virtual FS + Core Utility Apps) complete. Built the shared virtual filesystem and four foundational utility apps, all running inside the Phase 1 shell and persisting via localStorage.\n\nDeliverables (5 steps):\n1. VFS store (src/store/vfs.ts) — flat-tree model keyed by id (root='root'), CRUD (createNode/deleteNode/renameNode/moveNode/updateContent), path resolution (resolvePath/pathOf), setCwd, reseed, persistence via readPersistent/writePersistent. 29 unit tests (vfs.test.ts) covering seed/path/create/delete/rename/move/content/cwd/helpers/persistence.\n2. Finder (src/apps/Finder.tsx + src/store/intent.ts) — sidebar favorites (Desktop/Documents/Downloads/Pictures/Projects), browser view with back/forward navigation history, double-click folder navigates / double-click file dispatches to owning app (text/markdown→Notes) via a cross-app intent store, New Folder + Delete + Rename (inline) mutating the VFS. 10 e2e (finder.spec.ts).\n3. Terminal (src/apps/Terminal.tsx) — shell over the VFS: ls/cd/pwd/cat/mkdir/touch/echo(>redirect)/clear/help, live prompt from cwd, command history (Up/Down), per-instance cwd. 15 e2e (terminal.spec.ts).\n4. Calculator (src/lib/calc-engine.ts + src/apps/Calculator.tsx) — shunting-yard expression engine (no eval) with correct precedence/chaining/parens/unary-minus, Tahoe button grid, keyboard input. 14 unit tests (calc-engine.test.ts) + 13 e2e (calculator.spec.ts).\n5. Notes (src/apps/Notes.tsx) — note list + editor with autosave to localStorage via usePersistentState, search filter, create/edit/delete, and cross-app file-open consumption (Finder→Notes import). 7 e2e (notes.spec.ts).\n\nFinal verification: lint 0 errors, build ✓, 58/58 unit tests (5 files), 88/88 e2e tests (10 spec files) across finder/terminal/calculator/notes/shell/window-manager/menubar/spotlight/control-center/appearance. No regressions. test-results cleaned.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All five deliverables verified with real runtime execution: VFS store (29 unit tests), Finder (10 e2e incl. back/forward + Finder→Notes dispatch), Terminal (15 e2e incl. history + persistence reload), Calculator (14 unit shunting-yard + 13 e2e), Notes (7 e2e incl. autosave reload + cross-app import). Independently re-ran `npm run lint` (0 errors, 1 documented fast-refresh warning), `npm run build` (2091 modules, success), `npm run test` (58/58), and `npx playwright test` (88/88) — all pass. Per-spec test counts match the claimed breakdown exactly. Apps are wired into the production registry (src/apps/registry.tsx) with real render functions, and cross-app dispatch via src/store/intent.ts is verified end-to-end by the notes.spec.ts 'opening a text file from Finder imports its content as a n",
+        "gradedAt": "2026-08-06T16:50:49.502Z"
+      }
     },
     {
       "id": "phase-3",
@@ -236,69 +322,122 @@
       ],
       "budget": "200k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Build System Settings: Appearance (Light/Dark/Auto, accent color, icon style tinted/clear), Wallpaper picker, Brightness, About — all wired to the theme store and persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test settings",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:53:02.180Z",
+          "completedAt": "2026-08-06T16:55:54.286Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T16:55:54.286Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Build Mail: inbox + message view + compose; send moves to Sent; seed messages; persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test mail",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T16:57:52.177Z",
+          "completedAt": "2026-08-06T17:00:05.563Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:00:05.563Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Build Messages: conversation list + thread view; send + simulated auto-reply; persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test messages",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:01:57.885Z",
+          "completedAt": "2026-08-06T17:04:01.328Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:04:01.328Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Build Calendar: month view with today highlighted, add/delete events, persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test calendar",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:05:39.838Z",
+          "completedAt": "2026-08-06T17:09:46.894Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:09:46.894Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Build Reminders: lists + tasks, add/complete/delete, persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test reminders",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:12:24.555Z",
+          "completedAt": "2026-08-06T17:14:36.032Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:14:36.032Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-06T16:52:53.289Z",
+      "completedAt": "2026-08-06T17:17:00.079Z",
+      "summary": "Phase 3 (Productivity Suite + System Settings) complete. Built Mail, Messages, Calendar, Reminders, and a full System Settings app, all wired into the shared theme/system stores and persisting via localStorage.\n\nDeliverables (5 steps):\n1. System Settings (src/apps/Settings.tsx) — 4-pane app (Appearance/Wallpaper/Displays/About) wired to useThemeStore + useSystemStore. Appearance pane: Light/Dark/Auto + 8 accent swatches + icon style tinted/clear. Wallpaper pane: gradient thumbnails. Displays pane: brightness slider. About pane: system info. Every change applies live + persists. 10 e2e (settings.spec.ts).\n2. Mail (src/apps/Mail.tsx) — 3-pane client: mailbox sidebar (Inbox+Sent, unread badge), message list, reading pane. Compose→Send moves to Sent. Delete, mark-read, seed messages. 8 e2e (mail.spec.ts).\n3. Messages (src/apps/Messages.tsx) — conversation list + thread view, send + simulated auto-reply (800ms delay, random canned response), Enter-to-send, auto-scroll. 6 e2e (messages.spec.ts).\n4. Calendar (src/apps/Calendar.tsx) — month grid (6-week/42-cell), today highlighted (accent circle), prev/next/today nav, add/delete events (title+time), event pills on cells. 7 e2e (calendar.spec.ts).\n5. Reminders (src/apps/Reminders.tsx) — lists sidebar + task list, add/complete/delete tasks + lists, remaining-count badge. 8 e2e (reminders.spec.ts).\n\nFinal verification: lint 0 errors, build ✓, 58/58 unit tests (5 files), 127/127 e2e tests (13 spec files). No regressions. test-results cleaned.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All five apps (Settings, Mail, Messages, Calendar, Reminders) are fully implemented in src/apps/, wired into the production registry (registry.tsx imports and registers all five with Dock icons), and verified by 39/39 passing e2e tests I re-ran independently (settings 10, mail 8, messages 6, calendar 7, reminders 8). I confirmed 8 accent colors in ACCENT_HEX, the 4-pane Settings wired to useThemeStore+useSystemStore, Mail's compose→Sent flow, Messages' 800ms auto-reply + Enter-to-send, Calendar's 42-cell grid with today highlight, and Reminders' lists/tasks/complete/delete + count badge. Lint is 0 errors, build succeeds, and 58/58 unit tests pass. Every persistence claim is backed by a page.reload() e2e assertion that I confirmed passes.",
+        "gradedAt": "2026-08-06T17:17:00.077Z"
+      }
     },
     {
       "id": "phase-4",
@@ -312,75 +451,128 @@
       ],
       "budget": "150k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Build Safari: favorites start page, address bar loads URL into an iframe with graceful embedding-block fallback, tabs, bookmarks add/persist.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test safari",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:17:38.096Z",
+          "completedAt": "2026-08-06T17:21:41.711Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:21:41.711Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Build Photos: gallery grid of bundled sample images, detail view, favorite toggle, persisted favorites.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test photos",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:22:30.315Z",
+          "completedAt": "2026-08-06T17:24:29.303Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:24:29.303Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Build Weather: city list, current conditions + forecast from a bundled mock dataset, favorites persisted.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test weather",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:25:21.237Z",
+          "completedAt": "2026-08-06T17:28:06.995Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:28:06.995Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Cross-app integration & polish: complete the app-registry/Dock/Spotlight/menu-bar coverage for all 12 apps, ensure consistent window interactions and Liquid Glass styling, run an integration smoke test.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test integration",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:29:00.162Z",
+          "completedAt": "2026-08-06T17:37:05.321Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:37:05.321Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Run the persistence-reload test across all apps and the final tooling gate.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npx playwright test persistence && npm run lint && npm run build && npm run test",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-06T17:38:14.022Z",
+          "completedAt": "2026-08-06T17:41:24.091Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-06T17:41:24.091Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-06T17:17:29.290Z",
+      "completedAt": "2026-08-06T17:44:04.711Z",
+      "summary": "Phase 4 (Media/Info Apps + Integration & Polish) complete. Built Safari, Photos, and Weather; completed cross-app integration for all 12 apps; ran the persistence-reload test suite; passed the final tooling gate.\n\nDeliverables (5 steps):\n1. Safari (src/apps/Safari.tsx) — tab bar (new/close, last-tab reopens start page), address bar with URL normalization + reload + add-bookmark, favorites start page (6 tiles), iframe view with graceful embedding-block fallback (2.5s load timeout → fallback with 'Open in new tab'), bookmarks bar with duplicate-prevention. 9 e2e (safari.spec.ts).\n2. Photos (src/apps/Photos.tsx) — two-pane: sidebar (Library/Favorites + count) + grid (12 bundled CSS-gradient photos, hover title, favorite heart badge) / detail view (large preview + favorite toggle). Idempotent toggleFavorite, empty-favorites placeholder. 8 e2e (photos.spec.ts).\n3. Weather (src/apps/Weather.tsx) — two-pane: sidebar (search filter + city list, favorites pinned to top via useMemo) + detail (current conditions: temp/condition/high-low/humidity/wind + 5-day forecast). 6 bundled mock cities, 5 condition types with lucide icons. 8 e2e (weather.spec.ts).\n4. Cross-app integration — removed the leftover 'test' stub app + Placeholder from registry.tsx (now exactly 12 real apps); added standardMenus() helper + 9 new menu configs to menus.ts so every focused app reflects its own app-name/File/Edit/Window/Help menus (not Finder fallback); e2e/integration.spec.ts (19 tests: all-apps Dock launchers, per-app launch+content, menu-bar app-name switching, Spotlight listing+launch, multi-window, close-window); migrated window-manager.spec.ts from test→calculator.\n5. Persistence + final gate — e2e/persistence.spec.ts (12 scenarios: Notes, Calendar, Reminders tasks+lists, Mail, Messages, Safari, Photos, Weather, VFS, Settings appearance+accent — each mutates→reload→re-asserts); final tooling gate all green.\n\nFinal verification: lint 0 warnings + 0 errors (66 files), build ✓ (419.88 kB JS / 33.70 kB CSS), 58/58 unit tests (5 files), 183/183 e2e tests (19 spec files). No regressions. test-results cleaned.",
+      "grade": {
+        "grade": "A",
+        "rationale": "Independently reproduced the full tooling gate: oxlint 0/0 (66 files), build 419.88 kB JS/33.70 kB CSS, 58/58 vitest, 183/183 Playwright e2e (21.6s) — all matching the agent's claims exactly. Safari, Photos, and Weather implement every stated feature (verified by reading src/apps/*.tsx), the registry has exactly 12 real apps with the 'test' stub removed, all 12 apps have menu configs in src/lib/menus.ts, and persistence.spec.ts covers 12 real page.reload() scenarios across all apps. Every gate verdict was substantiated with concrete real-execution evidence.",
+        "gradedAt": "2026-08-06T17:44:04.700Z"
+      }
     }
   ],
   "decisions": [],
   "memories": [],
   "createdAt": "2026-08-06T15:12:49.873Z",
-  "updatedAt": "2026-08-06T15:44:25.354Z",
+  "updatedAt": "2026-08-06T17:47:12.020Z",
   "goal": "Recreate the macOS Tahoe (macOS 26) desktop — Liquid Glass shell, fully transparent menu bar, Dock, Control Center, Spotlight, window manager, and theming — plus 12 functional-core apps (Finder, Safari, Notes, Calculator, Terminal, System Settings, Mail, Messages, Calendar, Reminders, Photos, Weather) as a self-contained React + Vite + TypeScript + Tailwind web app with localStorage persistence.",
   "successCriteria": [
     "Dev server & shell: `npm run dev` starts clean; desktop renders wallpaper + transparent menu bar + Dock; a Playwright smoke test asserts the shell elements are present.",
@@ -414,6 +606,10 @@
     "Maintain a single clean app-registry interface so each app registers its launcher/Dock/menu entries without conflicting with others.",
     "Apple SF Symbols cannot be bundled (licensing); use lucide-react + custom SVG stand-ins for iconography."
   ],
-  "lastActiveAt": "2026-08-06T15:21:21.937Z",
-  "activePhaseId": "phase-1"
+  "lastActiveAt": "2026-08-06T17:17:29.290Z",
+  "grade": {
+    "grade": "A",
+    "rationale": "All 20 success criteria independently verified with real execution: `npm run lint` (0/0 on 66 files), `npm run build` (419.88 kB JS / 33.70 kB CSS), `npm run test` (58/58 unit), and `npx playwright test` (183/183 e2e across 19 specs) all exit 0 in this environment. The shell smoke test asserts desktop/menu-bar/dock; `glass/MenuBar.tsx` + `glass.test.tsx` confirm the fully-transparent Tahoe menu bar (`background: 'transparent'`, no backdrop-filter); registry.tsx wires exactly 12 real apps with no placeholder; and `persistence.spec.ts` exercises 12 mutate→page.reload()→re-assert scenarios covering every persisted state surface. No security, operational, or maintainability concerns for this self-contained localStorage frontend.",
+    "gradedAt": "2026-08-06T17:47:12.011Z"
+  }
 }

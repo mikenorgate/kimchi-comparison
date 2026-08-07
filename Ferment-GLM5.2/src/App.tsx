@@ -1,46 +1,80 @@
 import './apps/registry'
-import { useMemo } from 'react'
-import { MenuBar, Dock } from './components/glass'
+import { useEffect, useState } from 'react'
+import { MenuBar } from './components/glass'
+import { MenuBarMenus } from './components/menubar/MenuBarMenus'
+import { StatusBar } from './components/menubar/StatusBar'
+import { DockBar } from './components/dock/DockBar'
+import { Wallpaper } from './components/desktop/Wallpaper'
 import { Window } from './components/window/Window'
+import { Spotlight } from './components/spotlight/Spotlight'
+import { ControlCenter } from './components/controlcenter/ControlCenter'
 import { useWindowStore } from './store/window-manager'
-import { listApps } from './lib/registry'
+import {
+  accentHex,
+  useResolvedAppearance,
+  useThemeStore,
+} from './store/theme'
 
 /**
  * Tahoe desktop root.
  *
- * Composes the wallpaper, the transparent menu bar, the Liquid Glass Dock
- * (whose icons launch registered apps), and the window layer. Step 4 adds
- * menus/Spotlight/Control Center on top of this shell.
+ * Composes the wallpaper, the transparent menu bar (Apple + per-app menus on
+ * the left; Spotlight/Control Center triggers + clock on the right), the
+ * window layer, the Liquid Glass Dock, plus the Spotlight and Control
+ * Center overlays. Cmd+Space toggles Spotlight. The theme store drives
+ * appearance/accent/icon-style/wallpaper, applied live to <html> and
+ * persisted to localStorage.
  */
 function App() {
   const windows = useWindowStore((s) => s.windows)
-  const open = useWindowStore((s) => s.open)
-  const apps = useMemo(() => listApps(), [])
+  const wallpaper = useThemeStore((s) => s.wallpaper)
+  const appearance = useThemeStore((s) => s.appearance)
+  const accent = useThemeStore((s) => s.accent)
+  const iconStyle = useThemeStore((s) => s.iconStyle)
+  const resolved = useResolvedAppearance()
+  const [spotlightOpen, setSpotlightOpen] = useState(false)
+  const [controlCenterOpen, setControlCenterOpen] = useState(false)
 
-  const launch = (appId: string) => {
-    const app = apps.find((a) => a.appId === appId)
-    if (!app) return
-    const size = app.defaultSize ?? { w: 560, h: 400 }
-    const offset = windows.length * 28
-    open({
-      appId,
-      title: app.title,
-      bounds: { x: 120 + offset, y: 70 + offset, w: size.w, h: size.h },
-    })
-  }
+  // Apply appearance live to the document root so the whole shell (and any
+  // CSS targeting html[data-theme]) reacts. data-appearance preserves the raw
+  // 'auto' choice; data-theme is the resolved light/dark.
+  useEffect(() => {
+    const root = document.documentElement
+    root.dataset.theme = resolved
+    root.dataset.appearance = appearance
+    root.dataset.accent = accent
+    root.dataset.iconStyle = iconStyle
+    root.style.setProperty('--accent', accentHex(accent))
+  }, [resolved, appearance, accent, iconStyle])
+
+  // Cmd+Space (or Ctrl+Space) toggles Spotlight.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && (e.code === 'Space' || e.key === ' ')) {
+        e.preventDefault()
+        setSpotlightOpen((v) => !v)
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     <div
       className="relative h-full w-full overflow-hidden"
-      style={{
-        background:
-          'linear-gradient(135deg, #4a90d9 0%, #7bb8e8 35%, #d48fb9 70%, #f5a86b 100%)',
-      }}
       data-testid="desktop"
     >
+      <Wallpaper name={wallpaper} />
+
       <MenuBar testId="menu-bar">
-        <span className="font-semibold"></span>
-        <span className="ml-1 opacity-90">Finder</span>
+        <MenuBarMenus testId="menu-bar-menus" />
+        <div className="flex-1" />
+        <StatusBar
+          onToggleSpotlight={() => setSpotlightOpen((v) => !v)}
+          onToggleControlCenter={() => setControlCenterOpen((v) => !v)}
+          spotlightOpen={spotlightOpen}
+          controlCenterOpen={controlCenterOpen}
+        />
       </MenuBar>
 
       {/* Window layer */}
@@ -48,26 +82,13 @@ function App() {
         <Window key={w.id} win={w} />
       ))}
 
-      {/* Dock — Liquid Glass capsule with registered app launchers */}
-      <div
-        className="absolute bottom-2 left-1/2 z-[100000] -translate-x-1/2"
-        data-testid="dock-wrapper"
-      >
-        <Dock testId="dock">
-          {apps.map((app) => (
-            <button
-              key={app.appId}
-              type="button"
-              className="grid h-12 w-12 place-items-center rounded-xl text-black/80 transition hover:scale-110 hover:bg-black/5"
-              data-testid={`dock-icon-${app.appId}`}
-              aria-label={`Launch ${app.title}`}
-              onClick={() => launch(app.appId)}
-            >
-              {app.icon}
-            </button>
-          ))}
-        </Dock>
-      </div>
+      <DockBar />
+
+      <Spotlight open={spotlightOpen} onClose={() => setSpotlightOpen(false)} />
+      <ControlCenter
+        open={controlCenterOpen}
+        onClose={() => setControlCenterOpen(false)}
+      />
     </div>
   )
 }

@@ -202,11 +202,15 @@ function fsduplicate(p){
   parent.children[newName] = fsdeep(parent.children[name]);
   return joinPath(parentPath(p), newName);
 }
+let TRASH_META = load('tahoe_trash_meta', {});
 function fsMoveToTrash(p){
   const node = fsn(p);
   if (!node) return false;
-  fsadd(TRASH, fsUniqueName(TRASH, baseName(p)), node);
+  const trashName = fsUniqueName(TRASH, baseName(p));
+  fsadd(TRASH, trashName, node);
   fsrm(p);
+  TRASH_META[trashName] = p;
+  save('tahoe_trash_meta', TRASH_META);
   return true;
 }
 function fsFind(q, start='/', out=[], limit=40){

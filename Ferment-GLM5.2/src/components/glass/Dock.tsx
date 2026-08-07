@@ -52,6 +52,7 @@ export function Dock({
       style={dockStyle}
       data-testid={testId}
       data-dock="true"
+      data-variant={variant}
     >
       {children}
     </div>
