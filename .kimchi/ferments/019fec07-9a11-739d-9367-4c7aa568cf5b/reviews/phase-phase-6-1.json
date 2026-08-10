@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019fec07-9a11-739d-9367-4c7aa568cf5b",
+  "phaseId": "phase-6",
+  "phaseName": "Media & Web Apps",
+  "attempt": 1,
+  "timestamp": "2026-08-10T16:50:15.743Z",
+  "goal": "Implement Safari, Photos, Music, and Games windows.",
+  "summary": "All four Media & Web apps implemented, tested, lint-clean, and build-verified.",
+  "stepSummaries": "  1. Safari: toolbar, address bar, tab bar, and a placeholder content area (no real browsing). [verified]\n  2. Photos: grid of sample images and a lightbox/detail viewer. [verified]\n  3. Music: library list and a now-playing panel with mock tracks. [verified]\n  4. Games: game library grid with mock titles and cover placeholders. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": " ...9febd9-0398-711f-9df4-b550985eb71a.events.jsonl |   53 +\n .../019febd9-0398-711f-9df4-b550985eb71a.json      |  334 ++++-\n .../reviews/phase-phase-3-1.json                   |   42 +\n .../reviews/phase-phase-4-1.json                   |   42 +\n .../reviews/phase-phase-4-2.json                   |   42 +\n .../reviews/phase-phase-5-1.json                   |   42 +\n .../reviews/phase-phase-6-1.json                   |   42 +\n .../reviews/phase-phase-7-1.json                   |   42 +\n .../reviews/phase-phase-7-2.json                   |   42 +\n .../reviews/phase-phase-7-3.json                   |   42 +\n .../runtime.json                                   |   31 +-\n ...9febf5-1d22-70c5-8520-61a6b165bdda.events.jsonl |   16 +\n .../019febf5-1d22-70c5-8520-61a6b165bdda.json      |  105 +-\n .../reviews/phase-phase-1-1.json                   |   42 +\n .../runtime.json                                   |   21 +-\n ...9fec07-9a11-739d-9367-4c7aa568cf5b.events.jsonl |   56 +\n .../019fec07-9a11-739d-9367-4c7aa568cf5b.json      |  302 +++-\n .../reviews/phase-phase-1-1.json                   |   41 +\n .../reviews/phase-phase-2-1.json                   |   41 +\n .../reviews/phase-phase-2-2.json                   |   41 +\n[... 104 more files ...]\n 123 files changed, 14406 insertions(+), 313 deletions(-)\n?? src/components/apps/CalculatorApp.jsx\n?? src/components/apps/CalendarApp.jsx\n?? src/components/apps/GamesApp.jsx\n?? src/components/apps/MailApp.jsx\n?? src/components/apps/MusicApp.jsx\n?? src/components/apps/SettingsApp.jsx\n?? src/components/apps/__tests__/CalculatorApp.test.jsx\n?? src/components/apps/__tests__/CalendarApp.test.jsx\n?? src/components/apps/__tests__/GamesApp.test.jsx\n?? src/components/apps/__tests__/MailApp.test.jsx\n?? src/components/apps/__tests__/MusicApp.test.jsx\n?? src/components/apps/__tests__/PhoneApp.test.jsx\n?? src/components/apps/__tests__/SettingsApp.test.jsx",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "Each step verified with real tests; final orchestrator run confirms 282/282 tests pass, lint clean, build success.",
+      "evidence": "npx vitest run 282/282; npm run lint clean; npm run build success"
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "Phase goal met: Safari, Photos, Music, and Games windows exist, are wired into WindowManager, and have passing tests.",
+      "evidence": "src/components/apps/{Safari,Photos,Music,Games}App.jsx + tests wired in WindowManager.jsx"
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "No deferred work in this phase.",
+      "evidence": "n/a"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

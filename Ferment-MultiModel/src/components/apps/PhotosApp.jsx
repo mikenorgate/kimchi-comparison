@@ -124,7 +124,6 @@ function PhotosApp() {
       <div
         data-testid="photos-grid"
         data-size={sizeId}
-        role="grid"
         aria-label="Photos"
         className={
           `flex-1 overflow-auto grid auto-rows-fr ` +
@@ -147,7 +146,6 @@ function PhotosApp() {
               <button
                 key={photo.id}
                 type="button"
-                role="gridcell"
                 data-testid="photos-thumbnail"
                 data-photo-id={photo.id}
                 data-caption={photo.caption}
@@ -192,12 +190,17 @@ function PhotosApp() {
           role="dialog"
           aria-modal="true"
           aria-label={`Photo: ${selectedPhoto.caption}`}
-          className="absolute inset-0 z-10 flex items-center justify-center bg-black/70"
-          onClick={handleClose}
+          className="absolute inset-0 z-10 flex items-center justify-center"
         >
+          <button
+            type="button"
+            data-testid="photos-lightbox-backdrop"
+            aria-label="Close photo viewer"
+            onClick={handleClose}
+            className="absolute inset-0 w-full h-full bg-black/70 cursor-default"
+          />
           <div
             data-testid="photos-lightbox-panel"
-            onClick={(event) => event.stopPropagation()}
             className="relative bg-white rounded-lg shadow-2xl max-w-[90%] max-h-[90%] flex flex-col overflow-hidden"
           >
             <div

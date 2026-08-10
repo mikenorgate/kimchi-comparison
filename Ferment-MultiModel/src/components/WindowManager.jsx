@@ -4,7 +4,16 @@ import { useWindows, useWindowActions } from '../contexts/WindowContext.jsx';
 import FinderApp from './apps/FinderApp.jsx';
 import SafariApp from './apps/SafariApp.jsx';
 import MessagesApp from './apps/MessagesApp.jsx';
+import MailApp from './apps/MailApp.jsx';
+import PhoneApp from './apps/PhoneApp.jsx';
 import PhotosApp from './apps/PhotosApp.jsx';
+import SettingsApp from './apps/SettingsApp.jsx';
+import MusicApp from './apps/MusicApp.jsx';
+import CalculatorApp from './apps/CalculatorApp.jsx';
+import CalendarApp from './apps/CalendarApp.jsx';
+import GamesApp from './apps/GamesApp.jsx';
+import JournalApp from './apps/JournalApp.jsx';
+import NotesApp from './apps/NotesApp.jsx';
 
 /**
  * WindowManager
@@ -51,7 +60,16 @@ const APP_COMPONENTS = {
   finder: FinderApp,
   safari: SafariApp,
   messages: MessagesApp,
+  mail: MailApp,
+  phone: PhoneApp,
   photos: PhotosApp,
+  settings: SettingsApp,
+  music: MusicApp,
+  calculator: CalculatorApp,
+  calendar: CalendarApp,
+  games: GamesApp,
+  journal: JournalApp,
+  notes: NotesApp,
 };
 
 function WindowContent({ appId }) {

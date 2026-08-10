@@ -1,57 +1,9 @@
 {
   "schemaVersion": 1,
-  "stepStartCounts": {
-    "phase-4:step-2": 1,
-    "phase-5:step-2": 1,
-    "phase-6:step-2": 1
-  },
+  "stepStartCounts": {},
   "blockRetries": {},
   "lastBlockHashes": {},
-  "stepCompleteAttempts": {
-    "phase-1:step-1": 1,
-    "phase-1:step-2": 1,
-    "phase-1:step-3": 1,
-    "phase-2:step-1": 1,
-    "phase-2:step-2": 1,
-    "phase-2:step-3": 1,
-    "phase-2:step-4": 1,
-    "phase-2:step-5": 1,
-    "phase-2:step-6": 1,
-    "phase-3:step-1": 1,
-    "phase-3:step-2": 1,
-    "phase-3:step-3": 1,
-    "phase-3:step-4": 1,
-    "phase-6:step-1": 1,
-    "phase-4:step-1": 1,
-    "phase-5:step-1": 1
-  },
-  "phaseStartRefs": {
-    "phase-1": "fd9dc799b86bc6f32c77baf85fc52b6762781309",
-    "phase-2": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-3": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-4": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-5": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-6": "38f4fb2eef6a310ae916380e58bf056e36b256c1"
-  },
-  "stepStartRefs": {
-    "phase-1:step-1": "fd9dc799b86bc6f32c77baf85fc52b6762781309",
-    "phase-1:step-2": "fd9dc799b86bc6f32c77baf85fc52b6762781309",
-    "phase-1:step-3": "fd9dc799b86bc6f32c77baf85fc52b6762781309",
-    "phase-2:step-1": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-2:step-2": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-2:step-3": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-2:step-4": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-2:step-5": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-2:step-6": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-3:step-1": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-3:step-2": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-3:step-3": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-3:step-4": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-4:step-1": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-5:step-1": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-6:step-1": "38f4fb2eef6a310ae916380e58bf056e36b256c1",
-    "phase-4:step-2": "17866d7aa4d8659a4bd0bea2fbbfc34d04ced04e",
-    "phase-5:step-2": "17866d7aa4d8659a4bd0bea2fbbfc34d04ced04e",
-    "phase-6:step-2": "17866d7aa4d8659a4bd0bea2fbbfc34d04ced04e"
-  }
+  "stepCompleteAttempts": {},
+  "phaseStartRefs": {},
+  "stepStartRefs": {}
 }

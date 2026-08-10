@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019fec07-9a11-739d-9367-4c7aa568cf5b",
+  "phaseId": "phase-4",
+  "phaseName": "Productivity Apps",
+  "attempt": 2,
+  "timestamp": "2026-08-10T16:59:16.306Z",
+  "goal": "Implement Finder, Settings, Calculator, and Calendar windows.",
+  "summary": "Productivity Apps phase completed: Finder, Settings, Calculator, and Calendar components created, wired into WindowManager, and covered by passing tests. Added WindowManager integration tests proving Settings, Calculator, and Calendar open from the Dock. Untracked sibling-project files (../Ferment-GLM5.2) belong to a separate ferment workspace and are not part of this build.",
+  "stepSummaries": "  1. Finder: sidebar (Favorites, Locations) plus a file grid populated with mock files/folders. [verified]\n  2. Settings: preference pane with wallpaper picker, light/dark/auto toggle, and accent-color swatches (changes apply locally but do not persist on reload). [verified]\n  3. Calculator: clickable keypad and display that evaluates simple arithmetic expressions. [verified]\n  4. Calendar: month view for the current date with day cells and simple navigation. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": " ...9febd9-0398-711f-9df4-b550985eb71a.events.jsonl |   53 +\n .../019febd9-0398-711f-9df4-b550985eb71a.json      |  334 ++++-\n .../reviews/phase-phase-3-1.json                   |   42 +\n .../reviews/phase-phase-4-1.json                   |   42 +\n .../reviews/phase-phase-4-2.json                   |   42 +\n .../reviews/phase-phase-5-1.json                   |   42 +\n .../reviews/phase-phase-6-1.json                   |   42 +\n .../reviews/phase-phase-7-1.json                   |   42 +\n .../reviews/phase-phase-7-2.json                   |   42 +\n .../reviews/phase-phase-7-3.json                   |   42 +\n .../runtime.json                                   |   31 +-\n ...9febf5-1d22-70c5-8520-61a6b165bdda.events.jsonl |   17 +\n .../019febf5-1d22-70c5-8520-61a6b165bdda.json      |  114 +-\n .../reviews/phase-phase-1-1.json                   |   42 +\n .../runtime.json                                   |   26 +-\n ...9fec07-9a11-739d-9367-4c7aa568cf5b.events.jsonl |   58 +\n .../019fec07-9a11-739d-9367-4c7aa568cf5b.json      |  310 ++++-\n .../reviews/phase-phase-1-1.json                   |   41 +\n .../reviews/phase-phase-2-1.json                   |   41 +\n .../reviews/phase-phase-2-2.json                   |   41 +\n[... 104 more files ...]\n 123 files changed, 14441 insertions(+), 315 deletions(-)\n?? src/components/apps/CalculatorApp.jsx\n?? src/components/apps/CalendarApp.jsx\n?? src/components/apps/GamesApp.jsx\n?? src/components/apps/MailApp.jsx\n?? src/components/apps/MusicApp.jsx\n?? src/components/apps/SettingsApp.jsx\n?? src/components/apps/__tests__/CalculatorApp.test.jsx\n?? src/components/apps/__tests__/CalendarApp.test.jsx\n?? src/components/apps/__tests__/GamesApp.test.jsx\n?? src/components/apps/__tests__/MailApp.test.jsx\n?? src/components/apps/__tests__/MusicApp.test.jsx\n?? src/components/apps/__tests__/PhoneApp.test.jsx\n?? src/components/apps/__tests__/SettingsApp.test.jsx",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "All steps verified with real test runs, lint, and production build. Full suite: 285/285 tests pass. Lint: clean (eslint exits 0). Build: vite builds successfully to dist/.",
+      "evidence": "npx vitest run: Test Files 22 passed, Tests 285 passed; npm run lint: eslint . (no output, exit 0); npm run build: dist/index.html, dist/assets/index-*.css/js generated."
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "Phase goal met: Finder, Settings, Calculator, and Calendar apps exist in src/components/apps/, are registered in WindowManager.jsx, and have co-located passing tests. WindowManager.test.jsx now includes Dock integration tests for Settings, Calculator, and Calendar.",
+      "evidence": "src/components/apps/{Finder,Settings,Calculator,Calendar}App.jsx; src/components/apps/__tests__/{Finder,Settings,Calculator,Calendar}App.test.jsx; WindowManager.jsx APP_COMPONENTS map includes all four."
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "No deferred work in this phase. Sibling-project untracked files under ../Ferment-GLM5.2 are outside this ferment's workspace and unrelated to the Tahoe Web Desktop build.",
+      "evidence": "git status shows untracked ../Ferment-GLM5.2/* files which are a sibling project, not part of this ferment's src/ tree."
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

@@ -87,7 +87,7 @@ describe('<PhotosApp />', () => {
     const firstThumb = within(grid).getAllByTestId('photos-thumbnail')[0];
     fireEvent.click(firstThumb);
 
-    const lightbox = screen.getByTestId('photos-lightbox');
+    const backdrop = screen.getByTestId('photos-lightbox-backdrop');
     const panel = screen.getByTestId('photos-lightbox-panel');
 
     // Click inside the panel — should remain open.
@@ -95,7 +95,7 @@ describe('<PhotosApp />', () => {
     expect(screen.getByTestId('photos-lightbox')).toBeInTheDocument();
 
     // Click on the backdrop — should close.
-    fireEvent.click(lightbox);
+    fireEvent.click(backdrop);
     expect(screen.queryByTestId('photos-lightbox')).not.toBeInTheDocument();
   });
 

@@ -128,9 +128,15 @@ function AboutOverlay({ onClose }: { onClose: () => void }) {
 export interface MenuBarProps {
   /** Active app name shown in bold (default: "Finder") */
   activeApp?: string;
+  /** Called when the Spotlight icon is clicked */
+  onSpotlightClick?: () => void;
+  /** Called when the Control Center icon is clicked */
+  onControlCenterClick?: () => void;
+  /** Called when the Notification Center icon is clicked */
+  onNotificationCenterClick?: () => void;
 }
 
-export function MenuBar({ activeApp = 'Finder' }: MenuBarProps) {
+export function MenuBar({ activeApp = 'Finder', onSpotlightClick, onControlCenterClick, onNotificationCenterClick }: MenuBarProps) {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showAbout, setShowAbout] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
@@ -202,8 +208,8 @@ export function MenuBar({ activeApp = 'Finder' }: MenuBarProps) {
         break;
       // All other actions are no-ops (window manager not yet built)
     }
-    setOpenMenuId(null);
-  }, [appearance, setAppearance]);
+    updateOpenMenu(null);
+  }, [appearance, setAppearance, updateOpenMenu]);
 
   // Clock
   const [now, setNow] = useState(() => new Date());
@@ -304,16 +310,16 @@ export function MenuBar({ activeApp = 'Finder' }: MenuBarProps) {
           <button className={iconButtonClass} data-testid="menubar-wifi" aria-label="Wi-Fi">
             <WifiIcon />
           </button>
-          <button className={iconButtonClass} data-testid="menubar-spotlight" aria-label="Spotlight">
+          <button className={iconButtonClass} data-testid="menubar-spotlight" aria-label="Spotlight" onClick={onSpotlightClick}>
             <SpotlightIcon />
           </button>
-          <button className={iconButtonClass} data-testid="menubar-control-center" aria-label="Control Center">
+          <button className={iconButtonClass} data-testid="menubar-control-center" aria-label="Control Center" onClick={onControlCenterClick}>
             <ControlCenterIcon />
           </button>
           <span className="tabular-nums" data-testid="menubar-datetime">
             {dateStr}&nbsp;{timeStr}
           </span>
-          <button className={iconButtonClass} data-testid="menubar-notification-center" aria-label="Notification Center">
+          <button className={iconButtonClass} data-testid="menubar-notification-center" aria-label="Notification Center" onClick={onNotificationCenterClick}>
             <NotificationCenterIcon />
           </button>
         </div>

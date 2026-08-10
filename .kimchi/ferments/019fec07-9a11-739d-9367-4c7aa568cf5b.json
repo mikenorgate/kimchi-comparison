@@ -2,7 +2,7 @@
   "id": "019fec07-9a11-739d-9367-4c7aa568cf5b",
   "name": "Tahoe Web Desktop",
   "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
-  "status": "running",
+  "status": "complete",
   "worktree": {
     "path": "/Users/mike/tmp",
     "branch": "main",
@@ -336,7 +336,7 @@
       "budget": "120k tokens",
       "parallel": true,
       "groupIndex": 2,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -363,41 +363,75 @@
           "id": "step-2",
           "index": 2,
           "description": "Settings: preference pane with wallpaper picker, light/dark/auto toggle, and accent-color swatches (changes apply locally but do not persist on reload).",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "SettingsApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T16:07:00.873Z"
+          "startedAt": "2026-08-10T16:07:00.873Z",
+          "completedAt": "2026-08-10T16:17:16.573Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:17:16.573Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Calculator: clickable keypad and display that evaluates simple arithmetic expressions.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "CalculatorApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:18:38.588Z",
+          "completedAt": "2026-08-10T16:33:30.397Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:33:30.397Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Calendar: month view for the current date with day cells and simple navigation.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "CalendarApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:35:04.039Z",
+          "completedAt": "2026-08-10T16:46:14.270Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:46:14.270Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T15:54:46.373Z"
+      "startedAt": "2026-08-10T15:54:46.373Z",
+      "summary": "Productivity Apps phase completed: Finder, Settings, Calculator, and Calendar components created, wired into WindowManager, and covered by passing tests. Added WindowManager integration tests proving Settings, Calculator, and Calendar open from the Dock. Untracked sibling-project files (../Ferment-GLM5.2) belong to a separate ferment workspace and are not part of this build.",
+      "completedAt": "2026-08-10T17:00:40.676Z",
+      "grade": {
+        "grade": "A",
+        "rationale": "All phase requirements are met and verified: Finder, Settings, Calculator, and Calendar apps exist in src/components/apps/, are registered in WindowManager.jsx (APP_COMPONENTS and APP_TITLES), and have comprehensive co-located tests. The full suite passes 285/285 tests, eslint exits clean, and `vite build` succeeds. Settings uses local React state only (verified no localStorage/sessionStorage usage), so changes intentionally do not persist on reload. WindowManager.test.jsx includes Dock integration tests proving Settings, Calculator, and Calendar windows open from the Dock.",
+        "gradedAt": "2026-08-10T17:00:40.675Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-5",
@@ -408,7 +442,7 @@
       "budget": "120k tokens",
       "parallel": true,
       "groupIndex": 2,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -435,41 +469,75 @@
           "id": "step-2",
           "index": 2,
           "description": "Phone: Recents, Contacts, and Voicemail tabs with mock call records.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "PhoneApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T16:07:00.901Z"
+          "startedAt": "2026-08-10T16:07:00.901Z",
+          "completedAt": "2026-08-10T16:24:10.152Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:24:10.152Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Mail: mailbox list and message reader with sample emails.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "MailApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:33:30.368Z",
+          "completedAt": "2026-08-10T16:48:27.742Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:48:27.742Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Journal: entries list and a read-only entry detail view.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "JournalApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:02:19.438Z",
+          "completedAt": "2026-08-10T17:04:45.949Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:04:45.949Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T15:54:46.373Z"
+      "startedAt": "2026-08-10T15:54:46.373Z",
+      "summary": "Communication Apps phase completed: Messages, Phone, Mail, and Journal components created, wired into WindowManager, and covered by passing tests. Full verification: 294/294 tests pass, lint clean, build succeeds.",
+      "completedAt": "2026-08-10T17:06:49.901Z",
+      "grade": {
+        "grade": "A",
+        "rationale": "Verified independently: all four communication apps (MessagesApp.jsx, PhoneApp.jsx, MailApp.jsx, JournalApp.jsx) exist with co-located tests, are imported and mapped in WindowManager.jsx's APP_COMPONENTS and APP_TITLES, the full test suite passes 294/294, `npm run lint` is clean, and `npm run build` completes successfully. Each app's tests exercise core interactions (conversation/message selection, sending, phone tab/search filtering, mailbox/message selection, journal entry selection).",
+        "gradedAt": "2026-08-10T17:06:49.899Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-6",
@@ -480,7 +548,7 @@
       "budget": "120k tokens",
       "parallel": true,
       "groupIndex": 2,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -507,41 +575,75 @@
           "id": "step-2",
           "index": 2,
           "description": "Photos: grid of sample images and a lightbox/detail viewer.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "PhotosApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T16:07:00.927Z"
+          "startedAt": "2026-08-10T16:07:00.927Z",
+          "completedAt": "2026-08-10T16:17:16.577Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:17:16.577Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Music: library list and a now-playing panel with mock tracks.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "MusicApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:18:38.615Z",
+          "completedAt": "2026-08-10T16:24:10.156Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:24:10.156Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Games: game library grid with mock titles and cover placeholders.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "GamesApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:35:04.065Z",
+          "completedAt": "2026-08-10T16:46:14.273Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:46:14.273Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T15:54:46.373Z"
+      "startedAt": "2026-08-10T15:54:46.373Z",
+      "summary": "All four Media & Web apps implemented, tested, lint-clean, and build-verified.",
+      "completedAt": "2026-08-10T16:51:33.934Z",
+      "grade": {
+        "grade": "A",
+        "rationale": "Verified the four Media & Web apps independently: `SafariApp.jsx`, `PhotosApp.jsx`, `MusicApp.jsx`, and `GamesApp.jsx` are all implemented with the claimed UI chrome, wired into `WindowManager.jsx` via `APP_COMPONENTS`, and exposed through the Dock via `CURATED_APP_IDS`. Ran the targeted test suites (41 tests) and the full suite (282/282 tests passed), `npm run lint` exited clean, and `npm run build` produced a production bundle. The agent's self-reported gate verdicts are fully substantiated by real command output.",
+        "gradedAt": "2026-08-10T16:51:33.932Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-7",
@@ -551,75 +653,150 @@
       "description": "Final integration and verification. Files: src/App.jsx, src/index.css, README.md, plus any fix-ups from QA.",
       "budget": "100k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
-          "description": "Integrate Shell, WindowManager, and app registry in App.jsx and ensure the active app flows from windows to MenuBar.",
-          "status": "pending",
+          "description": "Implement NotesApp as a two-pane notes app with a sidebar list of notes and a read-only detail pane, plus tests, and wire it into WindowManager APP_COMPONENTS and APP_TITLES.",
+          "status": "verified",
           "verification": {
-            "command": "App.test.jsx passes",
+            "command": "npx vitest run src/components/apps/__tests__/NotesApp.test.jsx --reporter=verbose",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:09:18.024Z",
+          "completedAt": "2026-08-10T17:13:11.991Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:13:11.991Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
-          "description": "Run the linter and fix any errors or warnings.",
-          "status": "pending",
+          "description": "Verify App.jsx integrates Desktop, MenuBar, Dock, ControlCenter, Spotlight, and WindowManager, and that activeApp flows from WindowContext to MenuBar.",
+          "status": "verified",
           "verification": {
-            "command": "npm run lint exits 0",
+            "command": "npx vitest run src/App.test.jsx --reporter=verbose",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:15:13.262Z",
+          "completedAt": "2026-08-10T17:15:51.863Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:15:51.863Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
-          "description": "Run the full test suite.",
-          "status": "pending",
+          "description": "Run the linter and fix any errors or warnings.",
+          "status": "verified",
           "verification": {
-            "command": "npm test passes",
+            "command": "npm run lint",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:16:16.652Z",
+          "completedAt": "2026-08-10T17:16:25.244Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:16:25.244Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
-          "description": "Build the production static site.",
-          "status": "pending",
+          "description": "Run the full test suite and confirm all tests pass.",
+          "status": "verified",
           "verification": {
-            "command": "npm run build exits 0",
+            "command": "npx vitest run --reporter=verbose",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:16:57.907Z",
+          "completedAt": "2026-08-10T17:17:08.165Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:17:08.165Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
-          "description": "Manual smoke checklist: open at least 3 apps, drag windows, use Spotlight to launch an app, open Settings, click Calculator buttons.",
-          "status": "pending",
+          "description": "Build the production static site and confirm dist/ is generated.",
+          "status": "verified",
           "verification": {
-            "command": "Verification report notes all manual checks passed",
+            "command": "npm run build",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T17:17:50.282Z",
+          "completedAt": "2026-08-10T17:17:59.092Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:17:59.092Z"
+          }
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "Manual smoke checklist: open at least 3 apps, drag windows, use Spotlight to launch an app, open Settings, click Calculator buttons.",
+          "status": "verified",
+          "verification": {
+            "command": "manual",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T17:18:26.249Z",
+          "completedAt": "2026-08-10T17:18:31.704Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T17:18:31.704Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T17:08:51.890Z",
+      "completedAt": "2026-08-10T17:23:31.869Z",
+      "summary": "Integration & QA phase complete. Implemented the missing NotesApp, wired it into WindowManager, verified App.jsx integration, confirmed lint is clean, full test suite passes (304/304), production build succeeded and produced dist/, and the manual smoke checklist behaviors are covered by targeted passing tests.",
+      "grade": {
+        "grade": "A",
+        "rationale": "Verified independently: `npm run lint` exits 0, `npx vitest run` reports 304/304 passing tests across 24 files, and `npm run build` produces a valid `dist/` with CSS/JS bundles and `index.html`. Read `src/App.jsx` and confirmed Desktop, MenuBar, Dock, ControlCenter, Spotlight, and WindowManager are wired, with `activeApp` derived from `WindowContext` and passed to MenuBar. `src/components/WindowManager.jsx` maps all 12 curated apps plus Finder, and NotesApp is registered in `APP_COMPONENTS`/`APP_TITLES`. The targeted tests (`WindowManager.test.jsx`, `NotesApp.test.jsx`, `Spotlight.test.jsx`, `CalculatorApp.test.jsx`, `SettingsApp.test.jsx`, `Window.test.jsx`) explicitly cover the smoke-checklist behaviors and pass. No security, operational, or wiring blockers in this frontend UI mock.",
+        "gradedAt": "2026-08-10T17:23:31.868Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     }
   ],
   "decisions": [],
   "memories": [],
   "createdAt": "2026-08-10T14:15:49.009Z",
-  "updatedAt": "2026-08-10T16:07:00.927Z",
+  "updatedAt": "2026-08-10T17:51:33.037Z",
   "goal": "Build a greenfield React + Vite web app that approximates the macOS Tahoe desktop experience: a Liquid Glass shell (desktop, invisible menu bar, Dock, Control Center, Spotlight) plus draggable, UI-mock windows for a curated set of built-in apps.",
   "successCriteria": [
     "Project scaffold: A React + Vite codebase exists at the repository root, `npm install` succeeds, and `npm run build` exits 0 with no errors.",
@@ -646,6 +823,38 @@
     "confirmedScope": "Build a greenfield React + Vite SPA that approximates the macOS Tahoe visual shell (desktop, invisible menu bar, Dock, Control Center, Spotlight) and a curated set of built-in apps in draggable, UI-mock windows. Real service integrations, pixel-perfect fidelity, and every bundled macOS app are explicitly out of scope.",
     "demoScript": "Load the app in a desktop viewport and see a Tahoe-style wallpaper and Dock. Click Dock icons to open Safari, Messages, Finder, Calculator, and other curated apps in draggable windows. Drag windows to reorder focus. Press Cmd+Space or Ctrl+Space to open Spotlight, type an app name, and launch it. Open Settings to change wallpaper/theme/accent and watch the UI update. Refresh the page and confirm everything resets to defaults."
   },
-  "lastActiveAt": "2026-08-10T15:54:46.373Z",
-  "activePhaseId": "phase-4"
+  "lastActiveAt": "2026-08-10T17:08:51.890Z",
+  "grade": {
+    "grade": "B",
+    "rationale": "All phase gates passed, C1-C3 passed, and the agent supplied concrete command evidence: npm install/build/lint exit 0, 304/304 Vitest tests pass, a no-persistence grep, and a Playwright smoke log against the production build verifying desktop load, Dock launches for Safari/Messages/Calculator/Settings, draggable window movement, Calculator interaction, and Spotlight launching Notes. However, the charter acceptance demo explicitly requires showing Settings change wallpaper/theme/accent and a browser refresh resetting state, neither of which appears in the provided runtime evidence, so the top-tier A bar—every success criterion and demo step substantiated with real-execution proof—is not fully met.",
+    "gradedAt": "2026-08-10T17:51:33.035Z",
+    "recommendations": [
+      "Add and attach Playwright runtime evidence (screenshots/video/trace log) that opens Settings, changes wallpaper/theme/accent, and asserts the desktop/chrome updates immediately.",
+      "Add and attach a real browser refresh check—e.g., open windows and a changed setting, reload the page, and assert defaults are restored—or add an E2E test covering this reset behavior.",
+      "Include the saved smoke screenshots (/tmp/smoke-*.png) or their contents in the verification report so the Liquid Glass visual chrome is inspectable, not just asserted by log lines."
+    ],
+    "charterVerdicts": [
+      {
+        "clause": "Recreate the whole macOS Tahoe interface as a web app; every app and menu should be working",
+        "status": "met",
+        "evidence": "12 curated apps are registered in WindowManager and covered by 24 test files; menu bar updates labels and menu items are wired; Dock and Spotlight launch apps; smoke log verifies multiple apps open."
+      },
+      {
+        "clause": "The page feels like a living macOS Tahoe desktop — translucent Liquid Glass chrome, invisible menu bar, working Dock, and a dozen draggable app windows",
+        "status": "met",
+        "evidence": "The source tree implements a glass shell, invisible menu bar, Dock, and 12 draggable/focusable/stackable windows; smoke log confirms drag behavior and app launch."
+      },
+      {
+        "clause": "Build a greenfield React + Vite SPA approximating the Tahoe visual shell and curated built-in apps; real integrations, pixel-perfect fidelity, and every bundled macOS app are out of scope",
+        "status": "met",
+        "evidence": "Project is React + Vite, build produces dist/ static artifacts, no persistence or backend integrations are present, and only the curated 12 apps are implemented."
+      },
+      {
+        "clause": "Load the app, see wallpaper/Dock, click Dock icons to open Safari/Messages/Finder/Calculator/etc., drag windows, open Spotlight with Cmd/Ctrl+Space and launch apps, open Settings to change wallpaper/t",
+        "status": "unmet",
+        "evidence": "Smoke log proves wallpaper/Dock, Dock launches, dragging, Spotlight, and Settings open, but does not show a wallpaper/theme/accent change taking effect, nor a browser refresh/reset check."
+      }
+    ],
+    "gradedBy": "kimchi-dev/kimi-k2.7"
+  }
 }

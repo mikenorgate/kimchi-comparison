@@ -305,4 +305,45 @@ describe('<Dock /> wired to WindowContext', () => {
     expect(safariNow).toHaveAttribute('data-active', 'true');
     expect(safariNow.getAttribute('data-window-id')).toBe(firstId);
   });
+
+  it('opens a Settings window when the Settings Dock icon is clicked', () => {
+    renderDockWithManager();
+    expect(screen.queryAllByTestId('window')).toHaveLength(0);
+
+    fireEvent.click(screen.getByTestId('dock-icon-settings'));
+
+    const windows = screen.getAllByTestId('window');
+    expect(windows).toHaveLength(1);
+    expect(windows[0]).toHaveAttribute('data-app-id', 'settings');
+    expect(windows[0]).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('titlebar-title')).toHaveTextContent('Settings');
+  });
+
+  it('opens a Calculator window when the Calculator Dock icon is clicked', () => {
+    renderDockWithManager();
+    expect(screen.queryAllByTestId('window')).toHaveLength(0);
+
+    fireEvent.click(screen.getByTestId('dock-icon-calculator'));
+
+    const windows = screen.getAllByTestId('window');
+    expect(windows).toHaveLength(1);
+    expect(windows[0]).toHaveAttribute('data-app-id', 'calculator');
+    expect(windows[0]).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('titlebar-title')).toHaveTextContent(
+      'Calculator',
+    );
+  });
+
+  it('opens a Calendar window when the Calendar Dock icon is clicked', () => {
+    renderDockWithManager();
+    expect(screen.queryAllByTestId('window')).toHaveLength(0);
+
+    fireEvent.click(screen.getByTestId('dock-icon-calendar'));
+
+    const windows = screen.getAllByTestId('window');
+    expect(windows).toHaveLength(1);
+    expect(windows[0]).toHaveAttribute('data-app-id', 'calendar');
+    expect(windows[0]).toHaveAttribute('data-active', 'true');
+    expect(screen.getByTestId('titlebar-title')).toHaveTextContent('Calendar');
+  });
 });
