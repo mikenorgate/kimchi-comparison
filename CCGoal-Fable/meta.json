@@ -16,15 +16,15 @@
   "agent": "claude",
   "model": "Fable 5",
   "durationMs": 1140000,
-  "cost": "$5.43",
+  "cost": "$8.80",
   "thinkingLevel": "enabled",
   "fermentId": null,
   "tokenUsage": {
-    "inputTokens": 23708,
-    "cachedInputTokens": 4412139,
-    "cacheWriteTokens": 335719,
-    "outputTokens": 184880,
+    "inputTokens": 15664,
+    "cachedInputTokens": 2200049,
+    "cacheWriteTokens": 239800,
+    "outputTokens": 68800,
     "reasoningTokens": 0,
-    "requests": 60
+    "requests": 28
   }
 }

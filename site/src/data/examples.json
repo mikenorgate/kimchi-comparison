@@ -17,16 +17,16 @@
     "agent": "claude",
     "model": "Fable 5",
     "durationMs": 1140000,
-    "cost": "$5.43",
+    "cost": "$8.80",
     "fermentId": null,
     "thinkingLevel": "enabled",
     "tokenUsage": {
-      "inputTokens": 23708,
-      "cachedInputTokens": 4412139,
-      "cacheWriteTokens": 335719,
-      "outputTokens": 184880,
+      "inputTokens": 15664,
+      "cachedInputTokens": 2200049,
+      "cacheWriteTokens": 239800,
+      "outputTokens": 68800,
       "reasoningTokens": 0,
-      "requests": 60
+      "requests": 28
     }
   },
   {
@@ -367,16 +367,16 @@
     "agent": "claude",
     "model": "Claude Sonnet 5",
     "durationMs": 1345405,
-    "cost": "$8.78",
+    "cost": "$5.04",
     "fermentId": null,
     "thinkingLevel": "enabled",
     "tokenUsage": {
-      "inputTokens": 44431,
-      "cachedInputTokens": 29205234,
-      "cacheWriteTokens": 494332,
-      "outputTokens": 161439,
+      "inputTokens": 19600,
+      "cachedInputTokens": 16900000,
+      "cacheWriteTokens": 344200,
+      "outputTokens": 75500,
       "reasoningTokens": 0,
-      "requests": 243
+      "requests": 150
     }
   },
   {

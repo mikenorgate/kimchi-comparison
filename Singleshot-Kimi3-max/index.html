@@ -2,64 +2,98 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>macOS Tahoe</title>
 <link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/chrome.css">
-<link rel="stylesheet" href="css/apps1.css">
-<link rel="stylesheet" href="css/apps2.css">
+<link rel="stylesheet" href="css/apps.css">
 </head>
-<body>
-  <!-- Boot splash -->
-  <div id="boot">
+<body class="light">
+
+  <!-- ======================= BOOT ======================= -->
+  <div id="boot" class="hidden">
     <div class="boot-logo"></div>
-    <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+    <div class="boot-bar"><div id="boot-progress"></div></div>
+    <div id="boot-msg" class="hidden">It is now safe to close this tab.</div>
   </div>
 
-  <!-- Lock screen -->
-  <div id="lockscr" hidden>
-    <div class="lock-date"></div>
-    <div class="lock-time"></div>
-    <div class="lock-bottom">
-      <div class="lock-avatar">M</div>
-      <div class="lock-hint">Press Return or click to log in</div>
+  <!-- ======================= LOCK SCREEN ======================= -->
+  <div id="lockscreen" class="hidden">
+    <div class="ls-wallpaper"></div>
+    <div class="ls-top">
+      <div class="ls-date" id="ls-date"></div>
+      <div class="ls-time" id="ls-time"></div>
+    </div>
+    <div class="ls-bottom">
+      <div class="ls-avatar" id="ls-avatar">M</div>
+      <div class="ls-name" id="ls-name">Mike</div>
+      <div class="ls-passwrap">
+        <input class="ls-pass" id="ls-pass" type="password" placeholder="Enter Password" autocomplete="off">
+        <button class="ls-go" id="ls-go" title="Log in">→</button>
+      </div>
+      <div class="ls-hint" id="ls-hint">Press Return to log in — any password works</div>
     </div>
   </div>
 
-  <!-- Desktop -->
-  <div id="desktop" hidden>
-    <div id="menubar"></div>
-    <div id="dsk-icons"></div>
-    <div id="desk-area">
-      <div id="desk-click"></div>
-      <div id="mc" hidden></div>
-    </div>
+  <!-- ======================= DESKTOP ======================= -->
+  <div id="desktop" class="hidden">
+    <div id="wallpaper"></div>
+    <div id="dim"></div>
+    <div id="deskicons"></div>
     <div id="windows"></div>
-    <div id="dock-wrap"><div id="dock"></div></div>
-    <div id="brightness"></div>
   </div>
-  <div id="snap-layer"></div>
 
-  <!-- System overlays -->
-  <div id="launchpad" hidden></div>
-  <div id="modal-layer"></div>
-  <div id="menu-pop" hidden></div>
-  <div id="ctx" hidden></div>
-  <div id="cc" hidden></div>
-  <div id="spot" hidden></div>
-  <div id="nc" hidden></div>
-  <div id="banners"></div>
+  <div id="menubar" class="hidden">
+    <div id="mb-left"></div>
+    <div id="mb-right"></div>
+  </div>
 
-  <script src="js/core.js"></script>
-  <script src="js/icons.js"></script>
+  <div id="dock" class="hidden">
+    <div id="dock-inner">
+      <div id="dock-apps"></div>
+      <div id="dock-sep"></div>
+      <div id="dock-right"></div>
+    </div>
+  </div>
+
+  <!-- ======================= OVERLAYS ======================= -->
+  <div id="spotlight" class="hidden">
+    <div class="spot-box">
+      <div class="spot-inputwrap">
+        <span class="spot-icon"></span>
+        <input id="spot-input" type="text" placeholder="Spotlight Search" autocomplete="off" spellcheck="false">
+      </div>
+      <div id="spot-results" class="hidden"></div>
+    </div>
+  </div>
+
+  <div id="launchpad" class="hidden">
+    <input id="lp-search" type="text" placeholder="Search" autocomplete="off" spellcheck="false">
+    <div id="lp-grid"></div>
+  </div>
+
+  <div id="control-center" class="hidden"></div>
+  <div id="notif-center" class="hidden"></div>
+  <div id="ctx-menu" class="hidden"></div>
+  <div id="alert-layer" class="hidden"></div>
+  <div id="banner-layer"></div>
+  <div id="switcher" class="hidden"></div>
+  <div id="mission" class="hidden"></div>
+
+  <script src="js/util.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/fs.js"></script>
   <script src="js/wm.js"></script>
   <script src="js/menubar.js"></script>
-  <script src="js/systemui.js"></script>
   <script src="js/dock.js"></script>
-  <script src="js/apps.core.js"></script>
-  <script src="js/apps.sys.js"></script>
-  <script src="js/apps.media.js"></script>
+  <script src="js/system.js"></script>
+  <script src="js/apps/finder.js"></script>
+  <script src="js/apps/safari.js"></script>
+  <script src="js/apps/comms.js"></script>
+  <script src="js/apps/productivity.js"></script>
+  <script src="js/apps/media.js"></script>
+  <script src="js/apps/utilities.js"></script>
+  <script src="js/apps/storeapp.js"></script>
+  <script src="js/apps/settings.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

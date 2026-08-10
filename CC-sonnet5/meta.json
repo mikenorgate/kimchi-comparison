@@ -16,15 +16,15 @@
   "agent": "claude",
   "model": "Claude Sonnet 5",
   "durationMs": 1345405,
-  "cost": "$8.78",
+  "cost": "$5.04",
   "thinkingLevel": "enabled",
   "fermentId": null,
   "tokenUsage": {
-    "inputTokens": 44431,
-    "cachedInputTokens": 29205234,
-    "cacheWriteTokens": 494332,
-    "outputTokens": 161439,
+    "inputTokens": 19600,
+    "cachedInputTokens": 16900000,
+    "cacheWriteTokens": 344200,
+    "outputTokens": 75500,
     "reasoningTokens": 0,
-    "requests": 243
+    "requests": 150
   }
 }
