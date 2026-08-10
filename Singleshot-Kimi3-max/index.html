@@ -3,71 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tahoe Web — macOS 26 in the browser</title>
-<link rel="stylesheet" href="css/main.css">
+<title>macOS Tahoe</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/chrome.css">
+<link rel="stylesheet" href="css/apps1.css">
+<link rel="stylesheet" href="css/apps2.css">
 </head>
 <body>
-
-<!-- Boot screen -->
-<div id="boot">
-  <div class="boot-inner">
-    <div class="boot-apple" id="boot-apple"></div>
-    <div class="boot-bar"><div class="boot-bar-fill" id="boot-fill"></div></div>
-  </div>
-</div>
-
-<!-- Lock / login screen -->
-<div id="lock" class="gone">
-  <div class="lock-clock" id="lock-clock">9:41</div>
-  <div class="lock-date" id="lock-date">Monday, January 1</div>
-  <div class="lock-user">
-    <div class="lock-avatar" id="lock-avatar"></div>
-    <div class="lock-name" id="lock-name">mike</div>
-    <div class="lock-hint">Click or press any key to log in</div>
-  </div>
-</div>
-
-<!-- Powered off -->
-<div id="off" class="gone"><div class="off-hint">Click to turn on your Mac</div></div>
-
-<!-- The desktop -->
-<div id="screen" class="gone">
-  <div id="wallpaper"></div>
-  <div id="desktop-icons"></div>
-  <div id="windows"></div>
-
-  <header id="menubar">
-    <nav id="mb-left"></nav>
-    <nav id="mb-right"></nav>
-  </header>
-
-  <div id="menu-layer" class="gone"></div>
-
-  <div id="dock-wrap">
-    <div id="dock"></div>
+  <!-- Boot splash -->
+  <div id="boot">
+    <div class="boot-logo"></div>
+    <div class="boot-bar"><div class="boot-bar-fill"></div></div>
   </div>
 
+  <!-- Lock screen -->
+  <div id="lockscr" hidden>
+    <div class="lock-date"></div>
+    <div class="lock-time"></div>
+    <div class="lock-bottom">
+      <div class="lock-avatar">M</div>
+      <div class="lock-hint">Press Return or click to log in</div>
+    </div>
+  </div>
+
+  <!-- Desktop -->
+  <div id="desktop" hidden>
+    <div id="menubar"></div>
+    <div id="dsk-icons"></div>
+    <div id="desk-area">
+      <div id="desk-click"></div>
+      <div id="mc" hidden></div>
+    </div>
+    <div id="windows"></div>
+    <div id="dock-wrap"><div id="dock"></div></div>
+    <div id="brightness"></div>
+  </div>
+  <div id="snap-layer"></div>
+
+  <!-- System overlays -->
+  <div id="launchpad" hidden></div>
+  <div id="modal-layer"></div>
+  <div id="menu-pop" hidden></div>
+  <div id="ctx" hidden></div>
+  <div id="cc" hidden></div>
+  <div id="spot" hidden></div>
+  <div id="nc" hidden></div>
   <div id="banners"></div>
 
-  <!-- overlays -->
-  <div id="cc" class="overlay gone"></div>
-  <div id="nc" class="overlay gone"></div>
-  <div id="spotlight" class="overlay gone"></div>
-  <div id="launchpad" class="overlay gone"></div>
-  <div id="mission" class="overlay gone"></div>
-  <div id="switcher" class="overlay gone"></div>
-  <div id="siri-bubble" class="gone"></div>
-  <div id="modal-root"></div>
-
-  <div id="brightness-overlay"></div>
-</div>
-
-<script src="js/data.js"></script>
-<script src="js/icons.js"></script>
-<script src="js/core.js"></script>
-<script src="js/apps1.js"></script>
-<script src="js/apps2.js"></script>
-<script src="js/apps3.js"></script>
-<script src="js/main.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/fs.js"></script>
+  <script src="js/wm.js"></script>
+  <script src="js/menubar.js"></script>
+  <script src="js/systemui.js"></script>
+  <script src="js/dock.js"></script>
+  <script src="js/apps.core.js"></script>
+  <script src="js/apps.sys.js"></script>
+  <script src="js/apps.media.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

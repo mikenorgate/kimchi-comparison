@@ -16,7 +16,15 @@
   "agent": "codex",
   "model": "GPT-5.5",
   "durationMs": 382000,
-  "cost": "$1.15",
+  "cost": "$0.16",
   "thinkingLevel": "default",
-  "fermentId": null
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 61224,
+    "cachedInputTokens": 42496,
+    "cacheWriteTokens": 18728,
+    "outputTokens": 1555,
+    "reasoningTokens": 0,
+    "requests": 4
+  }
 }

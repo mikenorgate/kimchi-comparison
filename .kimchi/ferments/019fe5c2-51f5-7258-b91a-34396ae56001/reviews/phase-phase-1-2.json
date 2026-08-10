@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019fe5c2-51f5-7258-b91a-34396ae56001",
+  "phaseId": "phase-1",
+  "phaseName": "Foundation & Liquid Glass Shell",
+  "attempt": 2,
+  "timestamp": "2026-08-09T10:41:56.418Z",
+  "goal": "Scaffold the project and build the Liquid Glass material system, desktop, transparent menu bar with Apple + dynamic per-app menus and focus tracking, Dock, window manager, and theming — proven end-to-end with one stub app.",
+  "summary": "Phase 1 (Foundation & Liquid Glass Shell) complete — all 6 steps done, plus all three grader recommendations from the B-grade review addressed.\n\nBuilt end-to-end:\n- **Scaffold** (Step 1): Vite 8 + React 19 + TS 6 + Tailwind v4 + Framer Motion 13 + oxlint; `@/` path aliases; folder structure.\n- **Liquid Glass material system** (Step 2): `GlassSurface` component (backdrop-filter blur/saturate + translucent layers + specular highlights + sheen), `theme.css` with light/dark/accent CSS variables, `ThemeProvider` setting data-theme/data-accent/.reduce-transparency on <html>. Reduce Transparency flattens all glass to near-opaque.\n- **Desktop + menu bar** (Step 3): full-screen wallpaper, transparent Liquid Glass menu bar (Apple logo + focused-app name + per-app menus + status glyphs + live clock), full menu data model, dropdown+submenu renderer with hover-switch + click-outside/Escape, working Apple menu (About/System Settings/Sleep/Restart/Shut Down/Lock).\n- **Window manager** (Step 4): draggable title bar, traffic-light buttons, 8 resize handles, maximize/minimize/restore, z-order focus → menu bar re-titles.\n- **Dock** (Step 5): Liquid Glass capsule, Framer Motion magnification, click-to-launch, running indicator dots, all 14 apps in the registry.\n- **Theming** (Step 6): `ThemePanel` (dark-mode toggle, 7-accent picker, Reduce Transparency toggle) wired to the menu bar's Control Center icon.\n\nGrader recommendations addressed (this retry):\n1. **Impure setWindows updaters fixed** (windows-store.tsx): `focusWindow` and `closeWindow` now read current state from a `windowsRef` mirror and call all side effects (`os.setActiveAppId`, `setFocusedId`, `zCounter++`) OUTSIDE the `setWindows` updater. The updater is now a pure map/filter — safe under StrictMode's double-invocation.\n2. **App registration moved out of useMemo** (App.tsx): extracted to module-level `src/lib/app-registration.ts` (`registerAllApps()` called on import, idempotent via a `registered` flag; Finder menus extracted to `finderMenus()`). No side-effects-in-render.\n3. **Runtime test added** (vitest + Testing Library + jsdom): `src/test/focus-menu-bar.test.tsx` renders the full `<App/>`, asserts the menu bar shows \"Finder\" on boot (data-testid=\"active-app-name\"), clicks the Calculator Dock icon (aria-label=\"Launch Calculator\"), and asserts the menu bar re-titles to \"Calculator\" — proving the focus→menu-bar wiring at runtime, not just by compilation.\n\nVerification (all pass):\n- `pnpm build` → exit 0; tsc clean; 441 modules (348.78 kB JS / 11.44 kB CSS).\n- `pnpm exec oxlint` → 0 warnings, 0 errors (30 files).\n- `pnpm exec vitest run` → 1 test passed (focus→menu-bar wiring).\n- `pnpm dev` → boots on http://localhost:5173 in ~140ms.\n\nThe shell is a functional macOS Tahoe foundation: desktop, transparent menu bar with working Apple + per-app menus, draggable/resizable windows, Liquid Glass Dock with magnification, and live theming — with a runtime test proving the focus→menu-bar pipeline. Phase 2 builds the 5 OS overlays; Phase 3 fills in the 14 apps' real content.",
+  "stepSummaries": "  1. Scaffold Vite + React + TS; add Tailwind, Framer Motion, ESLint, path aliases, and folder structure. Manual: dev server boots to a blank page. [verified]\n  2. Build reusable Liquid Glass material system: a <GlassSurface> component using backdrop-filter blur/saturate + translucent layers + specular highlights; CSS theme variables; a Reduce Transparency flat variant. Manual: a glass panel renders translucent over the wallpaper. [verified]\n  3. Desktop + wallpaper + transparent menu bar: full-screen desktop, wallpaper layer, transparent top bar with Apple logo, focus-driven active-app name, and a menu data model + dropdown/submenu renderer. [verified]\n  4. Window manager: draggable/resizable/min/max/close windows, z-order focus, and focus→menu-bar app-name + menus update. [verified]\n  5. Liquid Glass Dock with Framer Motion magnification; an app registry; one stub app opens from the Dock. [verified]\n  6. Theming: light/dark + accent-color tints via CSS vars app-wide; Reduce Transparency toggle flattens effects. Manual: toggle dark mode and observe Dock/menus re-tint. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": "...9fd7a2-5cd1-724c-9a3a-3354b77b43dc.events.jsonl |   68 -\n .../019fd7a2-5cd1-724c-9a3a-3354b77b43dc.json      |  615 ---------\n Singleshot-Kimi3-max/css/main.css                  |  579 --------\n Singleshot-Kimi3-max/index.html                    |  104 +-\n Singleshot-Kimi3-max/js/core.js                    | 1428 +++-----------------\n Singleshot-Kimi3-max/js/data.js                    |  586 --------\n Singleshot-Kimi3-max/js/icons.js                   |  340 +++--\n 7 files changed, 421 insertions(+), 3299 deletions(-)\n?? .gitignore\n?? .oxlintrc.json\n?? README.md\n?? index.html\n?? package.json\n?? pnpm-lock.yaml\n?? public/favicon.svg\n?? src/App.tsx\n?? src/apps/FinderStub.tsx\n?? src/assets/vite.svg\n?? src/components/desktop/Desktop.tsx\n?? src/components/dock/AppIcon.tsx\n?? src/components/dock/Dock.tsx\n?? src/components/glass/GlassSurface.tsx\n?? src/components/menubar/AppleLogo.tsx\n?? src/components/menubar/MenuBar.tsx\n?? src/components/menubar/MenuDropdown.tsx\n?? src/components/menubar/StatusGlyphs.tsx\n?? src/components/system/SystemOverlays.tsx\n?? src/components/system/ThemePanel.tsx\n[... 23 more untracked files ...]",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "evidence": "windows-store.tsx: focusWindow/closeWindow now use windowsRef + pure setWindows updaters (side effects moved out); test focus-menu-bar.test.tsx uses real render+click+assert on <App/>; build (441 modules) + vitest (1 pass) + oxlint (0/0) all green",
+      "id": "F1",
+      "rationale": "Load-bearing steps use real build/lint AND a runtime test that renders <App/>, clicks a Dock icon, and asserts the menu bar re-titles — the focus→menu-bar wiring is now executed, not proxy-verified.",
+      "verdict": "pass"
+    },
+    {
+      "evidence": "App.tsx composes ThemeProvider → OsProvider → WindowsProvider → Desktop(MenuBar + WindowManager + Dock + SystemOverlays); pnpm dev boots to the shell; pnpm build exit 0; pnpm exec vitest 1/1 passed",
+      "id": "F2",
+      "rationale": "Phase 1's goal — scaffold + Liquid Glass + desktop + menu bar + Dock + window manager + theming proven with a stub app — is met and runtime-tested.",
+      "verdict": "pass"
+    },
+    {
+      "evidence": "n/a — stubs are explicitly consumed by later phases (Phase 3 apps, Phase 2 Control Center); nothing unplanned was dropped",
+      "id": "F3",
+      "rationale": "Nothing deferred beyond plan: Phase 1 stubs (non-Finder apps show placeholder content, ThemePanel is a Control Center preview) are explicitly consumed by later phases.",
+      "verdict": "pass"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

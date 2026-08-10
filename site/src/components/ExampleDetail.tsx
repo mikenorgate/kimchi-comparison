@@ -65,6 +65,40 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
         </div>
       </section>
 
+      {example.tokenUsage && (
+        <section className="detail-section">
+          <h2>Token Usage</h2>
+          <div className="metrics-row">
+            <div className="metric-card">
+              <span className="metric-card__label">Input</span>
+              <span className="metric-card__value">{example.tokenUsage.inputTokens.toLocaleString()}</span>
+            </div>
+            <div className="metric-card">
+              <span className="metric-card__label">Cache Read</span>
+              <span className="metric-card__value">{example.tokenUsage.cachedInputTokens.toLocaleString()}</span>
+            </div>
+            <div className="metric-card">
+              <span className="metric-card__label">Cache Write</span>
+              <span className="metric-card__value">{example.tokenUsage.cacheWriteTokens.toLocaleString()}</span>
+            </div>
+            <div className="metric-card">
+              <span className="metric-card__label">Output</span>
+              <span className="metric-card__value">{example.tokenUsage.outputTokens.toLocaleString()}</span>
+            </div>
+            {example.tokenUsage.reasoningTokens > 0 && (
+              <div className="metric-card">
+                <span className="metric-card__label">Reasoning</span>
+                <span className="metric-card__value">{example.tokenUsage.reasoningTokens.toLocaleString()}</span>
+              </div>
+            )}
+            <div className="metric-card">
+              <span className="metric-card__label">Requests</span>
+              <span className="metric-card__value">{example.tokenUsage.requests}</span>
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="detail-section">
         <h2>Agent Q&amp;A</h2>
         {example.questionsAndAnswers.length === 0 ? (

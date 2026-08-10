@@ -17,9 +17,17 @@
     "agent": "claude",
     "model": "Fable 5",
     "durationMs": 1140000,
-    "cost": "$8.79",
+    "cost": "$5.43",
     "fermentId": null,
-    "thinkingLevel": "enabled"
+    "thinkingLevel": "enabled",
+    "tokenUsage": {
+      "inputTokens": 23708,
+      "cachedInputTokens": 4412139,
+      "cacheWriteTokens": 335719,
+      "outputTokens": 184880,
+      "reasoningTokens": 0,
+      "requests": 60
+    }
   },
   {
     "id": "ferment-full-kimi2-7",
@@ -149,9 +157,17 @@
     "agent": "codex",
     "model": "GPT-5.5",
     "durationMs": 382000,
-    "cost": "$1.15",
+    "cost": "$0.16",
     "fermentId": null,
-    "thinkingLevel": "default"
+    "thinkingLevel": "default",
+    "tokenUsage": {
+      "inputTokens": 61224,
+      "cachedInputTokens": 42496,
+      "cacheWriteTokens": 18728,
+      "outputTokens": 1555,
+      "reasoningTokens": 0,
+      "requests": 4
+    }
   },
   {
     "id": "codex-gpt5-6-luna",
@@ -171,9 +187,17 @@
     "agent": "codex",
     "model": "GPT-5.6 Luna",
     "durationMs": 5862000,
-    "cost": "$0.04",
+    "cost": "$0.05",
     "fermentId": null,
-    "thinkingLevel": "default"
+    "thinkingLevel": "default",
+    "tokenUsage": {
+      "inputTokens": 453119,
+      "cachedInputTokens": 363136,
+      "cacheWriteTokens": 89983,
+      "outputTokens": 17150,
+      "reasoningTokens": 0,
+      "requests": 15
+    }
   },
   {
     "id": "singleshot-multimodel",
@@ -263,7 +287,15 @@
     "durationMs": 108000,
     "cost": "$1.02",
     "fermentId": null,
-    "thinkingLevel": "default"
+    "thinkingLevel": "default",
+    "tokenUsage": {
+      "inputTokens": 457509,
+      "cachedInputTokens": 416000,
+      "cacheWriteTokens": 41509,
+      "outputTokens": 18373,
+      "reasoningTokens": 0,
+      "requests": 15
+    }
   },
   {
     "id": "codex-gpt5-6-sol-xhigh",
@@ -285,7 +317,15 @@
     "durationMs": 346000,
     "cost": "$2.92",
     "fermentId": null,
-    "thinkingLevel": "xhigh"
+    "thinkingLevel": "xhigh",
+    "tokenUsage": {
+      "inputTokens": 1759184,
+      "cachedInputTokens": 1665536,
+      "cacheWriteTokens": 93648,
+      "outputTokens": 50044,
+      "reasoningTokens": 0,
+      "requests": 30
+    }
   },
   {
     "id": "singleshot-glm5-2-max",
@@ -329,7 +369,15 @@
     "durationMs": 1345405,
     "cost": "$8.78",
     "fermentId": null,
-    "thinkingLevel": "enabled"
+    "thinkingLevel": "enabled",
+    "tokenUsage": {
+      "inputTokens": 44431,
+      "cachedInputTokens": 29205234,
+      "cacheWriteTokens": 494332,
+      "outputTokens": 161439,
+      "reasoningTokens": 0,
+      "requests": 243
+    }
   },
   {
     "id": "ferment-glm5-2",
@@ -373,6 +421,14 @@
     "durationMs": 3238705,
     "cost": "$4.15",
     "fermentId": null,
-    "thinkingLevel": "default"
+    "thinkingLevel": "default",
+    "tokenUsage": {
+      "inputTokens": 1377343,
+      "cachedInputTokens": 6910592,
+      "cacheWriteTokens": 0,
+      "outputTokens": 85286,
+      "reasoningTokens": 10805,
+      "requests": 108
+    }
   }
 ]

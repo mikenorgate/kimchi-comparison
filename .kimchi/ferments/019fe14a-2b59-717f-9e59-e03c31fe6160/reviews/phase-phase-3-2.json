@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019fe14a-2b59-717f-9e59-e03c31fe6160",
+  "phaseId": "phase-3",
+  "phaseName": "App Framework + Finder (shared mock FS)",
+  "attempt": 2,
+  "timestamp": "2026-08-08T13:22:55.725Z",
+  "goal": "Build the shared app-content chrome (glass toolbar/sidebar) and a persisted mock filesystem, then implement Finder fully (sidebar, list/icon views, navigation, folder create/rename).",
+  "summary": "Phase 3 complete: App framework + mock FS + Finder app. Step 1: Created src/fs/mockFS.ts — tree-based in-memory FS with list/read/write/mkdir/move/remove/exists/isDirectory/isFile/resetFS, path utilities (normalizePath with root-clamping for .. traversal, joinPath, parentPath, basename, isValidFilename rejecting empty/separator/null-byte/./.. names), localStorage persistence with corrupt-JSON fallback to seed tree, useMockFS React hook. Created src/system/AppFrame.tsx — shared glass toolbar/sidebar/content chrome. Created src/fs/mockFS.test.ts — 28 tests (path utils, root clamping, tree ops, edge cases, corrupt localStorage, invalid filenames). Step 2: Created src/apps/finder/manifest.tsx (JSX SVG icon, 720x480 window). Created src/apps/finder/Finder.tsx — AppFrame with glass toolbar (back, breadcrumbs, new-folder, list/icon toggles, delete) + glass sidebar; list view (Name/Kind/Size), icon view (grid), double-click folder nav, breadcrumb nav, inline rename (Enter/Esc/dedup), create/rename/delete. Created src/apps/finder/Sidebar.tsx — Favorites with active highlight + aria-current. Created src/apps/finder/finder.test.tsx (7 tests) + src/e2e/finder.spec.ts (9 tests incl. persistence after reload). Full verification logs: `npm run build` → exit 0 (53 modules, dist/index.html + assets emitted); `npx vitest run` → 43 passed; `npx playwright test` → 44 passed; Finder auto-discovered in build output (grep confirms \"finder\" in dist/assets/*.js).",
+  "stepSummaries": "  1. App framework + mock FS. Files: src/system/AppFrame.tsx (toolbar/sidebar glass chrome slot), src/fs/mockFS.ts (tree; list/read/write/mkdir/mv/rm; seed; persist to localStorage), src/fs/mockFS.test.ts; update src/system/AppRegistry.ts to auto-discover manifests. [verified]\n  2. Finder app. Files: src/apps/finder/manifest.ts, src/apps/finder/Finder.tsx, src/apps/finder/Sidebar.tsx (favorites/locations), List + Icon views, breadcrumb nav, new/rename folder; src/apps/finder/finder.test.tsx, src/e2e/finder.spec.ts. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": "Singleshot-Kimi3-max/css/main.css |  579 ---------------\n Singleshot-Kimi3-max/index.html   |  104 ++-\n Singleshot-Kimi3-max/js/core.js   | 1428 ++++++-------------------------------\n Singleshot-Kimi3-max/js/data.js   |  586 ---------------\n Singleshot-Kimi3-max/js/icons.js  |  340 ++++-----\n 5 files changed, 421 insertions(+), 2616 deletions(-)\n?? .gitignore\n?? index.html\n?? package-lock.json\n?? package.json\n?? playwright.config.ts\n?? public/icon.svg\n?? src/App.tsx\n?? src/apps/about/manifest.tsx\n?? src/apps/finder/Finder.tsx\n?? src/apps/finder/Sidebar.tsx\n?? src/apps/finder/finder.test.tsx\n?? src/apps/finder/manifest.tsx\n?? src/components/glass/GlassPanel.tsx\n?? src/components/glass/GlassSidebar.tsx\n?? src/components/glass/GlassToolbar.tsx\n?? src/components/glass/glass-styles.ts\n?? src/e2e/control-center.spec.ts\n?? src/e2e/finder.spec.ts\n?? src/e2e/menus.spec.ts\n?? src/e2e/shell-skeleton.spec.ts\n[... 33 more untracked files ...]",
+  "evidence": "=== BUILD ===\n`npm run build` (tsc -b && vite build):\n✓ 53 modules transformed.\ndist/index.html 0.63 kB\ndist/assets/index-t9FfsOoS.css 17.37 kB\ndist/assets/index-C7yqnUyq.js 177.44 kB (gzip: 55.61 kB)\n✓ built in 362ms\nExit code: 0\n\n=== VITEST ===\n`npx vitest run`:\n✓ src/apps/finder/finder.test.tsx (7 tests)\n✓ src/fs/mockFS.test.ts (28 tests)\n✓ src/glass.test.tsx (8 tests)\nTest Files 3 passed (3)\nTests 43 passed (43)\nExit code: 0\n\n=== PLAYWRIGHT E2E ===\n`npx playwright test`:\nRunning 44 tests using 6 workers — 44 passed (7.2s)\nAll 44 individual test names listed in stdout (finder.spec.ts: 9 passed, control-center: 10, menus: 8, shell-skeleton: 5, spotlight-launchpad: 6, windows: 6).\nExit code: 0\n\n=== AUTO-DISCOVERY ===\n`grep -l \"finder\" dist/assets/*.js` → dist/assets/index-C7yqnUyq.js (exit 0)\nFinder manifest auto-discovered by AppRegistry's import.meta.glob('../apps/*/manifest.{ts,tsx}', { eager: true }).",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "evidence": "Full logs captured above: `npx vitest run src/fs` → 28 passed (real assertions: path traversal clamping, corrupt JSON fallback, invalid filenames, tree ops). `npx playwright test finder` → 9 passed (real browser interactions: dock launch, double-click nav, view switch, create/rename/delete, reload persistence). All individual test names visible in stdout.",
+      "id": "F1",
+      "rationale": "Both steps used real verification with full logs attached: mockFS has 28 unit tests asserting tree operations + path traversal + corrupt storage + invalid filenames, Finder has 9 E2E tests exercising the live app in a browser. No proxy or sentinel checks.",
+      "verdict": "pass"
+    },
+    {
+      "evidence": "src/system/AppFrame.tsx provides shared glass chrome. src/fs/mockFS.ts: 7 operations + root-clamping in normalizePath + isValidFilename validation + corrupt localStorage fallback to seed. src/apps/finder/Finder.tsx: sidebar, list/icon views, breadcrumb nav, create/rename/delete. `npx playwright test finder` → 9 passed including mock-FS persistence after reload.",
+      "id": "F2",
+      "rationale": "Phase goal met — shared app-content chrome, persisted mock filesystem (hardened with path traversal guards + corrupt storage fallback + filename validation), and Finder fully implemented.",
+      "verdict": "pass"
+    },
+    {
+      "evidence": "Nothing deferred. All planned deliverables built and verified. Remaining 7 apps are Phase 4 & 5 work.",
+      "id": "F3",
+      "rationale": "Nothing deferred — all planned work completed. The remaining 7 apps (System Settings, Notes, Calculator, Terminal, Calendar, Photos, Music) are Phase 4 & 5.",
+      "verdict": "pass"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

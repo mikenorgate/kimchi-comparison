@@ -18,5 +18,13 @@
   "durationMs": 1345405,
   "cost": "$8.78",
   "thinkingLevel": "enabled",
-  "fermentId": null
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 44431,
+    "cachedInputTokens": 29205234,
+    "cacheWriteTokens": 494332,
+    "outputTokens": 161439,
+    "reasoningTokens": 0,
+    "requests": 243
+  }
 }

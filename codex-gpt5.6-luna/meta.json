@@ -16,7 +16,15 @@
   "agent": "codex",
   "model": "GPT-5.6 Luna",
   "durationMs": 5862000,
-  "cost": "$0.04",
+  "cost": "$0.05",
   "thinkingLevel": "default",
-  "fermentId": null
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 453119,
+    "cachedInputTokens": 363136,
+    "cacheWriteTokens": 89983,
+    "outputTokens": 17150,
+    "reasoningTokens": 0,
+    "requests": 15
+  }
 }

@@ -3,6 +3,15 @@ export interface QuestionAnswer {
   answer: string;
 }
 
+export interface TokenUsage {
+  inputTokens: number;
+  cachedInputTokens: number;
+  cacheWriteTokens: number;
+  outputTokens: number;
+  reasoningTokens: number;
+  requests: number;
+}
+
 export interface Example {
   id: string;
   title: string;
@@ -19,4 +28,5 @@ export interface Example {
   cost: string | null;
   thinkingLevel: string | null;
   fermentId: string | null;
+  tokenUsage?: TokenUsage;
 }
