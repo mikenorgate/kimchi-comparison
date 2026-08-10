@@ -90,12 +90,15 @@ export function Window({
 
   const handleTitlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
+      onFocus()
       if (isMaximized || !onMove) return
       if (e.button !== 0) return
+      const target = e.target as HTMLElement
+      if (target.closest('button')) return
       e.preventDefault()
-      const target = e.currentTarget
-      if (typeof target.setPointerCapture === 'function' && e.pointerId != null) {
-        target.setPointerCapture(e.pointerId)
+      const currentTarget = e.currentTarget
+      if (typeof currentTarget.setPointerCapture === 'function' && e.pointerId != null) {
+        currentTarget.setPointerCapture(e.pointerId)
       }
       dragStartRef.current = {
         x: e.clientX,
@@ -104,7 +107,7 @@ export function Window({
         startY: y,
       }
     },
-    [isMaximized, onMove, x, y],
+    [isMaximized, onMove, onFocus, x, y],
   )
 
   const handleTitlePointerMove = useCallback(
@@ -215,7 +218,7 @@ export function Window({
           ? '0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1)'
           : '0 12px 40px rgba(0,0,0,0.25)',
       }}
-      onMouseDown={onFocus}
+      onPointerDown={onFocus}
       role="dialog"
       aria-modal="false"
       aria-label={title}
@@ -267,7 +270,8 @@ export function Window({
       </div>
       {!isMaximized && (
         <div
-          className="absolute bottom-0 right-0 w-4 h-4 cursor-nwse-resize"
+          data-testid="window-resize-handle"
+          className="absolute bottom-0 right-0 w-6 h-6 cursor-nwse-resize"
           style={{ zIndex: 10 }}
           onPointerDown={handleResizePointerDown}
           onPointerMove={handleResizePointerMove}

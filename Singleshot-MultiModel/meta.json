@@ -1,0 +1,48 @@
+{
+  "id": "singleshot-multimodel",
+  "title": "macOS Tahoe — Multi-model (Kimi K2.7 + MiniMax M3)",
+  "approach": "React + Vite + TypeScript desktop with Zustand state",
+  "workflow": "oneshot",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "I can deliver a polished, working MVP of the checked items in one session. \"Every macOS app and menu\" would require many sessions. Should I proceed with the selected MVP scope now?",
+      "answer": "Yes"
+    }
+  ],
+  "sourcePath": "Singleshot-MultiModel",
+  "buildCommand": "npm run build",
+  "entryPoint": "index.html",
+  "agent": "kimchi",
+  "model": "Multi-model",
+  "durationMs": 7396000,
+  "cost": "$3.53",
+  "thinkingLevel": "enabled",
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 1928921,
+    "cachedInputTokens": 14867008,
+    "cacheWriteTokens": 0,
+    "outputTokens": 415330,
+    "reasoningTokens": 0,
+    "requests": 103
+  },
+  "subagents": [
+    {"type": "Reviewer", "model": "Kimi K2.7", "description": "Verify macOS Tahoe spec"},
+    {"type": "Reviewer", "model": "Kimi K2.7", "description": "Re-verify revised macOS Tahoe spec"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 1: project scaffolding + stores"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 2: Desktop + MenuBar + Dock"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 3: Window manager"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 3: Window manager focused"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 4: Finder app"},
+    {"type": "Fixer", "model": "MiniMax M3", "description": "Fix Finder test isolation"},
+    {"type": "Fixer", "model": "MiniMax M3", "description": "Fix Finder test failures"},
+    {"type": "Fixer", "model": "MiniMax M3", "description": "Fix remaining Finder test failures"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 5: Calculator + Notes"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 6: Terminal app"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 7: Safari + Settings"},
+    {"type": "Builder", "model": "MiniMax M3", "description": "Chunk 8: shortcuts + integration"},
+    {"type": "Reviewer", "model": "Kimi K2.7", "description": "Final review of Tahoe prototype"},
+    {"type": "Fixer", "model": "MiniMax M3", "description": "Apply review fixes"}
+  ]
+}

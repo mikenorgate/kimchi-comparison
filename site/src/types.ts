@@ -12,6 +12,12 @@ export interface TokenUsage {
   requests: number;
 }
 
+export interface Subagent {
+  type: string;
+  model: string;
+  description: string;
+}
+
 export interface Example {
   id: string;
   title: string;
@@ -29,4 +35,5 @@ export interface Example {
   thinkingLevel: string | null;
   fermentId: string | null;
   tokenUsage?: TokenUsage;
+  subagents?: Subagent[];
 }

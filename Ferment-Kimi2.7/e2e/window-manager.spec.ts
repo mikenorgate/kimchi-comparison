@@ -25,7 +25,6 @@ test.describe('Window Manager', () => {
     )
     expect(initialFinderZ).toBeLessThan(initialSafariZ)
 
-    // Click on the Finder window (currently behind Safari) to bring it front.
     await finder.locator('[data-testid="window-titlebar"]').click()
 
     const nextFinderZ = await finder.evaluate((el) =>
@@ -42,11 +41,11 @@ test.describe('Window Manager', () => {
     const boxBefore = await finder.boundingBox()
     expect(boxBefore).not.toBeNull()
 
-    const titlebar = finder.locator('[data-testid="window-titlebar"]')
-    await titlebar.dragTo(titlebar, {
-      sourcePosition: { x: 200, y: 10 },
-      targetPosition: { x: 280, y: 80 },
-    })
+    // Drag from the title bar (well inside Finder, clear of Safari) down/right.
+    await page.mouse.move(boxBefore!.x + 80, boxBefore!.y + 10)
+    await page.mouse.down()
+    await page.mouse.move(boxBefore!.x + 160, boxBefore!.y + 80)
+    await page.mouse.up()
 
     const boxAfter = await finder.boundingBox()
     expect(boxAfter!.x).toBeGreaterThan(boxBefore!.x)
@@ -58,11 +57,17 @@ test.describe('Window Manager', () => {
     const boxBefore = await finder.boundingBox()
     expect(boxBefore).not.toBeNull()
 
-    const handle = finder.locator('.cursor-nwse-resize')
-    await handle.dragTo(handle, {
-      sourcePosition: { x: 8, y: 8 },
-      targetPosition: { x: 80, y: 60 },
-    })
+    const handle = finder.locator('[data-testid="window-resize-handle"]')
+    const handleBox = await handle.boundingBox()
+    expect(handleBox).not.toBeNull()
+
+    // Drag the bottom-right resize handle down/right (staying clear of Safari).
+    const startX = handleBox!.x + handleBox!.width / 2
+    const startY = handleBox!.y + handleBox!.height / 2
+    await page.mouse.move(startX, startY)
+    await page.mouse.down()
+    await page.mouse.move(startX + 80, startY + 70)
+    await page.mouse.up()
 
     const boxAfter = await finder.boundingBox()
     expect(boxAfter!.width).toBeGreaterThan(boxBefore!.width)

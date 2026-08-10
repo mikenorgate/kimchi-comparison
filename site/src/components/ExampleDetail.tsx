@@ -99,6 +99,25 @@ export function ExampleDetail({ example }: ExampleDetailProps) {
         </section>
       )}
 
+      {example.subagents && example.subagents.length > 0 && (
+        <section className="detail-section">
+          <h2>Subagents ({example.subagents.length})</h2>
+          <div className="qa-list">
+            {example.subagents.map((sa, index) => (
+              <div key={index} className="qa-item">
+                <div className="qa-question">
+                  <span className={`agent-badge ${sa.model.includes('Kimi') ? 'agent--kimchi' : 'agent--codex'}`} style={{marginRight: '8px'}}>
+                    {sa.model}
+                  </span>
+                  {sa.type}
+                </div>
+                <div className="qa-answer">{sa.description}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="detail-section">
         <h2>Agent Q&amp;A</h2>
         {example.questionsAndAnswers.length === 0 ? (

@@ -204,7 +204,7 @@
       Bus.emit('running', id);
       // un-hide existing windows on re-launch
       const existing = windows.filter(w => w.appId === id && !w.closed);
-      if (!wasRunning && Mac.Dock) Mac.Dock.bounce(id);
+      if (!wasRunning) setTimeout(() => { if (Mac.Dock) Mac.Dock.bounce(id); }, 80);
       if (existing.length && !args) {
         existing.forEach(w => { if (w.state === 'hidden') w.state = 'normal'; });
         existing[0].focus();

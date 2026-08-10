@@ -54,7 +54,11 @@
     mq.addEventListener('change', applyAppearance);
     applyAll();
     buildDesktopCtx();
-    bootEl().classList.remove('hidden');
+    const b = bootEl();
+    b.classList.remove('hidden');
+    b.querySelector('.boot-logo').style.display = '';
+    document.querySelector('.boot-bar').style.display = '';
+    document.body.style.cursor = '';
     document.getElementById('boot-msg').classList.add('hidden');
     const prog = document.getElementById('boot-progress');
     prog.style.width = '0%';
@@ -108,10 +112,12 @@
     document.getElementById('menubar').classList.remove('hidden');
     document.getElementById('dock').classList.remove('hidden');
     Mac.Menus.renderExtras();
+    Mac.Menus.render();
     Mac.Dock.render();
     if (Mac.Finder.renderDesktopIcons) Mac.Finder.renderDesktopIcons();
     if (first) {
       Mac.wm.setActiveApp('finder');
+      setTimeout(() => Mac.openFinder(Mac.FS.HOME + '/Desktop'), 400);
       setTimeout(() => notify({ title: 'Welcome back, ' + S().get('username'), body: 'Press ⌘Space for Spotlight, or explore the Dock to get started.', icon: 'finder', appId: 'finder' }), 900);
     }
   }

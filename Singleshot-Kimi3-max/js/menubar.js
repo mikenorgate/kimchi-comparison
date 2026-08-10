@@ -290,7 +290,8 @@
     // global system keys handled in system.js (spotlight etc.) via 'syskey' capture
     if (!(e.metaKey || e.ctrlKey)) return;
     const key = e.key.toLowerCase();
-    for (const acc of accelMap) {
+    const ordered = accelMap.slice().reverse(); // app-specific menus take precedence over the Apple menu
+    for (const acc of ordered) {
       if (acc.key !== key) continue;
       if (!!e.shiftKey !== !!acc.mods.shift || !!e.altKey !== !!acc.mods.alt) continue;
       if (!acc.enabled()) continue;

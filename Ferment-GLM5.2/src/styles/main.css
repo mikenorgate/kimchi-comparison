@@ -1,8 +1,148 @@
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════════════════
+   macOS Tahoe — Liquid Glass Design System @theme tokens
+   Tailwind v4 maps these to utility classes (e.g. bg-glass, shadow-window)
+   ════════════════════════════════════════════════════════════════ */
+@theme {
+  /* ── Color Palette ─────────────────────────────────────────────── */
+  --color-white: #ffffff;
+  --color-gray-50: #f5f5f7;
+  --color-gray-100: #e8e8ed;
+  --color-gray-200: #d1d1d6;
+  --color-gray-300: #b0b0b5;
+  --color-gray-400: #8e8e93;
+  --color-gray-500: #636366;
+  --color-gray-600: #48484a;
+  --color-gray-700: #3a3a3c;
+  --color-gray-800: #2c2c2e;
+  --color-gray-900: #1c1c1e;
+  --color-black: #000000;
+
+  /* Tahoe accent colors */
+  --color-blue: #0a84ff;
+  --color-blue-dark: #0a6fff;
+  --color-purple: #bf5af2;
+  --color-pink: #ff375f;
+  --color-red: #ff453a;
+  --color-orange: #ff9f0a;
+  --color-yellow: #ffd60a;
+  --color-green: #32d74b;
+  --color-teal: #64d2ff;
+  --color-indigo: #5e5ce6;
+
+  /* ── Border Radii (Squircle approximation) ─────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-window: 16px;
+  --radius-panel: 14px;
+  --radius-dock: 22px;
+  --radius-menu: 10px;
+  --radius-pill: 9999px;
+
+  /* ── Backdrop Blur & Saturate ─────────────────────────────────── */
+  --blur-standard: 20px;
+  --blur-bar: 24px;
+  --blur-heavy: 40px;
+  --blur-reduced: 4px;
+  --saturate-standard: 1.8;
+  --saturate-bar: 2.0;
+  --saturate-heavy: 2.5;
+  --saturate-reduced: 1.0;
+
+  /* ── Box Shadows (Depth) ─────────────────────────────────────── */
+  --shadow-window: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-window-dark: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --shadow-dock: 0 0 0 0.5px rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --shadow-menu: 0 6px 24px rgba(0, 0, 0, 0.22), 0 1px 4px rgba(0, 0, 0, 0.12);
+  --shadow-specular: inset 0 1px 1px rgba(255, 255, 255, 0.35), inset 0 -0.5px 0.5px rgba(0, 0, 0, 0.06);
+  --shadow-specular-dark: inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -0.5px 0.5px rgba(0, 0, 0, 0.2);
+
+  /* ── Gradients (Specular Highlights) ─────────────────────────── */
+  --gradient-specular-top: linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.04) 30%, transparent 50%);
+  --gradient-specular-top-dark: linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 50%);
+  --gradient-chrome-bar: linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+  --gradient-chrome-bar-dark: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+  --gradient-dock-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04));
+  --gradient-dock-bg-dark: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  --gradient-menubar-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  --gradient-menubar-bg-dark: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.12));
+
+  /* ── Spacing ─────────────────────────────────────────────────── */
+  --spacing-0_5: 2px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* ── Typography ─────────────────────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --font-size-xxs: 0.625rem;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ── Motion ──────────────────────────────────────────────────── */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.25s;
+  --duration-slow: 0.4s;
+  --duration-slower: 0.6s;
+  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-genie: cubic-bezier(0.55, 0.0, 0.45, 1);
+
+  /* ── Z-Index ────────────────────────────────────────────────── */
+  --z-desktop: 0;
+  --z-windows: 100;
+  --z-window-focused: 200;
+  --z-dock: 900;
+  --z-menubar: 1000;
+  --z-menu-dropdown: 1100;
+  --z-spotlight: 1200;
+  --z-control-center: 1150;
+  --z-notification-center: 1150;
+  --z-modal: 2000;
+  --z-toast: 3000;
+
+  /* ── Layout ──────────────────────────────────────────────────── */
+  --height-menubar: 28px;
+  --height-dock: 72px;
+  --size-dock-icon: 52px;
+  --size-dock-icon-magnified: 72px;
+  --spacing-dock: 8px;
+  --min-width-window: 320px;
+  --min-height-window: 200px;
+  --min-width-sidebar: 180px;
+  --width-sidebar-default: 220px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Base Styles
+   ════════════════════════════════════════════════════════════════ */
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,4 +156,82 @@ body {
 #root {
   width: 100vw;
   height: 100vh;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Appearance Mode Classes — applied to <html> by the settings store
+   ════════════════════════════════════════════════════════════════ */
+html.appearance-light {
+  color-scheme: light;
+}
+
+html.appearance-dark {
+  color-scheme: dark;
+}
+
+html.appearance-tinted {
+  color-scheme: light;
+}
+
+/* Reduce Transparency: weaker backdrop blur/saturate */
+html.reduce-transparency .glass-surface {
+  backdrop-filter: blur(var(--blur-reduced)) saturate(var(--saturate-reduced)) !important;
+  -webkit-backdrop-filter: blur(var(--blur-reduced)) saturate(var(--saturate-reduced)) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Glass Surface Utility — the core Liquid Glass treatment
+   Applied via class="glass-surface" on any element needing translucency
+   ════════════════════════════════════════════════════════════════ */
+.glass-surface {
+  backdrop-filter: blur(var(--blur-standard)) saturate(var(--saturate-standard));
+  -webkit-backdrop-filter: blur(var(--blur-standard)) saturate(var(--saturate-standard));
+}
+
+.glass-surface-heavy {
+  backdrop-filter: blur(var(--blur-heavy)) saturate(var(--saturate-heavy));
+  -webkit-backdrop-filter: blur(var(--blur-heavy)) saturate(var(--saturate-heavy));
+}
+
+.glass-surface-bar {
+  backdrop-filter: blur(var(--blur-bar)) saturate(var(--saturate-bar));
+  -webkit-backdrop-filter: blur(var(--blur-bar)) saturate(var(--saturate-bar));
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Scrollbar styling — thin overlay scrollbars like macOS
+   ════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-pill);
+}
+
+html.appearance-dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+html.appearance-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

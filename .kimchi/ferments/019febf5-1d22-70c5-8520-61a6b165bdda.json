@@ -45,38 +45,56 @@
           "id": "step-1",
           "index": 1,
           "description": "Scaffold Vite + React 19 + TypeScript (strict) project at /Users/mike/tmp/Ferment-GLM5.2; add Tailwind v4 (@tailwindcss/vite plugin, `@import \"tailwindcss\"` in src/styles/main.css), pnpm, path aliases, eslint. Files: package.json, vite.config.ts, tsconfig.json, index.html, src/main.tsx, src/App.tsx, src/styles/main.css.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm install && pnpm build",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T14:02:12.825Z"
+          "startedAt": "2026-08-10T14:02:12.825Z",
+          "completedAt": "2026-08-10T14:08:53.354Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:08:53.354Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Define design tokens (src/design-system/tokens.ts + @theme block in main.css): Tahoe palette, squircle radii, backdrop blur+saturate values, specular highlight gradients, depth box-shadows, -apple-system font stack, spacing scale.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm build && test -f src/design-system/tokens.ts",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:09:57.696Z",
+          "completedAt": "2026-08-10T14:12:32.827Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:12:32.827Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Build glass primitives: GlassPanel, Menu/MenuItem, Button, Squircle (CSS squircle border-radius), Toolbar, Sidebar in src/design-system/.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm lint && pnpm exec vitest run",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:12:36.559Z"
         },
         {
           "id": "step-4",
@@ -469,9 +487,18 @@
     }
   ],
   "decisions": [],
-  "memories": [],
+  "memories": [
+    {
+      "id": "M001",
+      "category": "gotcha",
+      "content": "pnpm 11.5.2 requires `onlyBuiltDependencies` in `pnpm-workspace.yaml` (not package.json's `pnpm` field, not .npmrc). Format: YAML list under `onlyBuiltDependencies:` key. Without it, `pnpm install` exits 1 with ERR_PNPM_IGNORED_BUILDS for esbuild. The packages still link correctly, but the exit code blocks scripted verification. Fix: create pnpm-workspace.yaml with `onlyBuiltDependencies:\\n  - esbuild`.",
+      "phaseId": "phase-1",
+      "stepId": "step-1",
+      "createdAt": "2026-08-10T14:08:53.351Z"
+    }
+  ],
   "createdAt": "2026-08-10T13:55:37.378Z",
-  "updatedAt": "2026-08-10T14:02:12.825Z",
+  "updatedAt": "2026-08-10T14:12:36.559Z",
   "goal": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
   "successCriteria": [
     "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.",
