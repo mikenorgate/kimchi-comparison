@@ -102,7 +102,7 @@ test.describe('Window Manager', () => {
     await expect(win).not.toBeVisible()
   })
 
-  test('minimize button minimizes the window', async ({ page }) => {
+  test('minimize button minimizes the window with genie animation', async ({ page }) => {
     await page.goto('/')
 
     await page.getByTestId('dock-icon-notes').click()
@@ -112,8 +112,15 @@ test.describe('Window Manager', () => {
     // Click minimize
     await page.getByTestId('traffic-minimize').click()
 
-    // Window should be hidden (minimized)
-    await expect(win).not.toBeVisible()
+    // Window should have genie animation class applied
+    await expect(win).toHaveClass(/window-minimizing/)
+
+    // Verify the CSS animation is genie-minimize via computed style
+    const animationName = await win.evaluate((el) => getComputedStyle(el).animationName)
+    expect(animationName).toBe('genie-minimize')
+
+    // After genie animation completes (0.4s + buffer), window should be hidden via onAnimationEnd
+    await expect(win).not.toBeVisible({ timeout: 10000 })
   })
 
   test('maximize button toggles fullscreen', async ({ page }) => {

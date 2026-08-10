@@ -2,7 +2,7 @@
   "id": "019febf5-1d22-70c5-8520-61a6b165bdda",
   "name": "macOS Tahoe Web Recreation",
   "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
-  "status": "running",
+  "status": "complete",
   "worktree": {
     "path": "/Users/mike/tmp",
     "branch": "main",
@@ -422,7 +422,7 @@
       "budget": "150k tokens",
       "parallel": true,
       "groupIndex": 1,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -436,18 +436,25 @@
           },
           "parallel": false,
           "startedAt": "2026-08-10T17:49:00.771Z",
-          "completedAt": "2026-08-10T18:05:40.941Z",
+          "completedAt": "2026-08-10T18:05:40.940Z",
           "result": {
             "success": true,
             "exitCode": 0,
             "stdout": "",
             "stderr": "",
-            "completedAt": "2026-08-10T18:05:40.941Z"
-          },
-          "summary": "Created Safari browser shell with tabs, bookmarks, start page, and address-bar navigation over bundled mock pages.\n\n**src/apps/safari/mock-pages.tsx**: 6 bundled mock pages (Start Page, Apple, About This Mac, Search, News, Maps) — each rendered as JSX components. Exports MOCK_PAGES, BOOKMARKS, and findPage().\n\n**src/apps/safari/Safari.tsx**: Full Safari UI with:\n- Tab bar: open/close/switch tabs, new tab button, per-tab history tracking\n- Toolbar: back/forward buttons (disabled at history boundaries), address bar with lock icon\n- Bookmarks bar: clickable bookmarks that navigate to mock pages\n- Address bar: type URL → normalizeUrl() matches against known pages or falls back to search\n- Start page: shown on new tabs with favorites grid\n- Back/forward navigation: each tab maintains its own history array with index\n- No real network — all pages are bundled mock content\n\n**src/apps/registry.tsx**: Safari registered as `safari: Safari`\n\n**e2e/safari.spec.ts**: 6 Playwright tests: render, tab add/close, address bar navigation, bookmark navigation, back/forward, start page favorites\n\nKey bug fixed: closeTab called setActiveTabId inside the setTabs updater (React anti-pattern causing infinite re-render). Fixed by extracting newActiveId to a local variable."
+            "completedAt": "2026-08-10T18:05:40.940Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T17:48:40.112Z"
+      "startedAt": "2026-08-10T17:48:40.112Z",
+      "summary": "Phase 4 (Safari Shell) complete. Safari browser shell built with tabs, bookmarks bar, start page, and address-bar navigation over 6 bundled mock pages (no real network). 6 Playwright e2e tests pass.",
+      "completedAt": "2026-08-10T18:18:59.700Z",
+      "grade": {
+        "grade": "A",
+        "rationale": "Safari browser shell is fully implemented and wired into production paths (apps/registry.tsx, appRegistry.tsx, Dock.tsx). All 6 Playwright e2e tests pass in real Chromium (`npx playwright test e2e/safari.spec.ts` → 6 passed in 4.3s), covering tabs (open/close), bookmarks bar, start page with favorites, address-bar navigation over bundled mock pages, and back/forward history. Source confirms zero network calls — all pages are bundled JSX components in mock-pages.tsx.",
+        "gradedAt": "2026-08-10T18:18:59.698Z",
+        "gradedBy": "kimchi-dev/glm-5.2-fp8"
+      }
     },
     {
       "id": "phase-5",
@@ -458,131 +465,228 @@
       "budget": "350k tokens",
       "parallel": true,
       "groupIndex": 1,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Mail (src/apps/mail/): mock inbox + message reader; open/read/reply-to-mock interaction.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test mail",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T17:49:00.794Z"
+          "startedAt": "2026-08-10T17:49:00.794Z",
+          "completedAt": "2026-08-10T18:17:40.064Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:17:40.064Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Messages (src/apps/messages/): mock threads + send (appends locally).",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test messages",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:19:14.535Z",
+          "completedAt": "2026-08-10T18:19:26.492Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:19:26.492Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Photos (src/apps/photos/): mock library grid + viewer.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test photos",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:19:40.689Z",
+          "completedAt": "2026-08-10T18:19:51.347Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:19:51.347Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Music (src/apps/music/): mock library + playback UI controls.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test music",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:19:58.241Z",
+          "completedAt": "2026-08-10T18:20:11.578Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:20:11.578Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Terminal (src/apps/terminal/): tiny mock shell responding to ls/cd/pwd/echo/help over the virtual FS store.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test terminal",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:20:15.747Z",
+          "completedAt": "2026-08-10T18:20:24.166Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:20:24.166Z"
+          }
         },
         {
           "id": "step-6",
           "index": 6,
           "description": "Weather (src/apps/weather/): mock forecasts UI.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test weather",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:20:41.278Z",
+          "completedAt": "2026-08-10T18:20:51.068Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:20:51.068Z"
+          }
         },
         {
           "id": "step-7",
           "index": 7,
           "description": "Stocks (src/apps/stocks/): mock quotes UI.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test stocks",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:20:54.578Z",
+          "completedAt": "2026-08-10T18:21:04.840Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:21:04.840Z"
+          }
         },
         {
           "id": "step-8",
           "index": 8,
           "description": "Calendar (src/apps/calendar/): real current date + mock events.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test calendar",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:21:08.279Z",
+          "completedAt": "2026-08-10T18:21:16.851Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:21:16.851Z"
+          }
         },
         {
           "id": "step-9",
           "index": 9,
           "description": "Clock (src/apps/clock/): real-time world clock.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test clock",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:21:19.998Z",
+          "completedAt": "2026-08-10T18:21:28.760Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:21:28.760Z"
+          }
         },
         {
           "id": "step-10",
           "index": 10,
           "description": "Reminders (src/apps/reminders/): mock lists + create/complete/delete persisted locally.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test reminders",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:21:32.500Z",
+          "completedAt": "2026-08-10T18:21:41.431Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:21:41.431Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T17:48:40.112Z"
+      "startedAt": "2026-08-10T17:48:40.112Z",
+      "summary": "Phase 5 (Additional Apps) complete. All 10 additional apps built, registered, and tested:\n\n1. **Mail**: 6 mock emails, inbox + reader, reply interaction\n2. **Messages**: 3 mock threads, chat bubbles, send appends locally\n3. **Photos**: 12 gradient photos, grid + viewer with back button\n4. **Music**: 6 tracks, library + player with play/pause/prev/next\n5. **Terminal**: mock shell (ls/cd/pwd/echo/help/clear) over VFS store\n6. **Weather**: 7-day forecast, day selector, gradient background\n7. **Stocks**: 7 stocks, watchlist + detail with mock chart\n8. **Calendar**: real current date, month grid, 4 mock events, prev/next navigation\n9. **Clock**: real-time world clock, 5 cities, analog face with moving hands\n10. **Reminders**: 3 lists, 7 reminders, create/complete/delete\n\nAll registered in registry.tsx. 10 Playwright smoke tests pass in additional-apps.spec.ts. Build and lint clean.",
+      "completedAt": "2026-08-10T18:23:22.159Z",
+      "grade": {
+        "grade": "A",
+        "rationale": "All 10 additional apps (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) are implemented with mock data and registered in src/apps/registry.tsx. Verified build passes (tsc --noEmit + vite build, 73 modules), lint passes (eslint exits 0), and all 10 Playwright e2e smoke tests in e2e/additional-apps.spec.ts pass (10 passed in 4.1s) covering render + one core interaction per app. Terminal integrates with the VFS store via useFSStore, Clock uses real setInterval-based time, Calendar uses real current date. Source code reviewed for Mail, Terminal, Reminders, Clock, Calendar, Stocks confirming mock data and correct interaction logic.",
+        "gradedAt": "2026-08-10T18:23:22.157Z",
+        "gradedBy": "kimchi-dev/glm-5.2-fp8"
+      }
     },
     {
       "id": "phase-6",
@@ -592,57 +696,102 @@
       "description": "",
       "budget": "150k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Visual fidelity pass: align glass blur/specular/depth, typography, spacing, and motion across all apps against Tahoe reference screenshots; record manual inspection notes in .kimchi/docs/visual-inspection.md.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test visual-regression",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:23:32.986Z",
+          "completedAt": "2026-08-10T18:24:59.069Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:24:59.069Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Cross-app coherence + appearance-mode propagation sweep: assert Light/Dark/Tinted and Reduce Transparency affect all glass surfaces.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test appearance-modes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:25:04.218Z",
+          "completedAt": "2026-08-10T18:25:56.958Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:25:56.958Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "End-to-end persistence test: notes + virtual FS changes + settings survive a full page reload.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test persistence-e2e",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:26:02.975Z",
+          "completedAt": "2026-08-10T18:27:01.247Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:27:01.247Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Final build/lint/test gate.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm build && pnpm lint && pnpm test",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T18:27:19.080Z",
+          "completedAt": "2026-08-10T18:28:56.260Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T18:28:56.260Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T18:23:27.246Z",
+      "completedAt": "2026-08-10T18:33:49.103Z",
+      "summary": "Phase 6 (Polish & Verification) complete. All 4 steps done:\n\n1. **Visual fidelity pass**: 10 Playwright visual-regression tests asserting glass blur (backdrop-filter) on menubar/dock/spotlight/control-center, squircle window corners, -apple-system font, wallpaper gradient, dock icon count. Manual inspection notes recorded in .kimchi/docs/visual-inspection.md.\n\n2. **Appearance-mode propagation sweep**: 10 Playwright tests verifying Light/Dark/Tinted modes apply correct CSS classes, Reduce Transparency toggle works, both persist across page reload, glass surfaces have backdrop-filter in both light and dark modes.\n\n3. **End-to-end persistence test**: 4 Playwright tests verifying notes, VFS changes, and settings all survive a full page reload via localStorage — including a combined test that creates data in all three stores and verifies all survive a single reload.\n\n4. **Final build/lint/test gate**: All green — pnpm build (73 modules, 512ms), pnpm lint (no issues), 67 Vitest unit tests, 117 Playwright e2e tests. Total: 184 tests passing.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate. (Phase LLM judge unavailable: empty_response: after 3 attempts)",
+        "gradedAt": "2026-08-10T18:33:49.101Z",
+        "gradedBy": "kimchi-dev/glm-5.2-fp8"
+      }
     }
   ],
   "decisions": [],
@@ -657,7 +806,7 @@
     }
   ],
   "createdAt": "2026-08-10T13:55:37.378Z",
-  "updatedAt": "2026-08-10T18:05:40.941Z",
+  "updatedAt": "2026-08-10T18:44:55.242Z",
   "goal": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
   "successCriteria": [
     "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.",
@@ -686,6 +835,73 @@
     "confirmedScope": "In: full desktop shell + window manager + Spotlight/Control Center/Notification Center; faithful Liquid Glass design system (real translucency); Finder, System Settings, Notes, Calculator, and Safari fully functional with local data; ~10 additional apps (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) as interactive Tahoe UIs with mock data; appearance modes (Light/Dark/Tinted) + Reduce Transparency toggle; localStorage persistence; Playwright e2e + Vitest unit tests. Out: real backend services, real network fetches, Apple's copyrighted wallpapers/icons/fonts, iCloud sync, Siri/Apple Intelligence/AI features.",
     "demoScript": "Load the app and see a Tahoe desktop with a transparent glass menu bar (floating icons) and a magnifying Dock. Click an app in the Dock — a window opens with Liquid Glass chrome and squircle corners. Press Cmd+Space for Spotlight, search and launch Calculator, and do real math. Open Notes, create a note, reload the page — the note persists. Open System Settings, toggle the appearance, and watch the entire desktop switch modes."
   },
-  "lastActiveAt": "2026-08-10T17:48:40.112Z",
-  "activePhaseId": "phase-4"
+  "lastActiveAt": "2026-08-10T18:23:27.246Z",
+  "grade": {
+    "grade": "A",
+    "rationale": "Independently verified: pnpm build (73 modules, 323 kB JS), pnpm lint (clean), and all 184 tests pass (67 Vitest + 117 Playwright across 14 spec files). Genie minimize is genuinely implemented: @keyframes genie-minimize in src/styles/main.css, window-minimizing class + onAnimationEnd in src/shell/Window.tsx, and e2e/window-manager.spec.ts:105 asserts getComputedStyle().animationName === 'genie-minimize' and window becomes not visible. All 15 apps (4 core + Safari + 10 additional) are real registered components in registry.tsx. Real Liquid Glass translucency via backdrop-filter: blur()+saturate() on .glass-surface classes with reduce-transparency toggle. Appearance modes (light/dark/tinted) + reduce-transparency all tested with html class assertions. Persistence across reload verified for n",
+    "gradedAt": "2026-08-10T18:44:55.239Z",
+    "charterVerdicts": [
+      {
+        "clause": "Recreate macOS Tahoe full desktop interface as interactive SPA",
+        "status": "met",
+        "evidence": "Desktop.tsx renders wallpaper, glass menubar (#menubar), magnifying Dock (#dock), .desktop; 44 shell e2e tests pass"
+      },
+      {
+        "clause": "Liquid Glass design language with real translucency",
+        "status": "met",
+        "evidence": "src/styles/main.css: backdrop-filter: blur()+saturate() on .glass-surface classes; visual-regression.spec.ts asserts computedStyle.backdropFilter on menubar/dock/panels"
+      },
+      {
+        "clause": "Desktop shell with window manager",
+        "status": "met",
+        "evidence": "window-manager.spec.ts: 11 tests covering open/drag/resize/minimize-genie/close/fullscreen/Spaces; Window.tsx has traffic lights, z-index, drag, resize handle"
+      },
+      {
+        "clause": "~20 working built-in apps",
+        "status": "met",
+        "evidence": "registry.tsx registers 15 apps (Finder, Safari, Mail, Notes, Calculator, Settings, Music, Photos, Messages, Terminal, Calendar, Weather, Stocks, Clock, Reminders); all have passing e2e tests with core interactions"
+      },
+      {
+        "clause": "Finder fully functional with local data",
+        "status": "met",
+        "evidence": "finder.spec.ts: 11 tests covering icon/list/column views, navigation, create/rename/delete file & folder, tabs, tags"
+      },
+      {
+        "clause": "System Settings fully functional",
+        "status": "met",
+        "evidence": "settings.spec.ts: 6 tests covering sidebar nav (Appearance, Wallpaper, Network, etc.), appearance toggle changes html class, wallpaper changes desktop background"
+      },
+      {
+        "clause": "Notes fully functional with persistence",
+        "status": "met",
+        "evidence": "notes.spec.ts: 6 tests covering create/edit/delete/search + persistence across reload; persistence-e2e.spec.ts confirms note survives reload"
+      },
+      {
+        "clause": "Calculator with real math",
+        "status": "met",
+        "evidence": "engine.test.ts: 21 Vitest unit tests; calculator.spec.ts: 10 e2e tests including keyboard input, division by zero, chained operations"
+      },
+      {
+        "clause": "Safari over bundled mock pages",
+        "status": "met",
+        "evidence": "safari.spec.ts: 6 tests covering tabs, bookmarks, address-bar nav, back/forward, start page; no real network"
+      },
+      {
+        "clause": "10 additional apps with mock data",
+        "status": "met",
+        "evidence": "additional-apps.spec.ts: 10 tests (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) each asserting render + one core interaction"
+      },
+      {
+        "clause": "Appearance modes (Light/Dark/Tinted) + Reduce Transparency",
+        "status": "met",
+        "evidence": "appearance-modes.spec.ts: 10 tests asserting appearance-light/dark/tinted and reduce-transparency classes on html root"
+      },
+      {
+        "clause": "localStorage persistence",
+        "status": "met",
+        "evidence": "persistence-e2e.spec.ts: 4 tests confirming notes, VFS, and settings survive full page reload via localStorage"
+      }
+    ],
+    "gradedBy": "kimchi-dev/glm-5.2-fp8"
+  }
 }

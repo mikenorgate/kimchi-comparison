@@ -238,3 +238,52 @@ html.appearance-dark ::-webkit-scrollbar-thumb:hover {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+
+/* ════════════════════════════════════════════════════════════════
+   Genie Minimize Animation
+   ════════════════════════════════════════════════════════════════ */
+@keyframes genie-minimize {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    transform-origin: center bottom;
+  }
+  40% {
+    transform: scale(0.65) translateY(40%);
+    opacity: 0.8;
+    transform-origin: center bottom;
+  }
+  100% {
+    transform: scale(0.05) translateY(100vh);
+    opacity: 0;
+    transform-origin: center bottom;
+  }
+}
+
+@keyframes genie-restore {
+  0% {
+    transform: scale(0.05) translateY(100vh);
+    opacity: 0;
+    transform-origin: center bottom;
+  }
+  60% {
+    transform: scale(0.65) translateY(40%);
+    opacity: 0.8;
+    transform-origin: center bottom;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    transform-origin: center bottom;
+  }
+}
+
+.window-minimizing {
+  animation: genie-minimize 0.4s var(--ease-genie) forwards;
+  pointer-events: none;
+}
+
+.window-restoring {
+  animation: genie-restore 0.4s var(--ease-genie) forwards;
+}

@@ -15,6 +15,16 @@ import { SystemSettings } from './system-settings/SystemSettings';
 import { Notes } from './notes/Notes';
 import { Calculator } from './calculator/Calculator';
 import { Safari } from './safari/Safari';
+import { Mail } from './mail/Mail';
+import { Messages } from './messages/Messages';
+import { Photos } from './photos/Photos';
+import { Music } from './music/Music';
+import { Terminal } from './terminal/Terminal';
+import { Weather } from './weather/Weather';
+import { Stocks } from './stocks/Stocks';
+import { Calendar } from './calendar/Calendar';
+import { Clock } from './clock/Clock';
+import { Reminders } from './reminders/Reminders';
 
 // ── Placeholder for apps not yet implemented ──────────────────────
 
@@ -37,19 +47,19 @@ function AppPlaceholder({ appId }: { appId: string }) {
 export const appContentRegistry: Record<string, ComponentType<{ appId: string }>> = {
   finder: Finder,
   safari: Safari,
-  mail: AppPlaceholder,
+  mail: Mail,
   notes: Notes,
   calculator: Calculator,
   settings: SystemSettings,
-  music: AppPlaceholder,
-  photos: AppPlaceholder,
-  messages: AppPlaceholder,
-  terminal: AppPlaceholder,
-  calendar: AppPlaceholder,
-  weather: AppPlaceholder,
-  stocks: AppPlaceholder,
-  clock: AppPlaceholder,
-  reminders: AppPlaceholder,
+  music: Music,
+  photos: Photos,
+  messages: Messages,
+  terminal: Terminal,
+  calendar: Calendar,
+  weather: Weather,
+  stocks: Stocks,
+  clock: Clock,
+  reminders: Reminders,
 };
 
 /**

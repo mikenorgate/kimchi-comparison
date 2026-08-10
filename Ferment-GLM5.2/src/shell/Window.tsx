@@ -170,15 +170,34 @@ export function Window({ win, focused, children }: WindowProps) {
         zIndex: win.zIndex,
       };
 
-  // Minimize: render hidden (genie effect handled by CSS class)
+  // Minimize: animate with genie effect, then hide after animation completes
   if (win.minimized) {
     return (
       <div
-        className="window-minimized"
+        className="glass-surface window-minimizing"
         data-testid={`window-${win.id}`}
         data-app={win.appId}
-        style={{ display: 'none' }}
-      />
+        style={{
+          ...style,
+          borderRadius: 'var(--radius-window)',
+          boxShadow: 'var(--shadow-window)',
+          border: '0.5px solid rgba(0,0,0,0.12)',
+        }}
+        onAnimationEnd={(e) => {
+          // Hide element after genie animation finishes
+          if (e.animationName === 'genie-minimize') {
+            (e.target as HTMLElement).style.display = 'none';
+          }
+        }}
+      >
+        <div className="flex items-center gap-2 px-3 h-7 shrink-0 bg-black/5 dark:bg-white/5" data-testid="window-titlebar">
+          <div className="flex gap-1.5">
+            <button className="w-3 h-3 rounded-full bg-[#ff5f57]" data-testid={`traffic-close`} />
+            <button className="w-3 h-3 rounded-full bg-[#febc2e]" data-testid={`traffic-minimize`} />
+            <button className="w-3 h-3 rounded-full bg-[#28c840]" data-testid={`traffic-maximize`} />
+          </div>
+        </div>
+      </div>
     );
   }
 

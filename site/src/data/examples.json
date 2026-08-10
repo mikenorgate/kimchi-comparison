@@ -528,10 +528,75 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "GLM 5.2",
-    "durationMs": 8778000,
-    "cost": "$17.38",
-    "fermentId": "019fd7a2-5cd1-724c-9a3a-3354b77b43dc",
-    "thinkingLevel": "max"
+    "durationMs": 17357000,
+    "cost": "$30.22",
+    "fermentId": "019febf5-1d22-70c5-8520-61a6b165bdda",
+    "thinkingLevel": "max",
+    "tokenUsage": {
+      "inputTokens": 14574425,
+      "cachedInputTokens": 31308352,
+      "cacheWriteTokens": 0,
+      "outputTokens": 380881,
+      "reasoningTokens": 0,
+      "requests": 557
+    },
+    "subagents": [
+      {
+        "type": "Builder",
+        "model": "GLM 5.2",
+        "description": "Build Mail app"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 1 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 2 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 3 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 4 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 5 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 6 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 7 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Phase 8 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Final grade: Complete ferment verification"
+      },
+      {
+        "type": "Grader",
+        "model": "GLM 5.2",
+        "description": "Post-completion review"
+      }
+    ]
   },
   {
     "id": "opencode-glm5-2",
@@ -623,60 +688,276 @@
       "requests": 1211
     },
     "subagents": [
-      {"type": "Builder", "model": "MiniMax M3", "description": "Scaffold Vite React project"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Create theme tokens and glass CSS"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build SystemIcon and AppIcon"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Verify SystemIcon AppIcon step"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Desktop component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build MenuBar component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Dock component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Control Center component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Spotlight overlay component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Fix Spotlight controlled tests"},
-      {"type": "Fixer", "model": "MiniMax M3", "description": "Fix Spotlight lint and tests"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Wire core shell into App.jsx"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Complete App.jsx wiring"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build window reducer and context"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build draggable Window component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Complete Window component and tests"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Finish Window component tests"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build WindowManager component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Wire Dock to WindowContext"},
-      {"type": "Fixer", "model": "MiniMax M3", "description": "Fix Window Manager grader issues"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Finder app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Messages app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Safari app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Verify and finalize Finder app"},
-      {"type": "Fixer", "model": "MiniMax M3", "description": "Fix MessagesApp failing test"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Settings app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Phone app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Photos app component"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Calculator app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Music app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Verify Phone app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Calculator app retry"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Calendar app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Mail app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Games app"},
-      {"type": "Fixer", "model": "MiniMax M3", "description": "Fix lint errors"},
-      {"type": "General-Purpose", "model": "DeepSeek V4 Flash", "description": "Verify Mail step"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Add WindowManager integration tests"},
-      {"type": "Fixer", "model": "MiniMax M3", "description": "Remove Finder dock test"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Journal app"},
-      {"type": "Builder", "model": "MiniMax M3", "description": "Build Notes app"},
-      {"type": "Explore", "model": "DeepSeek V4 Flash", "description": "Verify App integration design"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 1 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 2 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 3 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 4 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 5 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 6 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 7 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 8 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 9 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 10 grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Final grade"},
-      {"type": "Grader", "model": "Kimi K2.7", "description": "Post-completion review"}
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Scaffold Vite React project"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Create theme tokens and glass CSS"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build SystemIcon and AppIcon"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Verify SystemIcon AppIcon step"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Desktop component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build MenuBar component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Dock component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Control Center component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Spotlight overlay component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Fix Spotlight controlled tests"
+      },
+      {
+        "type": "Fixer",
+        "model": "MiniMax M3",
+        "description": "Fix Spotlight lint and tests"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Wire core shell into App.jsx"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Complete App.jsx wiring"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build window reducer and context"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build draggable Window component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Complete Window component and tests"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Finish Window component tests"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build WindowManager component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Wire Dock to WindowContext"
+      },
+      {
+        "type": "Fixer",
+        "model": "MiniMax M3",
+        "description": "Fix Window Manager grader issues"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Finder app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Messages app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Safari app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Verify and finalize Finder app"
+      },
+      {
+        "type": "Fixer",
+        "model": "MiniMax M3",
+        "description": "Fix MessagesApp failing test"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Settings app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Phone app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Photos app component"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Calculator app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Music app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Verify Phone app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Calculator app retry"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Calendar app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Mail app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Games app"
+      },
+      {
+        "type": "Fixer",
+        "model": "MiniMax M3",
+        "description": "Fix lint errors"
+      },
+      {
+        "type": "General-Purpose",
+        "model": "DeepSeek V4 Flash",
+        "description": "Verify Mail step"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Add WindowManager integration tests"
+      },
+      {
+        "type": "Fixer",
+        "model": "MiniMax M3",
+        "description": "Remove Finder dock test"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Journal app"
+      },
+      {
+        "type": "Builder",
+        "model": "MiniMax M3",
+        "description": "Build Notes app"
+      },
+      {
+        "type": "Explore",
+        "model": "DeepSeek V4 Flash",
+        "description": "Verify App integration design"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 1 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 2 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 3 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 4 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 5 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 6 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 7 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 8 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 9 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 10 grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Final grade"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Post-completion review"
+      }
     ]
   }
 ]
