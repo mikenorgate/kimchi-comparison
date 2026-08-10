@@ -3,7 +3,7 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 type GlassVariant = 'standard' | 'heavy' | 'bar'
 type ShadowLevel = 'window' | 'window-dark' | 'panel' | 'dock' | 'menu' | 'none'
 
-interface GlassPanelProps extends HTMLAttributes<HTMLDivElement> {
+export interface GlassPanelProps extends HTMLAttributes<HTMLDivElement> {
   /** Which blur/saturate preset to apply */
   variant?: GlassVariant
   /** Depth shadow preset */

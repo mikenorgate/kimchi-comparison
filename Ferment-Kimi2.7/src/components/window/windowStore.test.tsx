@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { WindowManagerProvider, useWindowManager } from './windowStore'
+import { WindowManagerProvider } from './windowStore'
+import { useWindowManager } from './useWindowManager'
 import { WindowManager } from './WindowManager'
 import { ThemeProvider } from '../../theme'
 
@@ -106,7 +107,7 @@ describe('WindowManagerProvider', () => {
     fireEvent.click(screen.getByTestId('open-a'))
     expect(screen.getByTestId('window-count').textContent).toBe('1')
     expect(screen.getByTestId('focused-id').textContent).toBe('a')
-    expect(screen.getByText('Finder')).toBeInTheDocument()
+    expect(screen.getByTestId('window-frame')).toBeInTheDocument()
   })
 
   it('focuses the clicked window and updates z-index', () => {

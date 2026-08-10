@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MenuBar } from './MenuBar'
 import { ThemeProvider } from '../../theme'
 
@@ -53,5 +53,32 @@ describe('MenuBar', () => {
     screen.getByLabelText('Control Center').click()
     expect(spotlight).toHaveBeenCalledTimes(1)
     expect(controlCenter).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the app menu dropdown when the current app name is clicked', async () => {
+    render(
+      <ThemeProvider>
+        <MenuBar currentApp="Finder" />
+      </ThemeProvider>,
+    )
+
+    expect(screen.queryByTestId('menu-dropdown')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('menubar-app-menu-button'))
+    await waitFor(() => expect(screen.getByTestId('menu-dropdown')).toBeInTheDocument())
+    expect(screen.getByText('About Finder')).toBeInTheDocument()
+    expect(screen.getByText('Quit Finder')).toBeInTheDocument()
+  })
+
+  it('shows a generic menu dropdown when a standard menu item is clicked', async () => {
+    render(
+      <ThemeProvider>
+        <MenuBar currentApp="Finder" />
+      </ThemeProvider>,
+    )
+
+    fireEvent.click(screen.getByTestId('menu-button-file'))
+    await waitFor(() => expect(screen.getByTestId('menu-dropdown')).toBeInTheDocument())
+    expect(screen.getByText('New Window')).toBeInTheDocument()
+    expect(screen.getByText('Move to Trash')).toBeInTheDocument()
   })
 })

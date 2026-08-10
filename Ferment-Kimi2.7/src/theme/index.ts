@@ -9,4 +9,5 @@ export {
 } from './tokens'
 export type { ThemeMode, TahoeTokens } from './tokens'
 
-export { ThemeProvider, useTheme } from './ThemeProvider'
+export { ThemeProvider } from './ThemeProvider'
+export { useTheme } from './useTheme'

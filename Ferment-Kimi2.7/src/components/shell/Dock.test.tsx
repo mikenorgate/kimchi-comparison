@@ -36,8 +36,9 @@ describe('Dock', () => {
       const frames = screen.getAllByTestId('window-frame')
       expect(frames.length).toBeGreaterThanOrEqual(1)
     })
-    expect(screen.getByRole('heading', { name: 'Notes' })).toBeInTheDocument()
-    expect(screen.getByText('Capture thoughts and ideas (mock)')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Notes' })).toBeInTheDocument()
+    expect(screen.getByTestId('notes-sidebar')).toBeInTheDocument()
+    expect(screen.getByTestId('notes-editor')).toBeInTheDocument()
   })
 
   it('shows a running indicator for open windows', async () => {

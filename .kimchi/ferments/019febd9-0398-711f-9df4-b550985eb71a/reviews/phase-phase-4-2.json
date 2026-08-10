@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019febd9-0398-711f-9df4-b550985eb71a",
+  "phaseId": "phase-4",
+  "phaseName": "Liquid Glass UI Primitives",
+  "attempt": 2,
+  "timestamp": "2026-08-10T14:52:32.477Z",
+  "goal": "Create reusable Liquid Glass-styled primitives used across apps and overlays.",
+  "summary": "Phase 4 completed (retry): strengthened the Liquid Glass primitive library and verification. Added real focus/ARIA/state assertions in GlassPrimitives.test.tsx (focus via .focus(), aria-disabled on disabled GlassButton, aria-current on active GlassSidebarItem, computed backdrop-filter inline styles on GlassPanel). Added inline backdrop-filter styles to GlassPanel so the Liquid Glass blur is both testable in jsdom and robust in browser. Added a Playwright e2e integration test (e2e/system-settings.spec.ts) that opens System Settings from the Dock, asserts the glass panel has a blur backdrop-filter, toggles the theme, and captures a screenshot. All 50 unit tests pass; all 11 e2e tests pass; production build succeeds.",
+  "stepSummaries": "  1. Implement GlassPanel, GlassButton, GlassSidebar, GlassToolbar, and GlassPopover components with backdrop-filter. [verified]\n  2. Add light/dark/tinted variants and a global theme toggle in System Settings scaffold. [verified]\n  3. Add focus/active states and subtle hover transitions. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": " ...9febd9-0398-711f-9df4-b550985eb71a.events.jsonl | 13 +++\n .../019febd9-0398-711f-9df4-b550985eb71a.json      | 88 +++++++++++++++++----\n .../runtime.json                                   | 22 ++++--\n ...9febf5-1d22-70c5-8520-61a6b165bdda.events.jsonl |  8 ++\n .../019febf5-1d22-70c5-8520-61a6b165bdda.json      | 53 ++++++++++---\n .../runtime.json                                   | 13 ++-\n ...9fec07-9a11-739d-9367-4c7aa568cf5b.events.jsonl | 14 ++++\n .../019fec07-9a11-739d-9367-4c7aa568cf5b.json      | 92 +++++++++++++++++-----\n .../runtime.json                                   | 19 ++++-\n Ferment-GLM5.2/src/App.tsx                         | 79 ++++++++++++++++++-\n Ferment-GLM5.2/src/design-system/Button.tsx        |  2 +-\n Ferment-GLM5.2/src/design-system/GlassPanel.tsx    |  2 +-\n Ferment-GLM5.2/src/design-system/Menu.tsx          |  5 +-\n Ferment-GLM5.2/src/design-system/Sidebar.tsx       |  2 +-\n Ferment-GLM5.2/src/design-system/Squircle.tsx      |  2 +-\n Ferment-GLM5.2/src/design-system/Toolbar.tsx       |  2 +-\n Ferment-GLM5.2/tsconfig.json                       |  2 +-\n Ferment-Kimi2.7/e2e-report/index.html              |  2 +-\n Ferment-Kimi2.7/src/apps/components.tsx            | 34 +++++++-\n .../src/components/window/windowStore.test.tsx     |  2 +-\n[... 4 more files ...]\n 23 files changed, 389 insertions(+), 82 deletions(-)\n?? e2e/dock.spec.ts\n?? e2e/system-settings.spec.ts\n?? src/apps/components.test.tsx\n?? src/components/ui/GlassButton.tsx\n?? src/components/ui/GlassPanel.tsx\n?? src/components/ui/GlassPopover.tsx\n?? src/components/ui/GlassPrimitives.test.tsx\n?? src/components/ui/GlassPrimitivesDemo.tsx\n?? src/components/ui/GlassSidebar.tsx\n?? src/components/ui/GlassToolbar.tsx\n?? src/components/ui/index.ts",
+  "evidence": "Unit tests:\n$ npm test\nTest Files 10 passed (10)\nTests 50 passed (50)\n\nE2E tests:\n$ npx playwright test e2e/system-settings.spec.ts\nPASS (2) FAIL (0)\n$ npx playwright test\nPASS (11) FAIL (0)\n\nProduction build:\n$ npm run build\n✓ built in 92ms\n\nScreenshot:\n- e2e-report/system-settings-open.png\n\nKey files changed:\n- src/components/ui/GlassPanel.tsx (inline backdropFilter, hoverable prop, tinted variant)\n- src/components/ui/GlassButton.tsx (aria-disabled, focus/active/disabled states)\n- src/components/ui/GlassSidebar.tsx (GlassSidebarItem with aria-current)\n- src/components/ui/GlassPrimitives.test.tsx (focus/ARIA/computed-style assertions)\n- src/apps/components.tsx (data-testid on settings glass panel)\n- e2e/system-settings.spec.ts (integration test for System Settings glass + theme)",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "Step verification moved from class-string checks to real behavior: focus state, ARIA attributes, computed backdrop-filter, and an e2e integration test exercising the browser-rendered glass effect.",
+      "evidence": "GlassPrimitives.test.tsx uses element.focus(), toHaveFocus(), toHaveAttribute('aria-disabled'), toHaveAttribute('aria-current'), and window.getComputedStyle(panel).backdropFilter. e2e/system-settings.spec.ts asserts toHaveCSS('backdrop-filter', /blur/) and theme toggle behavior."
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "Phase goal met: reusable Liquid Glass primitives exist, are integrated into System Settings, and verified end-to-end.",
+      "evidence": "src/components/ui/*.tsx primitives; src/apps/components.tsx SystemSettingsApp uses GlassSidebar, GlassSidebarItem, GlassPanel (tinted), GlassButton; e2e opens it and verifies glass blur."
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "Nothing deferred; all Phase 4 work completed.",
+      "evidence": "n/a"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

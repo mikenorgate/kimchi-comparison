@@ -1,10 +1,10 @@
 import {
-  createContext,
-  useContext,
   useReducer,
   useMemo,
   useCallback,
 } from 'react'
+import { WindowManagerContext } from './WindowManagerContext'
+import type { WindowManagerContextValue } from './WindowManagerContext'
 
 export interface WindowItem {
   id: string
@@ -40,7 +40,7 @@ type Action =
 
 const INITIAL_Z = 100
 
-export function createInitialState(): WindowManagerState {
+function createInitialState(): WindowManagerState {
   return { windows: [], focusedId: null, nextZ: INITIAL_Z }
 }
 
@@ -115,6 +115,7 @@ function reducer(state: WindowManagerState, action: Action): WindowManagerState 
             ? {
                 ...w,
                 isMaximized: false,
+                isMinimized: false,
                 ...(w.prevBounds
                   ? {
                       x: w.prevBounds.x,
@@ -162,20 +163,6 @@ function reducer(state: WindowManagerState, action: Action): WindowManagerState 
       return state
   }
 }
-
-interface WindowManagerContextValue {
-  state: WindowManagerState
-  openWindow: (window: Omit<WindowItem, 'zIndex'> & { zIndex?: number }) => void
-  closeWindow: (id: string) => void
-  minimizeWindow: (id: string) => void
-  maximizeWindow: (id: string) => void
-  restoreWindow: (id: string) => void
-  focusWindow: (id: string) => void
-  moveWindow: (id: string, x: number, y: number) => void
-  resizeWindow: (id: string, width: number, height: number) => void
-}
-
-const WindowManagerContext = createContext<WindowManagerContextValue | null>(null)
 
 export function WindowManagerProvider({
   children,
@@ -227,7 +214,7 @@ export function WindowManagerProvider({
     [],
   )
 
-  const value = useMemo(
+  const value = useMemo<WindowManagerContextValue>(
     () => ({
       state,
       openWindow,
@@ -259,12 +246,6 @@ export function WindowManagerProvider({
   )
 }
 
-export function useWindowManager() {
-  const context = useContext(WindowManagerContext)
-  if (!context) {
-    throw new Error(
-      'useWindowManager must be used within a WindowManagerProvider',
-    )
-  }
-  return context
-}
+export type { WindowManagerContextValue } from './WindowManagerContext'
+
+

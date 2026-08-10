@@ -43,6 +43,7 @@
   --tahoe-glass-hover: rgba(255, 255, 255, 0.55);
   --tahoe-glass-border: rgba(255, 255, 255, 0.4);
   --tahoe-glass-highlight: rgba(255, 255, 255, 0.7);
+  --tahoe-glass-tint: rgba(0, 122, 255, 0.15);
   --tahoe-menu-bar: rgba(255, 255, 255, 0.28);
   --tahoe-divider: rgba(0, 0, 0, 0.08);
   --tahoe-wallpaper: #b8d9e8;
@@ -56,6 +57,7 @@
   --tahoe-glass-hover: rgba(60, 60, 60, 0.65);
   --tahoe-glass-border: rgba(255, 255, 255, 0.12);
   --tahoe-glass-highlight: rgba(255, 255, 255, 0.15);
+  --tahoe-glass-tint: rgba(10, 132, 255, 0.25);
   --tahoe-menu-bar: rgba(0, 0, 0, 0.28);
   --tahoe-divider: rgba(255, 255, 255, 0.12);
   --tahoe-wallpaper: #0a1a2e;

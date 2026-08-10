@@ -8,9 +8,8 @@ describe('<App />', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('renders the desktop title heading', () => {
+  it('renders the desktop root', () => {
     render(<App />);
-    const heading = screen.getByRole('heading', { level: 1, name: /tahoe web desktop/i });
-    expect(heading).toBeInTheDocument();
+    expect(screen.getByTestId('desktop-root')).toBeInTheDocument();
   });
 });

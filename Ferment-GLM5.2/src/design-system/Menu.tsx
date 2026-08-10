@@ -7,7 +7,7 @@ import {
 
 // ── MenuItem ──────────────────────────────────────────────────────
 
-interface MenuItemProps extends HTMLAttributes<HTMLLIElement> {
+export interface MenuItemProps extends HTMLAttributes<HTMLLIElement> {
   /** Display label (required unless separator is true) */
   label?: string
   /** Optional SF Symbol-style icon (React node) */
@@ -60,6 +60,7 @@ export const MenuItem = forwardRef<HTMLLIElement, MenuItemProps>(
         ]
           .filter(Boolean)
           .join(' ')}
+        {...rest}
       >
         {icon && <span className="flex-shrink-0 w-4 h-4 flex items-center justify-center">{icon}</span>}
         <span className="flex-1">{label}</span>
@@ -75,7 +76,7 @@ MenuItem.displayName = 'MenuItem'
 
 // ── Menu ──────────────────────────────────────────────────────────
 
-interface MenuProps extends HTMLAttributes<HTMLDivElement> {
+export interface MenuProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
 }
 

@@ -2,7 +2,7 @@
   "id": "019febd9-0398-711f-9df4-b550985eb71a",
   "name": "Tahoe Web Desktop Shell",
   "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
-  "status": "running",
+  "status": "complete",
   "worktree": {
     "path": "/Users/mike/tmp",
     "branch": "main",
@@ -220,7 +220,7 @@
         "App icons can be SVG placeholders styled like Tahoe."
       ],
       "parallel": false,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -247,29 +247,54 @@
           "id": "step-2",
           "index": 2,
           "description": "Build Dock component with app icons, hover tooltips, running indicators, and minimized windows area.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "Dock renders all eight app icons and click opens a window",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T14:23:56.845Z"
+          "startedAt": "2026-08-10T14:23:56.845Z",
+          "completedAt": "2026-08-10T14:29:12.705Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:29:12.705Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Wire Dock clicks to open/restore windows via the window manager store.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Clicking Finder opens a Finder window; clicking again restores focus",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:31:11.844Z",
+          "completedAt": "2026-08-10T14:31:35.137Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:31:35.137Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T14:20:26.134Z"
+      "startedAt": "2026-08-10T14:20:26.134Z",
+      "completedAt": "2026-08-10T14:35:58.910Z",
+      "summary": "Phase 3 completed: AppRegistry and Dock are built and wired. The registry maps 8 core apps to icons and placeholder components; Dock renders them with Liquid Glass styling, tooltips, running indicators, and minimized-windows area; clicks open, focus, or restore windows through the window manager store. Unit tests (34 passed) and e2e tests (9 passed) verify the behavior, and the production build succeeds. Evidence includes a git diff patch and a dock screenshot.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate. (Phase LLM judge unavailable: empty_response: after 3 attempts)",
+        "gradedAt": "2026-08-10T14:35:58.908Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-4",
@@ -281,45 +306,86 @@
         "No custom shader effects; pure CSS."
       ],
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Implement GlassPanel, GlassButton, GlassSidebar, GlassToolbar, and GlassPopover components with backdrop-filter.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Storybook-like demo page shows all primitives with glass effect",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:39:28.661Z",
+          "completedAt": "2026-08-10T14:40:12.466Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:40:12.466Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Add light/dark/tinted variants and a global theme toggle in System Settings scaffold.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Toggle switches background theme and glass tint color",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:41:40.531Z",
+          "completedAt": "2026-08-10T14:43:22.602Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:43:22.602Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Add focus/active states and subtle hover transitions.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Hover and active states visible on all interactive primitives",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:45:03.373Z",
+          "completedAt": "2026-08-10T14:47:39.362Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:47:39.362Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T14:37:10.005Z",
+      "completedAt": "2026-08-10T14:56:05.274Z",
+      "summary": "Phase 4 completed (retry): strengthened the Liquid Glass primitive library and verification. Added real focus/ARIA/state assertions in GlassPrimitives.test.tsx (focus via .focus(), aria-disabled on disabled GlassButton, aria-current on active GlassSidebarItem, computed backdrop-filter inline styles on GlassPanel). Added inline backdrop-filter styles to GlassPanel so the Liquid Glass blur is both testable in jsdom and robust in browser. Added a Playwright e2e integration test (e2e/system-settings.spec.ts) that opens System Settings from the Dock, asserts the glass panel has a blur backdrop-filter, toggles the theme, and captures a screenshot. All 50 unit tests pass; all 11 e2e tests pass; production build succeeds.",
+      "grade": {
+        "grade": "B",
+        "rationale": "The retry produced solid, behavior-first verification: real focus/ARIA assertions, computed backdrop-filter checks, and a Playwright e2e test that opens System Settings from the Dock, toggles the theme, and asserts the glass blur, backed by passing unit/e2e/build evidence. However, A is precluded because this was a retry, and the runtime proof only covers one app (System Settings) rather than demonstrating the primitives working 'across apps and overlays' as the phase goal states.",
+        "gradedAt": "2026-08-10T14:56:05.273Z",
+        "recommendations": [
+          "Integrate and e2e-test the remaining primitives (GlassButton, GlassSidebar, GlassToolbar, GlassPopover) in at least one other app and one overlay surface such as the Dock or Control Center, because the phase goal promises reuse across apps and overlays. Evidence: passing Playwright specs and screenshots for each surface.",
+          "Strengthen Liquid Glass visual proof beyond a blur regex by adding visual-regression baselines for light/dark/tinted variants that exercise Tahoe-style layered blur, saturation, and noise, since the current proof only confirms a blur value exists. Evidence: committed baseline screenshots and a Playwright toHaveScreenshot assertion.",
+          "Add a browser-level keyboard-navigation e2e test that proves focus, active, aria-disabled, and aria-current behavior with real Tab/Enter/Space input, because jsdom unit assertions do not guarantee actual browser a11y/runtime behavior. Evidence: a passing Playwright spec exercising those states end-to-end."
+        ],
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-5",
@@ -332,57 +398,102 @@
         "Apps use Liquid Glass primitives where appropriate."
       ],
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Implement Finder with sidebar, toolbar, path bar, and mocked file grid.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Finder window renders sidebar and file icons; folder double-click simulated",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:57:27.060Z",
+          "completedAt": "2026-08-10T14:58:53.475Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:58:53.475Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Implement Safari with address bar, toolbar, tabs, and mocked web page content.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Safari window renders address bar and a mocked webpage",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:00:29.969Z",
+          "completedAt": "2026-08-10T15:01:32.254Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:01:32.254Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Implement Notes with note list sidebar and note editor area.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Notes window shows list and editor with placeholder text",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:02:43.387Z",
+          "completedAt": "2026-08-10T15:04:04.541Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:04:04.541Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Implement System Settings with settings categories sidebar and detail panes.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "System Settings window shows categories and a selected pane",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:05:11.726Z",
+          "completedAt": "2026-08-10T15:08:26.288Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:08:26.288Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T14:57:24.055Z",
+      "completedAt": "2026-08-10T15:09:09.714Z",
+      "summary": "Phase 5 Core Apps Batch 1 completed. Finder, Safari, Notes, and System Settings are implemented as visual/interactive mockups: Finder with sidebar, toolbar, path bar, and navigable file grid; Safari with address bar, toolbar, tabs, and mocked webpage; Notes with searchable note list sidebar and editor; System Settings with nine-category sidebar and detailed panes (General, Appearance, Wi-Fi, Bluetooth, Notifications, Sound, Display, Battery, Privacy & Security). Verification: 62 unit tests pass, 12 e2e tests pass, production build succeeds. Added e2e coverage for settings category switching and fixed window-manager scoping to accommodate Safari tabs.",
+      "grade": {
+        "grade": "A",
+        "rationale": "Verified the four core apps are implemented in src/apps/components.tsx with the expected Finder sidebar/toolbar/path grid, Safari address bar/toolbar/tabs, Notes searchable list/editor, and System Settings nine-category sidebar with all nine panes. Re-ran the agent's verification commands: `npm test` reports 62 passed across 14 files, `npm run test:e2e` reports 12 passed in Chromium (dock, window-manager, and system-settings specs), and `npm run build` completes successfully. The app registry also wires all eight chartered apps, with the remaining four as explicit placeholders for future phases. All self-reported gate verdicts are substantiated by real execution evidence.",
+        "gradedAt": "2026-08-10T15:09:09.712Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-6",
@@ -394,57 +505,102 @@
         "Same visual-mockup fidelity as Batch 1."
       ],
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Implement Calendar with month grid and event dots.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Calendar window renders month view with sample events",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:10:40.172Z",
+          "completedAt": "2026-08-10T15:11:44.703Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:11:44.703Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Implement Photos with grid of placeholder images and single-photo view.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Photos window shows image grid and opens a placeholder detail view",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:13:02.346Z",
+          "completedAt": "2026-08-10T15:13:51.144Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:13:51.144Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Implement Phone with Recents, Contacts, and Voicemail tabs.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Phone window shows tabs and mocked recents list",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:15:35.304Z",
+          "completedAt": "2026-08-10T15:16:27.663Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:16:27.663Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Implement Journal with entry list and entry editor.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Journal window shows entries and an editor area",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:17:40.421Z",
+          "completedAt": "2026-08-10T15:18:47.499Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:18:47.499Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T15:10:37.938Z",
+      "completedAt": "2026-08-10T15:20:05.119Z",
+      "summary": "Phase 6 Core Apps Batch 2 completed. Calendar, Photos, Phone, and Journal are implemented as visual/interactive mockups: Calendar with month grid, event dots, and calendar sources; Photos with grid of gradient placeholder thumbnails and single-photo detail view; Phone with Recents, Contacts, and Voicemail tabs; Journal with entry list sidebar and editable entry editor. Removed unused AppPlaceholder. Added unit tests for each app (calendar, photos, phone, journal). Verification: 74 unit tests pass, 12 e2e tests pass, production build succeeds.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All four Core Apps Batch 2 mockups are implemented in src/apps/components.tsx and wired into src/apps/registry.ts. I independently ran the verification commands: `npm test` passed 74/74 unit tests, `npm run test:e2e` passed 12/12 Playwright tests, and `npm run build` produced a production bundle. The new apps (Calendar, Photos, Phone, Journal) are covered by focused unit tests, the AppPlaceholder placeholder was removed, and the Dock e2e test confirms all eight app icons render.",
+        "gradedAt": "2026-08-10T15:20:05.117Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     },
     {
       "id": "phase-7",
@@ -457,63 +613,113 @@
         "Control Center toggles are visual only."
       ],
       "parallel": false,
-      "status": "planned",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Implement Spotlight overlay with search input, app/action results, and Cmd+Space trigger.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Cmd+Space opens Spotlight; typing filters app list",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:21:29.031Z",
+          "completedAt": "2026-08-10T15:25:00.267Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:25:00.267Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Implement Control Center dropdown from menu bar with mocked toggles and sliders.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Clicking menu-bar Control Center icon opens the dropdown panel",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:26:58.854Z",
+          "completedAt": "2026-08-10T15:28:47.642Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:28:47.642Z"
+          }
         },
         {
           "id": "step-3",
           "index": 3,
           "description": "Wire menu-bar app menu to show mocked per-app menus.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "Clicking an app name in the menu bar shows a dropdown menu",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:30:33.737Z",
+          "completedAt": "2026-08-10T15:32:36.910Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:32:36.910Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Run build, lint, and final visual pass; fix console errors.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "npm run build exits 0 and npm run lint exits 0",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T15:34:25.434Z",
+          "completedAt": "2026-08-10T15:35:41.637Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T15:35:41.637Z"
+          }
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T15:21:25.697Z",
+      "completedAt": "2026-08-10T15:51:42.273Z",
+      "summary": "Phase 7 completed after grader feedback. Added three new e2e specs in e2e/global-overlays.spec.ts covering: (1) Spotlight opens via Cmd+Space, filters apps, and opens a window; (2) Control Center opens from the menu bar and shows glass panel, toggles, and sliders; (3) menu-bar app menu and standard menus render mocked dropdowns. Fixed the Spotlight app-selection bug by checking for the app 'category' property instead of the non-existent 'appId'. Extracted contexts/hooks to satisfy oxlint's fast-refresh rules with zero warnings. Final verification: npm run lint 0 warnings/0 errors, npm test 84 unit tests pass, npm run build succeeds, npm run test:e2e 15 tests pass.",
+      "grade": {
+        "grade": "B",
+        "rationale": "Phase 7 meets its stated goal: Spotlight, Control Center, and menu-bar menus are implemented and verified by real e2e tests (15 passed), plus build, lint (0 warnings/errors), and unit tests (84 passed) all succeeded. However, the summary notes the phase was completed 'after grader feedback,' indicating retries that disqualify an A, and the diff includes unrelated ferment workspace artifacts (.kimchi/, Ferment-GLM5.2/, Ferment-Kimi2.7/) alongside the actual project changes, which creates maintainability noise.",
+        "gradedAt": "2026-08-10T15:51:42.261Z",
+        "recommendations": [
+          "Remove or .gitignore ferment workspace artifacts (.kimchi/, Ferment-*/) so the project diff only contains the actual Tahoe web app source; verify with git status and re-run npm run build.",
+          "Commit the untracked source/test files (e.g., src/components/shell/Spotlight.tsx, e2e/global-overlays.spec.ts) so the 15 e2e and 84 unit tests are reproducible from a clean checkout; verify with git status and re-run npm test && npm run test:e2e.",
+          "Document the grader feedback resolution in the phase notes, specifically what Spotlight bug was fixed and what oxlint fast-refresh changes were made, so retry history is auditable."
+        ],
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
     }
   ],
   "decisions": [],
   "memories": [],
   "createdAt": "2026-08-10T13:24:55.832Z",
-  "updatedAt": "2026-08-10T14:23:56.845Z",
+  "updatedAt": "2026-08-10T16:03:13.784Z",
   "goal": "Build a React-based, desktop-only web recreation of the macOS Tahoe interface, including the transparent menu bar, Dock, window manager, Spotlight, Control Center, and eight core apps as visual/interactive mockups with Liquid Glass styling.",
   "successCriteria": [
     "React project scaffolded and runs with `npm run dev` with no build errors.",
@@ -540,6 +746,38 @@
     "confirmedScope": "A React desktop-only recreation of the macOS Tahoe shell plus eight core apps (Finder, Safari, Notes, System Settings, Calendar, Photos, Phone, Journal) as visual/interactive mockups. Menus and overlays open and look correct but execute no real actions. Mobile/tablet, backend, and real integrations are out of scope.",
     "demoScript": "Open the deployed page and see a Tahoe-style desktop with transparent menu bar and glass Dock. Click Dock icons to open draggable windows for Finder, Safari, Notes, etc. Press Cmd+Space to open Spotlight and search apps. Click the menu-bar Control Center icon to open a glass panel with toggles. Resize, drag, minimize, and close windows."
   },
-  "lastActiveAt": "2026-08-10T14:20:26.134Z",
-  "activePhaseId": "phase-3"
+  "lastActiveAt": "2026-08-10T15:21:25.697Z",
+  "grade": {
+    "grade": "B",
+    "rationale": "All seven phases completed, every F-gate and C-gate passed, and the agent supplied command-level evidence that lint, 84 unit tests, 15 e2e tests, and the production build all succeed. However, the review package contains no diff and no independently reachable deployment, screenshot, or screen recording of the rendered Liquid Glass desktop, so the acceptance demo can only be inferred from pass counts rather than directly inspected artifact evidence. That keeps it out of A under the pessimistic standard.",
+    "gradedAt": "2026-08-10T16:03:13.781Z",
+    "recommendations": [
+      "Publish a live deployment URL (e.g., Vercel/Netlify/GitHub Pages) or attach representative screenshots/screen recording plus the e2e trace files, so reviewers can verify the rendered Tahoe desktop, app windows, and animations without relying solely on terminal pass counts.",
+      "Attach the full changed-surface diff content to the review package and confirm no placeholder stubs, dead code, test-only artifacts, or unwired production paths remain; the council cannot inspect source structure from pass counts alone.",
+      "Expose the e2e test report and coverage output as artifacts, mapping each acceptance-demo step (drag, resize, minimize, maximize, Cmd+Space Spotlight, Control Center toggle) to a specific passing test case, so the evidence is substantiated rather than summarized."
+    ],
+    "charterVerdicts": [
+      {
+        "clause": "Recreate the whole macOS Tahoe interface as a web app. Every app and menu should be working.",
+        "status": "met",
+        "evidence": "Eight core apps (Finder, Safari, Notes, System Settings, Calendar, Photos, Phone, Journal) plus menu bar, Dock, Spotlight, Control Center, and global context menu are implemented and covered by unit/e2e tests; production build succeeds."
+      },
+      {
+        "clause": "The page feels like sitting at a real macOS Tahoe desktop, with Liquid Glass windows, a smooth Dock, and recognizable app UIs that respond instantly to clicks and keyboard shortcuts.",
+        "status": "met",
+        "evidence": "Liquid Glass primitives use CSS backdrop-filter and translucent backgrounds; e2e tests exercise Dock clicks, window drag/resize/minimize/close, Cmd+Space Spotlight, and Control Center toggles against a real Chromium browser."
+      },
+      {
+        "clause": "A React desktop-only recreation of the macOS Tahoe shell plus eight core apps as visual/interactive mockups. Menus and overlays open and look correct but execute no real actions. Mobile/tablet, backen",
+        "status": "met",
+        "evidence": "README documents the mock-only scope boundary and desktop target; no backend calls or real integrations are present; all eight apps are visual mockups."
+      },
+      {
+        "clause": "Open the deployed page and see a Tahoe-style desktop with transparent menu bar and glass Dock. Click Dock icons to open draggable windows for Finder, Safari, Notes, etc. Press Cmd+Space to open Spotli",
+        "status": "met",
+        "evidence": "15 e2e smoke tests passed against the production preview server at http://localhost:4173, covering the desktop shell, Dock-to-window flow, Spotlight, Control Center, and window manager interactions listed in the demo."
+      }
+    ],
+    "gradedBy": "kimchi-dev/kimi-k2.7"
+  }
 }

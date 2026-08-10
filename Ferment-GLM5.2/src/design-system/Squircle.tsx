@@ -1,6 +1,6 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 
-interface SquircleProps extends HTMLAttributes<HTMLDivElement> {
+export interface SquircleProps extends HTMLAttributes<HTMLDivElement> {
   /** CSS border-radius value — defaults to the Tahoe window radius */
   radius?: string
   children: ReactNode

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019febd9-0398-711f-9df4-b550985eb71a",
+  "phaseId": "phase-7",
+  "phaseName": "Spotlight + Control Center + Integration",
+  "attempt": 3,
+  "timestamp": "2026-08-10T15:49:32.842Z",
+  "goal": "Add global overlays, keyboard shortcuts, and final integration polish.",
+  "summary": "Phase 7 completed after grader feedback. Added three new e2e specs in e2e/global-overlays.spec.ts covering: (1) Spotlight opens via Cmd+Space, filters apps, and opens a window; (2) Control Center opens from the menu bar and shows glass panel, toggles, and sliders; (3) menu-bar app menu and standard menus render mocked dropdowns. Fixed the Spotlight app-selection bug by checking for the app 'category' property instead of the non-existent 'appId'. Extracted contexts/hooks to satisfy oxlint's fast-refresh rules with zero warnings. Final verification: npm run lint 0 warnings/0 errors, npm test 84 unit tests pass, npm run build succeeds, npm run test:e2e 15 tests pass.",
+  "stepSummaries": "  1. Implement Spotlight overlay with search input, app/action results, and Cmd+Space trigger. [verified]\n  2. Implement Control Center dropdown from menu bar with mocked toggles and sliders. [verified]\n  3. Wire menu-bar app menu to show mocked per-app menus. [verified]\n  4. Run build, lint, and final visual pass; fix console errors. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": " ...9febd9-0398-711f-9df4-b550985eb71a.events.jsonl |   49 +\n .../019febd9-0398-711f-9df4-b550985eb71a.json      |  288 +++++-\n .../runtime.json                                   |   49 +-\n ...9febf5-1d22-70c5-8520-61a6b165bdda.events.jsonl |   10 +\n .../019febf5-1d22-70c5-8520-61a6b165bdda.json      |   66 +-\n .../runtime.json                                   |   15 +-\n ...9fec07-9a11-739d-9367-4c7aa568cf5b.events.jsonl |   30 +\n .../019fec07-9a11-739d-9367-4c7aa568cf5b.json      |  131 ++-\n .../runtime.json                                   |   35 +-\n Ferment-GLM5.2/src/App.tsx                         |   15 +-\n Ferment-GLM5.2/src/design-system/Button.tsx        |    2 +-\n Ferment-GLM5.2/src/design-system/GlassPanel.tsx    |    2 +-\n Ferment-GLM5.2/src/design-system/Menu.tsx          |    5 +-\n Ferment-GLM5.2/src/design-system/Sidebar.tsx       |    2 +-\n Ferment-GLM5.2/src/design-system/Squircle.tsx      |    2 +-\n Ferment-GLM5.2/src/design-system/Toolbar.tsx       |    2 +-\n Ferment-GLM5.2/tsconfig.json                       |    2 +-\n Ferment-Kimi2.7/e2e-report/index.html              |    2 +-\n Ferment-Kimi2.7/e2e/window-manager.spec.ts         |   11 +-\n Ferment-Kimi2.7/src/apps/components.tsx            | 1074 +++++++++++++++++++-\n[... 16 more files ...]\n 35 files changed, 1905 insertions(+), 229 deletions(-)\n?? e2e/dock.spec.ts\n?? e2e/global-overlays.spec.ts\n?? e2e/system-settings.spec.ts\n?? src/apps/calendar.test.tsx\n?? src/apps/components.test.tsx\n?? src/apps/finder.test.tsx\n?? src/apps/journal.test.tsx\n?? src/apps/notes.test.tsx\n?? src/apps/phone.test.tsx\n?? src/apps/photos.test.tsx\n?? src/apps/safari.test.tsx\n?? src/apps/system-settings.test.tsx\n?? src/components/shell/ControlCenter.test.tsx\n?? src/components/shell/ControlCenter.tsx\n?? src/components/shell/Spotlight.test.tsx\n?? src/components/shell/Spotlight.tsx\n?? src/components/ui/GlassButton.tsx\n?? src/components/ui/GlassPanel.tsx\n?? src/components/ui/GlassPopover.tsx\n?? src/components/ui/GlassPrimitives.test.tsx\n[... 8 more untracked files ...]",
+  "evidence": "npm run lint: Found 0 warnings and 0 errors; npm test: 84 passed; npm run build exit 0; npm run test:e2e: 15 passed.",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "All verification is real: build, lint, unit tests, and e2e tests executed and passed.",
+      "evidence": "npm run lint exit 0; npm test 84 passed; npm run build exit 0; npm run test:e2e 15 passed."
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "Phase goal achieved: Spotlight, Control Center, and menu-bar menus are integrated and verified in real browser via e2e tests.",
+      "evidence": "e2e/global-overlays.spec.ts: Cmd+Space opens Spotlight, Control Center panel renders, menu dropdowns appear."
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "Nothing deferred in Phase 7; all work completed.",
+      "evidence": "n/a"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

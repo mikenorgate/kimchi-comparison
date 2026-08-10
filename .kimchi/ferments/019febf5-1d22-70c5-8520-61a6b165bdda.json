@@ -39,7 +39,7 @@
       "description": "",
       "budget": "250k tokens",
       "parallel": false,
-      "status": "active",
+      "status": "completed",
       "steps": [
         {
           "id": "step-1",
@@ -108,29 +108,54 @@
           "id": "step-4",
           "index": 4,
           "description": "Implement appearance store (src/store/settings.ts) with Light/Dark/Tinted modes + Reduce Transparency toggle; applies a class/state to <html> that toggles backdrop-filter intensity across surfaces.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec vitest run -- settings",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T14:23:53.872Z"
+          "startedAt": "2026-08-10T14:23:53.872Z",
+          "completedAt": "2026-08-10T14:33:49.806Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:33:49.806Z"
+          }
         },
         {
           "id": "step-5",
           "index": 5,
           "description": "Add Playwright + Vitest configs (playwright.config.ts, vitest.config.ts) and a smoke test asserting glass primitives render.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm test",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:34:59.085Z",
+          "completedAt": "2026-08-10T14:46:25.840Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:46:25.840Z"
+          }
         }
       ],
-      "startedAt": "2026-08-10T14:01:51.407Z"
+      "startedAt": "2026-08-10T14:01:51.407Z",
+      "completedAt": "2026-08-10T14:48:52.548Z",
+      "summary": "Phase 1 complete. Scaffolded the project foundation and built the Liquid Glass design system. Deliverables: (1) Vite 7 + React 19 + TypeScript strict + Tailwind v4 + pnpm scaffold with path aliases and eslint; (2) design tokens in tokens.ts + @theme block in main.css covering palette, radii, shadows, backdrop blur/saturate, specular gradients, typography, motion, zIndex, layout; (3) 6 glass primitives (GlassPanel, Squircle, Button, Menu/MenuItem, Toolbar, Sidebar) with real backdrop-filter translucency; (4) appearance store (Zustand + persist) with Light/Dark/Tinted modes and Reduce Transparency toggle applying classes to <html>; (5) Playwright config on dedicated port 5180 + e2e smoke tests asserting glass primitives render with backdrop-filter. All component prop interfaces exported. Verified: pnpm build, pnpm lint, pnpm test all exit 0 — 43 Vitest unit tests + 4 Playwright e2e tests pass.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All 7 requirements verified independently with real-execution evidence: `pnpm build` exits 0 (tsc --noEmit + vite build, 36 modules), `pnpm lint` reports no issues, `pnpm exec vitest run` passes 43/43 unit tests, and `pnpm exec playwright test` passes 4/4 e2e tests including a Chromium runtime assertion that GlassPanel and Toolbar have a computed `backdrop-filter` containing `blur` (proving real translucency, not compile-only). Design tokens cover all 10 categories in both tokens.ts and the main.css @theme block; all 6 glass primitives and their prop interfaces are exported; the Zustand+persist appearance store correctly applies Light/Dark/Tinted + reduce-transparency classes to `<html>` with 22 dedicated tests covering modes, persistence, and reactivity.",
+        "gradedAt": "2026-08-10T14:48:52.546Z",
+        "gradedBy": "kimchi-dev/glm-5.2-fp8"
+      }
     },
     {
       "id": "phase-2",
@@ -140,31 +165,41 @@
       "description": "",
       "budget": "300k tokens",
       "parallel": false,
-      "status": "planned",
+      "status": "active",
       "steps": [
         {
           "id": "step-1",
           "index": 1,
           "description": "Desktop + wallpaper layer (src/shell/Desktop.tsx) consuming settings store; renders .desktop root.",
-          "status": "pending",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-desktop",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:50:35.507Z",
+          "completedAt": "2026-08-10T14:53:03.997Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:53:03.997Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "MenuBar (src/shell/MenuBar.tsx): transparent bar with floating icons, Apple menu + active-app menus, functional dropdown menus using the Menu primitive.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-menubar",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:54:35.815Z"
         },
         {
           "id": "step-3",
@@ -202,7 +237,8 @@
           },
           "parallel": false
         }
-      ]
+      ],
+      "startedAt": "2026-08-10T14:50:26.537Z"
     },
     {
       "id": "phase-3",
@@ -507,7 +543,7 @@
     }
   ],
   "createdAt": "2026-08-10T13:55:37.378Z",
-  "updatedAt": "2026-08-10T14:23:53.872Z",
+  "updatedAt": "2026-08-10T14:54:35.815Z",
   "goal": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
   "successCriteria": [
     "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.",
@@ -536,6 +572,6 @@
     "confirmedScope": "In: full desktop shell + window manager + Spotlight/Control Center/Notification Center; faithful Liquid Glass design system (real translucency); Finder, System Settings, Notes, Calculator, and Safari fully functional with local data; ~10 additional apps (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) as interactive Tahoe UIs with mock data; appearance modes (Light/Dark/Tinted) + Reduce Transparency toggle; localStorage persistence; Playwright e2e + Vitest unit tests. Out: real backend services, real network fetches, Apple's copyrighted wallpapers/icons/fonts, iCloud sync, Siri/Apple Intelligence/AI features.",
     "demoScript": "Load the app and see a Tahoe desktop with a transparent glass menu bar (floating icons) and a magnifying Dock. Click an app in the Dock — a window opens with Liquid Glass chrome and squircle corners. Press Cmd+Space for Spotlight, search and launch Calculator, and do real math. Open Notes, create a note, reload the page — the note persists. Open System Settings, toggle the appearance, and watch the entire desktop switch modes."
   },
-  "lastActiveAt": "2026-08-10T14:01:51.407Z",
-  "activePhaseId": "phase-1"
+  "lastActiveAt": "2026-08-10T14:50:26.537Z",
+  "activePhaseId": "phase-2"
 }

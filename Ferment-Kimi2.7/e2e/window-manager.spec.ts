@@ -76,16 +76,17 @@ test.describe('Window Manager', () => {
 
   test('maximizes and restores a window', async ({ page }) => {
     const finder = page.locator('[data-window-id="finder-1"]')
+    const titlebar = finder.locator('[data-testid="window-titlebar"]')
     const boxBefore = await finder.boundingBox()
 
-    await finder.getByRole('button', { name: 'Maximize' }).click()
+    await titlebar.getByRole('button', { name: 'Maximize' }).click()
     const boxMax = await finder.boundingBox()
     expect(boxMax!.x).toBe(0)
     expect(boxMax!.y).toBe(32)
     expect(boxMax!.width).toBeGreaterThan(boxBefore!.width)
     expect(boxMax!.height).toBeGreaterThan(boxBefore!.height)
 
-    await finder.getByRole('button', { name: 'Maximize' }).click()
+    await titlebar.getByRole('button', { name: 'Maximize' }).click()
     const boxRestored = await finder.boundingBox()
     expect(boxRestored!.width).toBe(boxBefore!.width)
     expect(boxRestored!.height).toBe(boxBefore!.height)
@@ -95,11 +96,13 @@ test.describe('Window Manager', () => {
 
   test('minimizes and closes a window', async ({ page }) => {
     const finder = page.locator('[data-window-id="finder-1"]')
-    await finder.getByRole('button', { name: 'Minimize' }).click()
+    const finderTitlebar = finder.locator('[data-testid="window-titlebar"]')
+    await finderTitlebar.getByRole('button', { name: 'Minimize' }).click()
     await expect(finder).toBeHidden()
 
     const safari = page.locator('[data-window-id="safari-1"]')
-    await safari.getByRole('button', { name: 'Close' }).click()
+    const safariTitlebar = safari.locator('[data-testid="window-titlebar"]')
+    await safariTitlebar.getByRole('button', { name: 'Close' }).click()
     await expect(safari).toBeHidden()
 
     const frames = page.locator('[data-testid="window-frame"]')

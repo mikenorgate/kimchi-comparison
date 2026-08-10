@@ -1,5 +1,5 @@
 import { Window } from './Window'
-import { useWindowManager } from './windowStore'
+import { useWindowManager } from './useWindowManager'
 import { getAppById } from '../../apps'
 
 function AppContent({ appId, windowId }: { appId: string; windowId: string }) {

@@ -1,6 +1,6 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 
-interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
+export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   /** Sidebar width in CSS units */
   width?: string

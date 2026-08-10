@@ -1,14 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { getThemeTokens, type ThemeMode, type TahoeTokens } from './tokens'
-
-interface ThemeContextValue {
-  mode: ThemeMode
-  tokens: TahoeTokens
-  toggleMode: () => void
-  setMode: (mode: ThemeMode) => void
-}
-
-const ThemeContext = createContext<ThemeContextValue | null>(null)
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { getThemeTokens, type ThemeMode } from './tokens'
+import { ThemeContext, type ThemeContextValue } from './ThemeContext'
 
 export function ThemeProvider({ children, initialMode = 'light' }: { children: ReactNode; initialMode?: ThemeMode }) {
   const [mode, setMode] = useState<ThemeMode>(initialMode)
@@ -36,10 +28,3 @@ export function ThemeProvider({ children, initialMode = 'light' }: { children: R
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
-export function useTheme(): ThemeContextValue {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) {
-    throw new Error('useTheme must be used within a ThemeProvider')
-  }
-  return ctx
-}

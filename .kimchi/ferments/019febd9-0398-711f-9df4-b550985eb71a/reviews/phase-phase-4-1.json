@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019febd9-0398-711f-9df4-b550985eb71a",
+  "phaseId": "phase-4",
+  "phaseName": "Liquid Glass UI Primitives",
+  "attempt": 1,
+  "timestamp": "2026-08-10T14:47:56.924Z",
+  "goal": "Create reusable Liquid Glass-styled primitives used across apps and overlays.",
+  "summary": "Phase 4 completed: created a reusable Liquid Glass UI primitive library (GlassPanel, GlassButton, GlassSidebar + GlassSidebarItem, GlassToolbar, GlassPopover), added light/dark/tinted variants and a working theme toggle inside the System Settings app, and polished focus/hover/active/disabled states with smooth transitions. All primitives are exported from src/components/ui/index.ts and exercised by unit tests. System tests: 49/49 passed; production build succeeded.",
+  "stepSummaries": "  1. Implement GlassPanel, GlassButton, GlassSidebar, GlassToolbar, and GlassPopover components with backdrop-filter. [verified]\n  2. Add light/dark/tinted variants and a global theme toggle in System Settings scaffold. [verified]\n  3. Add focus/active states and subtle hover transitions. [verified]",
+  "diffAvailable": true,
+  "diffFilesChanged": " ...9febd9-0398-711f-9df4-b550985eb71a.events.jsonl | 13 +++\n .../019febd9-0398-711f-9df4-b550985eb71a.json      | 88 +++++++++++++++++----\n .../runtime.json                                   | 20 +++--\n ...9febf5-1d22-70c5-8520-61a6b165bdda.events.jsonl |  3 +\n .../019febf5-1d22-70c5-8520-61a6b165bdda.json      | 28 +++++--\n .../runtime.json                                   | 11 +--\n ...9fec07-9a11-739d-9367-4c7aa568cf5b.events.jsonl | 14 ++++\n .../019fec07-9a11-739d-9367-4c7aa568cf5b.json      | 92 +++++++++++++++++-----\n .../runtime.json                                   | 19 ++++-\n Ferment-GLM5.2/src/App.tsx                         | 79 ++++++++++++++++++-\n Ferment-GLM5.2/src/design-system/Button.tsx        |  2 +-\n Ferment-GLM5.2/src/design-system/GlassPanel.tsx    |  2 +-\n Ferment-GLM5.2/src/design-system/Menu.tsx          |  5 +-\n Ferment-GLM5.2/src/design-system/Sidebar.tsx       |  2 +-\n Ferment-GLM5.2/src/design-system/Squircle.tsx      |  2 +-\n Ferment-GLM5.2/src/design-system/Toolbar.tsx       |  2 +-\n Ferment-GLM5.2/tsconfig.json                       |  2 +-\n Ferment-Kimi2.7/e2e-report/index.html              |  2 +-\n Ferment-Kimi2.7/src/apps/components.tsx            | 34 +++++++-\n .../src/components/window/windowStore.test.tsx     |  2 +-\n[... 4 more files ...]\n 23 files changed, 362 insertions(+), 75 deletions(-)\n?? e2e/dock.spec.ts\n?? src/apps/components.test.tsx\n?? src/components/ui/GlassButton.tsx\n?? src/components/ui/GlassPanel.tsx\n?? src/components/ui/GlassPopover.tsx\n?? src/components/ui/GlassPrimitives.test.tsx\n?? src/components/ui/GlassPrimitivesDemo.tsx\n?? src/components/ui/GlassSidebar.tsx\n?? src/components/ui/GlassToolbar.tsx\n?? src/components/ui/index.ts",
+  "evidence": "Unit test run:\n$ npm test\nTest Files 10 passed (10)\nTests 49 passed (49)\n\nProduction build:\n$ npm run build\nvite v8.2.1 building client environment for production...\ndist/index.html 0.46 kB\ndist/assets/index-C4P_2iiD.css 29.28 kB\ndist/assets/index-BUCvnKaN.js 218.03 kB\n✓ built in 91ms\n\nNew/modified files:\n- src/components/ui/GlassPanel.tsx (default/strong/tinted + hoverable)\n- src/components/ui/GlassButton.tsx (variants, focus/active/disabled)\n- src/components/ui/GlassSidebar.tsx + GlassSidebarItem\n- src/components/ui/GlassToolbar.tsx\n- src/components/ui/GlassPopover.tsx\n- src/components/ui/index.ts\n- src/components/ui/GlassPrimitivesDemo.tsx\n- src/components/ui/GlassPrimitives.test.tsx\n- src/apps/components.tsx (SystemSettingsApp)\n- src/apps/components.test.tsx\n- src/index.css (--tahoe-glass-tint)",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "All three steps used real test verification, not proxies. Step 1 added GlassPrimitives.test.tsx; Step 2 added components.test.tsx for theme toggle; Step 3 expanded primitive tests to cover hover/focus/active/disabled states.",
+      "evidence": "src/components/ui/GlassPrimitives.test.tsx (13 tests); src/apps/components.test.tsx (2 tests); npm test output: 49 passed."
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "Combined output delivers the phase goal: a reusable Liquid Glass primitive set used in the System Settings scaffold with theme control and stateful interactions.",
+      "evidence": "src/components/ui/*.tsx exports primitives; src/apps/components.tsx SystemSettingsApp uses GlassSidebar, GlassSidebarItem, GlassPanel (tinted), GlassButton."
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "Nothing deferred in Phase 4; all planned work completed.",
+      "evidence": "n/a"
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

@@ -1,6 +1,6 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 
-interface ToolbarProps extends HTMLAttributes<HTMLDivElement> {
+export interface ToolbarProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   /** Show the specular top-edge gradient */
   specular?: boolean

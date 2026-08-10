@@ -31,8 +31,8 @@
   },
   {
     "id": "ferment-kimi2-7",
-    "title": "macOS Tahoe — Core Shell",
-    "approach": "Core desktop shell",
+    "title": "macOS Tahoe — Ferment Kimi K2.7",
+    "approach": "React + Vite + TypeScript desktop with Zustand state",
     "workflow": "ferment",
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
     "questionsAndAnswers": [
@@ -62,10 +62,18 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "Kimi K2.7",
-    "durationMs": 2746557,
-    "cost": "$3.33",
-    "fermentId": "019fd263-018b-7115-aff8-5a252a9eb4a5",
-    "thinkingLevel": "enabled"
+    "durationMs": 9498000,
+    "cost": "$11.35",
+    "fermentId": "019febd8-d1ed-739d-9dda-1b29acd44cd8",
+    "thinkingLevel": "enabled",
+    "tokenUsage": {
+      "inputTokens": 2362275,
+      "cachedInputTokens": 43151040,
+      "cacheWriteTokens": 0,
+      "outputTokens": 226843,
+      "reasoningTokens": 0,
+      "requests": 583
+    }
   },
   {
     "id": "singleshot-kimi2-7",

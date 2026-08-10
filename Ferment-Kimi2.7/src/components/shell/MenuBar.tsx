@@ -1,4 +1,6 @@
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from '../../theme'
+import { GlassPanel } from '../ui'
 
 interface MenuBarProps {
   currentApp?: string
@@ -8,6 +10,73 @@ interface MenuBarProps {
 
 const menuItems = ['File', 'Edit', 'View', 'Go', 'Window', 'Help']
 
+const genericMenus: Record<string, string[]> = {
+  File: ['New Window', 'New Folder', 'Open', 'Close', 'Get Info', 'Rename', 'Move to Trash'],
+  Edit: ['Undo', 'Cut', 'Copy', 'Paste', 'Select All', 'Find', 'Spelling and Grammar'],
+  View: ['as Icons', 'as List', 'as Columns', 'Show Preview', 'Hide Sidebar', 'Enter Full Screen'],
+  Go: ['Back', 'Forward', 'Enclosing Folder', 'Home', 'Applications', 'Utilities', 'Recent Folders'],
+  Window: ['Minimize', 'Zoom', 'Show Previous Tab', 'Show Next Tab', 'Bring All to Front'],
+  Help: ['Search', 'Tips for your Mac', 'macOS Help', 'Keyboard shortcuts'],
+}
+
+const appMenus: Record<string, string[]> = {
+  Finder: ['About Finder', 'Preferences…', 'Empty Bin…', 'Services', 'Hide Finder', 'Quit Finder'],
+  Safari: ['About Safari', 'Preferences…', 'Settings for This Website', 'Services', 'Hide Safari', 'Quit Safari'],
+  Notes: ['About Notes', 'Preferences…', 'Services', 'Hide Notes', 'Quit Notes'],
+  'System Settings': ['About System Settings', 'Preferences…', 'Services', 'Hide System Settings', 'Quit System Settings'],
+  Calendar: ['About Calendar', 'Preferences…', 'Services', 'Hide Calendar', 'Quit Calendar'],
+  Photos: ['About Photos', 'Preferences…', 'Services', 'Hide Photos', 'Quit Photos'],
+  Phone: ['About Phone', 'Preferences…', 'Services', 'Hide Phone', 'Quit Phone'],
+  Journal: ['About Journal', 'Preferences…', 'Services', 'Hide Journal', 'Quit Journal'],
+}
+
+function MenuDropdown({
+  items,
+  onClose,
+}: {
+  items: string[]
+  onClose: () => void
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        onClose()
+      }
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+    window.addEventListener('mousedown', handleClickOutside)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [onClose])
+
+  return (
+    <div ref={containerRef} className="absolute top-full left-0 mt-1 min-w-[200px]" data-testid="menu-dropdown">
+      <GlassPanel variant="strong" className="py-1 flex flex-col shadow-xl">
+        {items.map((item) => (
+          <button
+            key={item}
+            type="button"
+            data-testid={`menu-item-${item.toLowerCase().replace(/\s+/g, '-').replace(/…/g, '')}`}
+            onMouseDown={(e) => e.stopPropagation()}
+            className="text-left px-4 py-1.5 text-sm hover:bg-tahoe-accent/30 focus:bg-tahoe-accent/30 focus:outline-none transition-colors"
+          >
+            {item}
+          </button>
+        ))}
+      </GlassPanel>
+    </div>
+  )
+}
+
 export function MenuBar({
   currentApp = 'Finder',
   onSpotlightClick,
@@ -15,6 +84,7 @@ export function MenuBar({
 }: MenuBarProps) {
   const { mode } = useTheme()
   const textColor = mode === 'dark' ? 'text-white/90' : 'text-black/90'
+  const [activeMenu, setActiveMenu] = useState<string | null>(null)
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString('en-US', {
@@ -32,6 +102,16 @@ export function MenuBar({
 
   const now = new Date()
 
+  const openMenu = useCallback((name: string) => {
+    setActiveMenu((current) => (current === name ? null : name))
+  }, [])
+
+  const closeMenu = useCallback(() => {
+    setActiveMenu(null)
+  }, [])
+
+  const appMenuItems = appMenus[currentApp] ?? appMenus.Finder
+
   return (
     <div
       className={`absolute top-0 left-0 right-0 h-8 flex items-center justify-between px-4 text-sm ${textColor} z-[9999] transition-colors duration-300`}
@@ -48,14 +128,31 @@ export function MenuBar({
             <path d="M10.28 2.8c.33-.42.55-.98.55-1.55 0-.08 0-.15-.02-.22-.52.02-1.15.35-1.52.78-.3.36-.58.92-.58 1.49 0 .09.02.17.02.2.04.01.1.01.15.01.47 0 1.06-.31 1.4-.71zm.88 1.58c-.73-.04-1.36.42-1.82.42-.47 0-1.16-.4-1.86-.4-1.35.02-2.64.82-3.35 2.08-.67 1.26-.56 3.02.28 4.6.5.9 1.18 1.91 2.05 1.91.8-.01 1.1-.52 2.03-.52.96 0 1.2.52 1.98.5 1.06-.02 1.78-.98 2.3-1.92.3-.54.42-.9.65-1.48-1.77-.53-2.2-2.88-2.15-4.18.02-1.14.73-2.06 1.38-2.4-.08-.24-.34-.4-.49-.61z" />
           </svg>
         </button>
-        <span className="font-semibold">{currentApp}</span>
-        {menuItems.map((item) => (
+        <div className="relative">
           <button
-            key={item}
-            className="hidden md:block hover:bg-white/20 hover:dark:bg-black/30 rounded px-2 py-0.5 transition-colors"
+            type="button"
+            data-testid="menubar-app-menu-button"
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={() => openMenu(currentApp)}
+            className="font-semibold hover:bg-white/20 hover:dark:bg-black/30 rounded px-2 py-0.5 transition-colors"
           >
-            {item}
+            {currentApp}
           </button>
+          {activeMenu === currentApp && <MenuDropdown items={appMenuItems} onClose={closeMenu} />}
+        </div>
+        {menuItems.map((item) => (
+          <div key={item} className="relative">
+            <button
+              type="button"
+              data-testid={`menu-button-${item.toLowerCase()}`}
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={() => openMenu(item)}
+              className="hidden md:block hover:bg-white/20 hover:dark:bg-black/30 rounded px-2 py-0.5 transition-colors"
+            >
+              {item}
+            </button>
+            {activeMenu === item && <MenuDropdown items={genericMenus[item] ?? []} onClose={closeMenu} />}
+          </div>
         ))}
       </div>
 
