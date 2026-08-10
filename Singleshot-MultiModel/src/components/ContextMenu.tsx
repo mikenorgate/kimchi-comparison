@@ -30,15 +30,18 @@ export default function ContextMenu({ x, y, items, onClose }: ContextMenuProps) 
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
     };
+    const handleCloseMenus = () => onClose();
     // Pointerdown fires before click; using it avoids needing to stop the
     // contextmenu event from re-opening the menu immediately.
     document.addEventListener('mousedown', handlePointerDown);
     document.addEventListener('contextmenu', handlePointerDown);
     document.addEventListener('keydown', handleKey);
+    window.addEventListener('app:close-menus', handleCloseMenus);
     return () => {
       document.removeEventListener('mousedown', handlePointerDown);
       document.removeEventListener('contextmenu', handlePointerDown);
       document.removeEventListener('keydown', handleKey);
+      window.removeEventListener('app:close-menus', handleCloseMenus);
     };
   }, [onClose]);
 

@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>macOS Tahoe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-user-select:none; user-select:none; }
+html, body { width:100%; height:100%; overflow:hidden; font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; }
+:root {
+  --glass-bg: rgba(255,255,255,0.55);
+  --glass-bg-strong: rgba(255,255,255,0.72);
+  --glass-bg-weak: rgba(255,255,255,0.35);
+  --glass-border: rgba(255,255,255,0.45);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+  --glass-radius: 14px;
+  --glass-radius-sm: 10px;
+  --accent: #0a84ff;
+  --accent-hover: #0070ee;
+  --text-primary: #1d1d1f;
+  --text-secondary: rgba(60,60,67,0.6);
+  --text-tertiary: rgba(60,60,67,0.3);
+  --separator: rgba(60,60,67,0.12);
+  --window-bg: rgba(246,246,248,0.85);
+  --titlebar-h: 38px;
+  --menubar-h: 28px;
+  --dock-h: 76px;
+}
+body.dark {
+  --glass-bg: rgba(40,40,45,0.55);
+  --glass-bg-strong: rgba(50,50,55,0.72);
+  --glass-bg-weak: rgba(30,30,35,0.4);
+  --glass-border: rgba(255,255,255,0.12);
+  --text-primary: #f5f5f7;
+  --text-secondary: rgba(235,235,245,0.6);
+  --text-tertiary: rgba(235,235,245,0.3);
+  --separator: rgba(255,255,255,0.1);
+  --window-bg: rgba(30,30,35,0.88);
+}
+
+/* ===== DESKTOP WALLPAPER ===== */
+#desktop {
+  position:fixed; inset:0; z-index:0;
+  background: linear-gradient(135deg, #1a5276 0%, #2e86ab 20%, #6dd5fa 45%, #b5e8e3 70%, #f0e6ff 100%);
+  overflow:hidden;
+}
+#desktop::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(255,100,150,0.3), transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(100,150,255,0.3), transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(200,100,255,0.15), transparent 60%);
+}
+#desktop::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 40%);
+}
+body.dark #desktop {
+  background: linear-gradient(135deg, #0a0a2e 0%, #16213e 25%, #0f3460 50%, #1a1a3e 75%, #0d0d1a 100%);
+}
+
+/* ===== BOOT SCREEN ===== */
+#boot-screen {
+  position:fixed; inset:0; z-index:99999;
+  background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transition:opacity 0.8s ease;
+}
+#boot-screen .apple-logo {
+  font-size:60px; color:#fff; opacity:0; animation: fadeIn 1.5s ease 0.3s forwards;
+}
+#boot-screen .boot-bar {
+  width:180px; height:4px; background:rgba(255,255,255,0.2); border-radius:2px;
+  margin-top:30px; overflow:hidden; opacity:0; animation: fadeIn 0.5s ease 1s forwards;
+}
+#boot-screen .boot-bar::after {
+  content:''; display:block; width:0; height:100%;
+  background:#fff; border-radius:2px; animation: bootProgress 2s ease 1s forwards;
+}
+@keyframes fadeIn { to { opacity:1; } }
+@keyframes bootProgress { to { width:100%; } }
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, #1a5276 0%, #2e86ab 30%, #6dd5fa 60%, #b5e8e3 100%);
+  backdrop-filter: blur(40px); transition: opacity 0.6s ease, visibility 0.6s;
+}
+body.dark #login-screen { background: linear-gradient(135deg, #0a0a2e 0%, #16213e 50%, #0f3460 100%); }
+#login-screen.hidden { opacity:0; visibility:hidden; }
+.login-clock { color:#fff; text-align:center; margin-bottom:50px; }
+.login-clock .time { font-size:64px; font-weight:300; text-shadow:0 2px 10px rgba(0,0,0,0.3); }
+.login-clock .date { font-size:20px; font-weight:400; margin-top:4px; text-shadow:0 1px 6px rgba(0,0,0,0.3); }
+.login-avatar {
+  width:96px; height:96px; border-radius:50%;
+  background: linear-gradient(135deg, #6dd5fa, #2980b9);
+  display:flex; align-items:center; justify-content:center;
+  font-size:40px; color:#fff; font-weight:500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.3);
+}
+.login-name { color:#fff; font-size:18px; margin-top:16px; font-weight:500; text-shadow:0 1px 6px rgba(0,0,0,0.3); }
+.login-input-wrap { margin-top:12px; display:flex; align-items:center; gap:8px; }
+.login-input {
+  width:220px; padding:8px 16px; border-radius:20px; border:none;
+  background:rgba(255,255,255,0.25); backdrop-filter:blur(20px);
+  color:#fff; font-size:14px; outline:none; text-align:center;
+}
+.login-input::placeholder { color:rgba(255,255,255,0.6); }
+.login-go {
+  width:32px; height:32px; border-radius:50%; border:none; cursor:pointer;
+  background:rgba(255,255,255,0.25); backdrop-filter:blur(20px);
+  color:#fff; font-size:14px; transition: background 0.2s;
+}
+.login-go:hover { background:rgba(255,255,255,0.4); }
+.login-hint { color:rgba(255,255,255,0.5); font-size:12px; margin-top:16px; }
+
+/* ===== MENU BAR ===== */
+#menubar {
+  position:fixed; top:0; left:0; right:0; height:var(--menubar-h); z-index:9000;
+  display:flex; align-items:center; padding: 0 12px;
+  background: var(--glass-bg-weak);
+  backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  font-size:13px; color:var(--text-primary); font-weight:500;
+  -webkit-font-smoothing:antialiased;
+}
+.mb-left { display:flex; align-items:center; gap:2px; flex:1; }
+.mb-right { display:flex; align-items:center; gap:4px; }
+.mb-item {
+  padding: 2px 8px; border-radius:6px; cursor:pointer; white-space:nowrap;
+  transition: background 0.12s; display:flex; align-items:center; gap:5px;
+  height:22px; line-height:18px;
+}
+.mb-item:hover { background: rgba(255,255,255,0.25); }
+.mb-item.active { background: var(--accent); color:#fff; }
+.mb-item.bold { font-weight:700; }
+.mb-item i { font-size:13px; }
+.mb-divider { width:1px; height:14px; background: var(--separator); margin: 0 4px; }
+.mb-battery { display:flex; align-items:center; gap:3px; }
+.mb-battery-icon { font-size:13px; position:relative; }
+.mb-cc-btn { cursor:pointer; padding:2px 6px; border-radius:6px; transition: background 0.12s; }
+.mb-cc-btn:hover { background:rgba(255,255,255,0.25); }
+
+/* ===== MENU DROPDOWN ===== */
+.menu-dropdown {
+  position:fixed; z-index:9500; min-width:220px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--glass-radius-sm);
+  box-shadow: var(--glass-shadow);
+  padding:5px; font-size:13px; color:var(--text-primary);
+  opacity:0; transform: translateY(-4px) scale(0.98); pointer-events:none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.menu-dropdown.open { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.menu-dropdown .dd-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 5px 12px; border-radius:6px; cursor:pointer; white-space:nowrap;
+  transition: background 0.08s;
+}
+.menu-dropdown .dd-item:hover { background: var(--accent); color:#fff; }
+.menu-dropdown .dd-item.disabled { opacity:0.4; pointer-events:none; }
+.menu-dropdown .dd-item .shortcut { color:var(--text-secondary); font-size:12px; margin-left:24px; }
+.menu-dropdown .dd-item:hover .shortcut { color:rgba(255,255,255,0.7); }
+.menu-dropdown .dd-divider { height:1px; background:var(--separator); margin:4px 8px; }
+.menu-dropdown .dd-item .check { width:14px; text-align:center; color:var(--accent); }
+.menu-dropdown .dd-item:hover .check { color:#fff; }
+
+/* ===== DOCK ===== */
+#dock-container {
+  position:fixed; bottom:8px; left:50%; transform:translateX(-50%); z-index:8000;
+  display:flex; align-items:flex-end;
+}
+#dock {
+  display:flex; align-items:flex-end; gap:6px; padding:8px 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 22px;
+  box-shadow: var(--glass-shadow);
+}
+.dock-item {
+  position:relative; width:52px; height:52px; cursor:pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), margin 0.2s ease;
+  transform-origin: bottom center;
+  display:flex; align-items:center; justify-content:center;
+}
+.dock-item .dock-icon {
+  width:100%; height:100%; border-radius:12px; font-size:30px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.dock-item:hover { transform: scale(1.4) translateY(-8px); margin: 0 8px; z-index:10; }
+.dock-item .dock-label {
+  position:absolute; bottom: calc(100% + 12px); left:50%; transform:translateX(-50%);
+  background: var(--glass-bg-strong); backdrop-filter:blur(20px);
+  border:0.5px solid var(--glass-border); border-radius:8px;
+  padding: 3px 10px; font-size:12px; white-space:nowrap; color:var(--text-primary);
+  opacity:0; pointer-events:none; transition: opacity 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.dock-item:hover .dock-label { opacity:1; }
+.dock-item .dock-dot {
+  position:absolute; bottom:-5px; left:50%; transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%; background:var(--text-primary);
+  opacity:0; transition:opacity 0.2s;
+}
+.dock-item.running .dock-dot { opacity:0.5; }
+.dock-item.active .dock-dot { opacity:1; }
+.dock-divider { width:1px; height:40px; background:var(--separator); margin:0 4px; align-self:center; }
+
+/* ===== WINDOWS ===== */
+.window {
+  position:fixed; z-index:100;
+  background: var(--window-bg);
+  backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(0,0,0,0.05);
+  display:flex; flex-direction:column; overflow:hidden;
+  min-width: 280px; min-height: 200px;
+  animation: winOpen 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+@keyframes winOpen { from { opacity:0; transform: scale(0.92); } to { opacity:1; transform:scale(1); } }
+.window.closing { animation: winClose 0.2s ease forwards; }
+@keyframes winClose { to { opacity:0; transform: scale(0.92); } }
+.window.minimizing { animation: winMinimize 0.4s cubic-bezier(0.4, 0, 0.6, 1) forwards; }
+@keyframes winMinimize { to { opacity:0; transform: scale(0.1) translateY(400px); } }
+.window.minimized { display:none; }
+.window.maximized { border-radius:0; }
+
+.titlebar {
+  height: var(--titlebar-h); flex-shrink:0; display:flex; align-items:center;
+  padding: 0 12px; gap:8px; cursor:grab;
+  border-bottom: 0.5px solid var(--separator);
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+}
+body.dark .titlebar { background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent); }
+.titlebar.dragging { cursor:grabbing; }
+.traffic-lights { display:flex; gap:8px; align-items:center; }
+.tl { width:12px; height:12px; border-radius:50%; cursor:pointer; border:none; position:relative; }
+.tl-close { background:#ff5f57; }
+.tl-min { background:#febc2e; }
+.tl-max { background:#28c840; }
+.tl:hover .tl-icon { opacity:1; }
+.tl-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:8px; color:rgba(0,0,0,0.5); opacity:0; transition: opacity 0.1s; }
+.titlebar-title { font-size:13px; font-weight:600; color:var(--text-primary); flex:1; text-align:center; }
+.titlebar-btns { display:flex; gap:4px; }
+.titlebar-btn {
+  width:26px; height:26px; border-radius:6px; border:none; cursor:pointer;
+  background:transparent; color:var(--text-primary); font-size:12px;
+  display:flex; align-items:center; justify-content:center; transition: background 0.12s;
+}
+.titlebar-btn:hover { background:rgba(0,0,0,0.08); }
+body.dark .titlebar-btn:hover { background:rgba(255,255,255,0.1); }
+
+.window-content { flex:1; overflow:auto; position:relative; }
+.window-resizer { position:absolute; z-index:10; }
+.wr-se { bottom:0; right:0; width:14px; height:14px; cursor: nwse-resize; }
+.wr-sw { bottom:0; left:0; width:14px; height:14px; cursor: nesw-resize; }
+.wr-e { top:0; right:0; width:7px; height:100%; cursor: ew-resize; }
+.wr-w { top:0; left:0; width:7px; height:100%; cursor: ew-resize; }
+.wr-s { bottom:0; left:0; width:100%; height:7px; cursor: ns-resize; }
+.wr-n { top:0; left:0; width:100%; height:7px; cursor: ns-resize; }
+
+/* ===== CONTROL CENTER ===== */
+#control-center {
+  position:fixed; top:32px; right:10px; z-index:9500; width:300px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  padding:12px; opacity:0; transform: translateY(-8px) scale(0.97); pointer-events:none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#control-center.open { opacity:1; transform: translateY(0) scale(1); pointer-events:auto; }
+.cc-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.cc-tile {
+  background: var(--glass-bg); border-radius:14px; padding:12px; cursor:pointer;
+  transition: background 0.15s; display:flex; flex-direction:column; gap:8px;
+}
+.cc-tile:hover { background: rgba(255,255,255,0.12); }
+body.dark .cc-tile:hover { background: rgba(255,255,255,0.06); }
+.cc-tile.active { background: var(--accent); color:#fff; }
+.cc-tile .cc-icon { width:28px; height:28px; border-radius:50%; background: rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; }
+.cc-tile.active .cc-icon { background: rgba(255,255,255,0.3); }
+.cc-tile .cc-label { font-size:11px; font-weight:500; }
+.cc-tile .cc-sublabel { font-size:10px; opacity:0.7; }
+.cc-tile.active .cc-sublabel { opacity:0.9; }
+.cc-row { display:flex; gap:8px; margin-bottom:8px; }
+.cc-row .cc-tile { flex:1; flex-direction:row; align-items:center; gap:10px; }
+.cc-slider-group { background: var(--glass-bg); border-radius:14px; padding:10px; margin-top:8px; display:flex; flex-direction:column; gap:10px; }
+.cc-slider-row { display:flex; align-items:center; gap:10px; }
+.cc-slider-row .icon { width:28px; height:28px; border-radius:50%; background: rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.cc-slider { flex:1; height:24px; position:relative; display:flex; align-items:center; }
+.cc-slider-track { width:100%; height:24px; background: rgba(255,255,255,0.15); border-radius:12px; position:relative; overflow:hidden; cursor:pointer; }
+.cc-slider-fill { height:100%; background:#fff; border-radius:12px; transition: width 0.1s; }
+body.dark .cc-slider-fill { background:rgba(255,255,255,0.8); }
+
+/* ===== SPOTLIGHT ===== */
+#spotlight-overlay {
+  position:fixed; inset:0; z-index:9800; display:none;
+  align-items:flex-start; justify-content:center; padding-top:20vh;
+  background: rgba(0,0,0,0.1);
+}
+#spotlight-overlay.open { display:flex; }
+#spotlight {
+  width: 600px; max-width:80vw;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  overflow:hidden;
+}
+#spotlight input {
+  width:100%; padding: 16px 20px; border:none; background:transparent; outline:none;
+  font-size:22px; color:var(--text-primary); font-weight:300;
+}
+#spotlight input::placeholder { color:var(--text-secondary); }
+.spotlight-results { max-height:400px; overflow:auto; border-top:0.5px solid var(--separator); }
+.spotlight-result {
+  display:flex; align-items:center; gap:12px; padding:8px 20px; cursor:pointer;
+  transition: background 0.1s;
+}
+.spotlight-result:hover, .spotlight-result.selected { background: var(--accent); color:#fff; }
+.spotlight-result .sr-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.spotlight-result .sr-title { font-size:14px; font-weight:500; }
+.spotlight-result .sr-sub { font-size:11px; opacity:0.6; }
+
+/* ===== CONTEXT MENU ===== */
+.context-menu {
+  position:fixed; z-index:9600; min-width:200px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border); border-radius: var(--glass-radius-sm);
+  box-shadow: var(--glass-shadow); padding:5px; font-size:13px;
+  opacity:0; transform: scale(0.96); pointer-events:none; transition: opacity 0.12s, transform 0.12s;
+}
+.context-menu.open { opacity:1; transform: scale(1); pointer-events:auto; }
+.context-menu .dd-item { display:flex; align-items:center; justify-content:space-between; padding:5px 12px; border-radius:6px; cursor:pointer; white-space:nowrap; }
+.context-menu .dd-item:hover { background:var(--accent); color:#fff; }
+.context-menu .dd-item .shortcut { color:var(--text-secondary); font-size:12px; margin-left:20px; }
+.context-menu .dd-item:hover .shortcut { color:rgba(255,255,255,0.7); }
+.context-menu .dd-divider { height:1px; background:var(--separator); margin:4px 8px; }
+
+/* ===== NOTIFICATION ===== */
+.notification {
+  position:fixed; top:34px; right:12px; z-index:9700;
+  width:320px; background: var(--glass-bg-strong);
+  backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border); border-radius:16px;
+  box-shadow: var(--glass-shadow); padding:14px; display:flex; gap:12px;
+  opacity:0; transform: translateX(360px); transition: opacity 0.3s, transform 0.3s;
+}
+.notification.show { opacity:1; transform: translateX(0); }
+.notification.hide { opacity:0; transform: translateX(360px); }
+.notification .n-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.notification .n-title { font-size:13px; font-weight:600; }
+.notification .n-body { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+
+/* ===== APP STYLES ===== */
+/* Finder */
+.finder { display:flex; height:100%; }
+.finder-sidebar { width:180px; flex-shrink:0; background: rgba(255,255,255,0.08); padding:8px 6px; overflow-y:auto; border-right:0.5px solid var(--separator); }
+body.dark .finder-sidebar { background: rgba(0,0,0,0.1); }
+.finder-sidebar .fs-section { font-size:11px; font-weight:600; color:var(--text-secondary); padding:6px 8px 2px; text-transform:uppercase; letter-spacing:0.5px; }
+.finder-sidebar .fs-item { display:flex; align-items:center; gap:8px; padding:5px 8px; border-radius:6px; cursor:pointer; font-size:13px; transition: background 0.1s; }
+.finder-sidebar .fs-item:hover { background: rgba(0,0,0,0.06); }
+body.dark .finder-sidebar .fs-item:hover { background: rgba(255,255,255,0.08); }
+.finder-sidebar .fs-item.active { background: var(--accent); color:#fff; }
+.finder-sidebar .fs-item i { width:16px; text-align:center; font-size:13px; }
+.finder-main { flex:1; display:flex; flex-direction:column; }
+.finder-toolbar { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.finder-toolbar .ft-btn { width:28px; height:24px; border-radius:6px; border:none; cursor:pointer; background:rgba(0,0,0,0.05); color:var(--text-primary); font-size:12px; display:flex; align-items:center; justify-content:center; transition: background 0.1s; }
+.finder-toolbar .ft-btn:hover { background:rgba(0,0,0,0.1); }
+body.dark .finder-toolbar .ft-btn { background:rgba(255,255,255,0.08); }
+body.dark .finder-toolbar .ft-btn:hover { background:rgba(255,255,255,0.15); }
+.finder-path { flex:1; font-size:12px; color:var(--text-secondary); text-align:center; font-weight:500; }
+.finder-content { flex:1; overflow-y:auto; padding:16px; }
+.finder-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap:16px; }
+.finder-file { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; padding:8px; border-radius:8px; transition: background 0.1s; }
+.finder-file:hover { background: rgba(0,0,0,0.05); }
+body.dark .finder-file:hover { background: rgba(255,255,255,0.08); }
+.finder-file.selected { background: rgba(10,132,255,0.15); }
+.finder-file .ff-icon { font-size:40px; }
+.finder-file .ff-name { font-size:12px; text-align:center; word-break:break-word; }
+
+/* Calculator */
+.calc { padding:8px; display:flex; flex-direction:column; height:100%; }
+.calc-display { flex:1; display:flex; align-items:flex-end; justify-content:flex-end; padding:16px 20px; font-size:48px; font-weight:300; color:var(--text-primary); min-height:80px; }
+.calc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.calc-btn { height:56px; border:none; border-radius:12px; font-size:20px; cursor:pointer; transition: filter 0.1s; }
+.calc-btn:hover { filter: brightness(1.15); }
+.calc-btn:active { filter: brightness(0.9); }
+.calc-btn.num { background: rgba(255,255,255,0.15); color:var(--text-primary); }
+.calc-btn.op { background:#ff9f0a; color:#fff; }
+.calc-btn.fn { background: rgba(255,255,255,0.25); color:var(--text-primary); }
+.calc-btn.zero { grid-column: span 2; }
+
+/* Terminal */
+.terminal { background: rgba(20,20,25,0.92); color:#e0e0e0; font-family:'SF Mono',Menlo,monospace; font-size:13px; padding:12px; overflow-y:auto; height:100%; }
+.terminal .term-line { white-space:pre-wrap; word-break:break-all; }
+.terminal .term-prompt { color:#28c840; }
+.terminal .term-input { background:transparent; border:none; outline:none; color:#e0e0e0; font-family:inherit; font-size:inherit; width:100%; }
+.terminal .term-cursor { display:inline-block; width:8px; height:14px; background:#e0e0e0; animation: blink 1s infinite; vertical-align:middle; }
+@keyframes blink { 50% { opacity:0; } }
+
+/* Notes */
+.notes { display:flex; height:100%; }
+.notes-sidebar { width:200px; flex-shrink:0; background: rgba(255,255,255,0.06); border-right:0.5px solid var(--separator); padding:8px; overflow-y:auto; }
+body.dark .notes-sidebar { background: rgba(0,0,0,0.1); }
+.notes-sidebar .ns-header { display:flex; justify-content:space-between; align-items:center; padding:4px 8px; }
+.notes-sidebar .ns-header span { font-size:13px; font-weight:600; }
+.notes-sidebar .ns-new { cursor:pointer; color:var(--accent); font-size:14px; }
+.notes-sidebar .ns-item { padding:8px 10px; border-radius:8px; cursor:pointer; margin-bottom:4px; transition: background 0.1s; }
+.notes-sidebar .ns-item:hover { background: rgba(0,0,0,0.06); }
+body.dark .notes-sidebar .ns-item:hover { background: rgba(255,255,255,0.08); }
+.notes-sidebar .ns-item.active { background: rgba(255,200,0,0.3); }
+.notes-sidebar .ns-item .ns-title { font-size:13px; font-weight:500; }
+.notes-sidebar .ns-item .ns-preview { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+.notes-main { flex:1; display:flex; flex-direction:column; }
+.notes-toolbar { padding:8px 12px; border-bottom:0.5px solid var(--separator); display:flex; gap:8px; align-items:center; }
+.notes-toolbar .nt-btn { width:28px; height:24px; border-radius:6px; border:none; cursor:pointer; background:transparent; color:var(--text-primary); font-size:13px; display:flex; align-items:center; justify-content:center; }
+.notes-toolbar .nt-btn:hover { background:rgba(0,0,0,0.06); }
+body.dark .notes-toolbar .nt-btn:hover { background:rgba(255,255,255,0.1); }
+.notes-editor { flex:1; padding:20px; outline:none; overflow-y:auto; }
+.notes-editor:empty::before { content:'Start typing...'; color:var(--text-tertiary); }
+.notes-editor h1 { font-size:24px; font-weight:700; margin-bottom:8px; }
+.notes-editor h2 { font-size:18px; font-weight:600; margin:12px 0 6px; }
+
+/* Safari */
+.safari { display:flex; flex-direction:column; height:100%; }
+.safari-toolbar { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.safari-toolbar .st-btn { width:30px; height:28px; border-radius:8px; border:none; cursor:pointer; background:rgba(0,0,0,0.05); color:var(--text-primary); font-size:13px; display:flex; align-items:center; justify-content:center; transition: background 0.1s; }
+.safari-toolbar .st-btn:hover { background:rgba(0,0,0,0.1); }
+body.dark .safari-toolbar .st-btn { background:rgba(255,255,255,0.08); }
+body.dark .safari-toolbar .st-btn:hover { background:rgba(255,255,255,0.15); }
+.safari-url { flex:1; height:28px; border-radius:8px; border:0.5px solid var(--separator); background: rgba(255,255,255,0.1); padding:0 12px; font-size:13px; color:var(--text-primary); outline:none; }
+.safari-content { flex:1; overflow-y:auto; }
+.safari-startpage { padding:40px; text-align:center; }
+.safari-favorites { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:20px; max-width:500px; margin:0 auto; }
+.safari-fav { display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; }
+.safari-fav .sf-icon { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
+.safari-fav:hover .sf-icon { transform:scale(1.1); }
+.safari-fav .sf-name { font-size:11px; color:var(--text-primary); }
+
+/* Weather */
+.weather { height:100%; overflow-y:auto; color:#fff; }
+.weather-hero { padding:40px 20px 20px; text-align:center; background: linear-gradient(to bottom, #4a90d9, #6bb6e8); }
+.weather-hero .w-temp { font-size:72px; font-weight:200; }
+.weather-hero .w-cond { font-size:18px; }
+.weather-hero .w-loc { font-size:24px; font-weight:500; margin-bottom:8px; }
+.weather-hero .w-range { font-size:14px; opacity:0.8; }
+.weather-hourly { display:flex; gap:16px; padding:16px; overflow-x:auto; background: rgba(255,255,255,0.1); }
+.weather-hour { display:flex; flex-direction:column; align-items:center; gap:6px; min-width:50px; }
+.weather-hour .wh-time { font-size:12px; opacity:0.8; }
+.weather-hour .wh-icon { font-size:20px; }
+.weather-hour .wh-temp { font-size:14px; font-weight:500; }
+.weather-daily { padding:16px; }
+.weather-day { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid rgba(255,255,255,0.1); }
+.weather-day .wd-name { width:60px; font-size:14px; font-weight:500; }
+.weather-day .wd-icon { font-size:20px; }
+.weather-day .wd-temps { display:flex; gap:12px; font-size:14px; }
+.weather-day .wd-low { opacity:0.5; }
+
+/* System Settings */
+.settings { display:flex; height:100%; }
+.settings-sidebar { width:200px; flex-shrink:0; background: rgba(255,255,255,0.06); border-right:0.5px solid var(--separator); padding:8px 6px; overflow-y:auto; }
+body.dark .settings-sidebar { background: rgba(0,0,0,0.1); }
+.settings-sidebar .ss-item { display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; cursor:pointer; font-size:13px; transition: background 0.1s; }
+.settings-sidebar .ss-item:hover { background: rgba(0,0,0,0.06); }
+body.dark .settings-sidebar .ss-item:hover { background: rgba(255,255,255,0.08); }
+.settings-sidebar .ss-item.active { background: var(--accent); color:#fff; }
+.settings-sidebar .ss-item i { width:18px; text-align:center; font-size:14px; }
+.settings-main { flex:1; overflow-y:auto; padding:24px; }
+.settings-main h2 { font-size:20px; font-weight:700; margin-bottom:16px; }
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid var(--separator); }
+.settings-row .sr-label { font-size:14px; }
+.settings-row .sr-value { font-size:13px; color:var(--text-secondary); }
+.toggle { width:44px; height:26px; border-radius:13px; background: rgba(120,120,128,0.32); position:relative; cursor:pointer; transition: background 0.2s; flex-shrink:0; }
+.toggle.on { background: #28c840; }
+.toggle::after { content:''; position:absolute; top:2px; left:2px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.2); transition: transform 0.2s; }
+.toggle.on::after { transform: translateX(18px); }
+
+/* Calendar */
+.calendar { display:flex; flex-direction:column; height:100%; }
+.calendar-toolbar { display:flex; align-items:center; gap:12px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.calendar-toolbar .ct-title { font-size:16px; font-weight:700; flex:1; }
+.calendar-toolbar .ct-btn { padding:4px 12px; border-radius:6px; border:none; cursor:pointer; background:rgba(0,0,0,0.05); color:var(--text-primary); font-size:13px; transition: background 0.1s; }
+.calendar-toolbar .ct-btn:hover { background:rgba(0,0,0,0.1); }
+body.dark .calendar-toolbar .ct-btn { background:rgba(255,255,255,0.08); }
+body.dark .calendar-toolbar .ct-btn:hover { background:rgba(255,255,255,0.15); }
+.calendar-weekdays { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; font-weight:600; color:var(--text-secondary); padding:4px 0; border-bottom:0.5px solid var(--separator); }
+.calendar-days { flex:1; display:grid; grid-template-columns:repeat(7,1fr); grid-auto-rows:1fr; }
+.calendar-day { border-right:0.5px solid var(--separator); border-bottom:0.5px solid var(--separator); padding:4px; cursor:pointer; transition: background 0.1s; overflow:hidden; }
+.calendar-day:hover { background:rgba(10,132,255,0.05); }
+.calendar-day.other-month { opacity:0.3; }
+.calendar-day.today .day-num { background: var(--accent); color:#fff; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; }
+.calendar-day .day-num { font-size:12px; font-weight:500; margin-bottom:2px; }
+.calendar-event { font-size:10px; padding:1px 4px; border-radius:3px; margin-bottom:1px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+/* Music */
+.music { display:flex; flex-direction:column; height:100%; }
+.music-main { flex:1; overflow-y:auto; padding:16px; }
+.music-section-title { font-size:18px; font-weight:700; margin-bottom:12px; }
+.music-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:16px; margin-bottom:24px; }
+.music-album { cursor:pointer; transition: transform 0.2s; }
+.music-album:hover { transform:scale(1.03); }
+.music-album .ma-cover { width:100%; aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.music-album .ma-title { font-size:12px; font-weight:500; margin-top:6px; }
+.music-album .ma-artist { font-size:11px; color:var(--text-secondary); }
+.music-player { display:flex; align-items:center; gap:12px; padding:10px 16px; border-top:0.5px solid var(--separator); background:rgba(255,255,255,0.05); }
+body.dark .music-player { background:rgba(0,0,0,0.1); }
+.music-player .mp-cover { width:40px; height:40px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.music-player .mp-info { flex:1; min-width:0; }
+.music-player .mp-title { font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.music-player .mp-artist { font-size:11px; color:var(--text-secondary); }
+.music-player .mp-btns { display:flex; gap:12px; }
+.music-player .mp-btn { cursor:pointer; font-size:16px; color:var(--text-primary); transition: color 0.1s; background:none; border:none; }
+.music-player .mp-btn:hover { color:var(--accent); }
+.music-player .mp-btn.play { font-size:20px; }
+.music-progress { height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:4px; cursor:pointer; position:relative; }
+.music-progress .mp-fill { height:100%; background:var(--accent); border-radius:2px; transition: width 0.3s; }
+
+/* Maps */
+.maps { display:flex; flex-direction:column; height:100%; }
+.maps-toolbar { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.maps-search { flex:1; height:28px; border-radius:8px; border:0.5px solid var(--separator); background:rgba(255,255,255,0.1); padding:0 12px; font-size:13px; color:var(--text-primary); outline:none; }
+.maps-canvas { flex:1; position:relative; background: linear-gradient(135deg, #a8d8a8, #c8e8c8); overflow:hidden; }
+.maps-canvas .map-grid { position:absolute; inset:0; opacity:0.3; background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px); background-size: 40px 40px; }
+.maps-pin { position:absolute; transform: translate(-50%, -100%); cursor:pointer; font-size:28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.maps-info { position:absolute; bottom:12px; left:12px; right:12px; background:var(--glass-bg-strong); backdrop-filter:blur(20px); border:0.5px solid var(--glass-border); border-radius:14px; padding:12px; box-shadow:var(--glass-shadow); }
+
+/* Mail */
+.mail { display:flex; height:100%; }
+.mail-sidebar { width:180px; flex-shrink:0; background:rgba(255,255,255,0.06); border-right:0.5px solid var(--separator); padding:8px 6px; overflow-y:auto; }
+body.dark .mail-sidebar { background:rgba(0,0,0,0.1); }
+.mail-sidebar .ms-section { font-size:11px; font-weight:600; color:var(--text-secondary); padding:6px 8px 2px; text-transform:uppercase; }
+.mail-sidebar .ms-item { display:flex; align-items:center; justify-content:space-between; padding:5px 8px; border-radius:6px; cursor:pointer; font-size:13px; transition: background 0.1s; }
+.mail-sidebar .ms-item:hover { background:rgba(0,0,0,0.06); }
+body.dark .mail-sidebar .ms-item:hover { background:rgba(255,255,255,0.08); }
+.mail-sidebar .ms-item.active { background:var(--accent); color:#fff; }
+.mail-sidebar .ms-item .ms-badge { font-size:11px; opacity:0.7; }
+.mail-list { width:280px; flex-shrink:0; border-right:0.5px solid var(--separator); overflow-y:auto; }
+.mail-item { padding:10px 14px; border-bottom:0.5px solid var(--separator); cursor:pointer; transition: background 0.1s; }
+.mail-item:hover { background:rgba(0,0,0,0.04); }
+body.dark .mail-item:hover { background:rgba(255,255,255,0.05); }
+.mail-item.active { background:rgba(10,132,255,0.1); }
+.mail-item.unread { font-weight:600; }
+.mail-item .mi-from { font-size:13px; }
+.mail-item .mi-subject { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+.mail-item .mi-preview { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+.mail-item .mi-time { font-size:11px; color:var(--text-secondary); float:right; }
+.mail-content { flex:1; overflow-y:auto; padding:20px; }
+.mail-content .mc-subject { font-size:18px; font-weight:700; margin-bottom:8px; }
+.mail-content .mc-from { font-size:13px; color:var(--text-secondary); margin-bottom:16px; }
+.mail-content .mc-body { font-size:14px; line-height:1.6; }
+
+/* Messages */
+.messages { display:flex; height:100%; }
+.messages-sidebar { width:240px; flex-shrink:0; border-right:0.5px solid var(--separator); overflow-y:auto; }
+.messages-item { display:flex; gap:10px; padding:10px 12px; cursor:pointer; border-bottom:0.5px solid var(--separator); transition: background 0.1s; }
+.messages-item:hover { background:rgba(0,0,0,0.04); }
+body.dark .messages-item:hover { background:rgba(255,255,255,0.05); }
+.messages-item.active { background:rgba(10,132,255,0.1); }
+.messages-item .mi-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; flex-shrink:0; }
+.messages-item .mi-info { flex:1; min-width:0; }
+.messages-item .mi-top { display:flex; justify-content:space-between; }
+.messages-item .mi-name { font-size:13px; font-weight:500; }
+.messages-item .mi-time { font-size:11px; color:var(--text-secondary); }
+.messages-item .mi-last { font-size:12px; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px; }
+.messages-chat { flex:1; display:flex; flex-direction:column; }
+.messages-header { padding:10px 16px; border-bottom:0.5px solid var(--separator); font-size:14px; font-weight:600; text-align:center; }
+.messages-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
+.msg-bubble { max-width:70%; padding:8px 14px; border-radius:18px; font-size:14px; line-height:1.4; }
+.msg-bubble.received { align-self:flex-start; background: rgba(0,0,0,0.08); color:var(--text-primary); }
+body.dark .msg-bubble.received { background:rgba(255,255,255,0.1); }
+.msg-bubble.sent { align-self:flex-end; background: var(--accent); color:#fff; }
+.messages-input { display:flex; gap:8px; padding:10px; border-top:0.5px solid var(--separator); }
+.messages-input input { flex:1; height:32px; border-radius:16px; border:0.5px solid var(--separator); background:rgba(255,255,255,0.1); padding:0 14px; font-size:13px; color:var(--text-primary); outline:none; }
+.messages-input button { width:32px; height:32px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:#fff; font-size:14px; }
+
+/* Clock */
+.clock-app { display:flex; flex-direction:column; height:100%; }
+.clock-tabs { display:flex; gap:0; border-bottom:0.5px solid var(--separator); }
+.clock-tab { flex:1; text-align:center; padding:10px; cursor:pointer; font-size:13px; font-weight:500; border-bottom:2px solid transparent; transition: border-color 0.2s; }
+.clock-tab.active { border-bottom-color: var(--accent); color: var(--accent); }
+.clock-content { flex:1; overflow-y:auto; padding:20px; }
+.clock-world { display:flex; flex-direction:column; align-items:center; gap:20px; }
+.clock-face { position:relative; width:200px; height:200px; border-radius:50%; border:4px solid var(--text-primary); }
+.clock-hand { position:absolute; bottom:50%; left:50%; transform-origin: bottom center; border-radius:4px; }
+.clock-hand.hour { width:4px; height:50px; background:var(--text-primary); }
+.clock-hand.minute { width:3px; height:70px; background:var(--text-primary); }
+.clock-hand.second { width:2px; height:80px; background:#ff5f57; }
+.clock-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:12px; height:12px; border-radius:50%; background:var(--text-primary); z-index:10; }
+.clock-digital { font-size:36px; font-weight:200; }
+.clock-cities { width:100%; }
+.clock-city { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid var(--separator); }
+.clock-city .cc-time { font-size:20px; font-weight:300; }
+.clock-city .cc-name { font-size:14px; }
+.clock-city .cc-offset { font-size:12px; color:var(--text-secondary); }
+
+/* Reminders */
+.reminders { display:flex; flex-direction:column; height:100%; }
+.reminders-lists { display:flex; gap:8px; padding:10px; border-bottom:0.5px solid var(--separator); overflow-x:auto; }
+.reminders-list-tab { padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; white-space:nowrap; transition: background 0.1s; }
+.reminders-list-tab.active { background: var(--accent); color:#fff; }
+.reminders-list-tab:not(.active):hover { background:rgba(0,0,0,0.06); }
+body.dark .reminders-list-tab:not(.active):hover { background:rgba(255,255,255,0.08); }
+.reminders-content { flex:1; overflow-y:auto; padding:16px; }
+.reminder-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:0.5px solid var(--separator); }
+.reminder-check { width:20px; height:20px; border-radius:50%; border:2px solid var(--text-secondary); cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition: all 0.2s; }
+.reminder-check.done { background: var(--accent); border-color: var(--accent); color:#fff; }
+.reminder-check.done::after { content:'✓'; font-size:12px; }
+.reminder-text { flex:1; font-size:14px; }
+.reminder-text.done { text-decoration:line-through; color:var(--text-secondary); }
+.reminder-add { display:flex; gap:8px; margin-top:12px; }
+.reminder-add input { flex:1; height:32px; border-radius:8px; border:0.5px solid var(--separator); background:rgba(255,255,255,0.1); padding:0 12px; font-size:13px; color:var(--text-primary); outline:none; }
+.reminder-add button { padding:0 16px; border-radius:8px; border:none; cursor:pointer; background:var(--accent); color:#fff; font-size:13px; }
+
+/* Stickies */
+.stickies { padding:16px; height:100%; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; align-content:start; }
+.sticky-note { padding:12px; border-radius:8px; font-size:13px; line-height:1.5; cursor:move; min-height:120px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.sticky-note .sn-text { width:100%; height:100%; min-height:80px; background:transparent; border:none; outline:none; resize:none; font-family:inherit; font-size:13px; color:#5a4a00; }
+
+/* Photos */
+.photos { display:flex; flex-direction:column; height:100%; }
+.photos-toolbar { display:flex; align-items:center; gap:12px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.photos-toolbar .pt-title { font-size:16px; font-weight:700; flex:1; }
+.photos-grid { flex:1; overflow-y:auto; padding:8px; }
+.photos-row { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:4px; }
+.photo-thumb { aspect-ratio:1; border-radius:4px; cursor:pointer; transition: transform 0.2s; }
+.photo-thumb:hover { transform:scale(1.05); }
+.photo-viewer { position:absolute; inset:0; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; z-index:10; }
+.photo-viewer img { max-width:90%; max-height:90%; border-radius:8px; }
+.photo-viewer .pv-close { position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:#fff; cursor:pointer; font-size:16px; }
+
+/* TextEdit */
+.textedit { display:flex; flex-direction:column; height:100%; }
+.textedit-toolbar { display:flex; align-items:center; gap:6px; padding:6px 12px; border-bottom:0.5px solid var(--separator); flex-wrap:wrap; }
+.te-btn { padding:4px 10px; border-radius:6px; border:none; cursor:pointer; background:rgba(0,0,0,0.05); color:var(--text-primary); font-size:12px; transition: background 0.1s; }
+.te-btn:hover { background:rgba(0,0,0,0.1); }
+.te-btn.active { background:var(--accent); color:#fff; }
+body.dark .te-btn { background:rgba(255,255,255,0.08); }
+body.dark .te-btn:hover { background:rgba(255,255,255,0.15); }
+.te-divider { width:1px; height:18px; background:var(--separator); margin:0 2px; }
+.textedit-area { flex:1; padding:20px; outline:none; overflow-y:auto; font-size:14px; line-height:1.6; }
+.textedit-area:empty::before { content:'Start writing...'; color:var(--text-tertiary); }
+
+/* Preview */
+.preview { display:flex; flex-direction:column; height:100%; }
+.preview-toolbar { display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:0.5px solid var(--separator); }
+.preview-canvas { flex:1; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.05); overflow:auto; }
+body.dark .preview-canvas { background:rgba(0,0,0,0.1); }
+.preview-canvas img { max-width:100%; max-height:100%; }
+
+/* Generic content padding */
+.app-padding { padding:20px; }
+.app-padding h1 { font-size:22px; margin-bottom:12px; }
+.app-padding p { font-size:14px; line-height:1.6; margin-bottom:10px; color:var(--text-secondary); }
+
+/* Desktop icons */
+.desktop-icon { position:absolute; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:6px; border-radius:8px; width:80px; }
+.desktop-icon:hover { background:rgba(255,255,255,0.15); }
+.desktop-icon .di-img { font-size:40px; }
+.desktop-icon .di-label { font-size:11px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.5); text-align:center; word-break:break-word; }
+
+/* Scrollbars */
+.window-content::-webkit-scrollbar, .finder-content::-webkit-scrollbar, .notes-sidebar::-webkit-scrollbar,
+.mail-list::-webkit-scrollbar, .messages-sidebar::-webkit-scrollbar, .settings-sidebar::-webkit-scrollbar,
+.finder-sidebar::-webkit-scrollbar, .photos-grid::-webkit-scrollbar, .terminal::-webkit-scrollbar,
+.spotlight-results::-webkit-scrollbar { width:8px; }
+.window-content::-webkit-scrollbar-track, .finder-content::-webkit-scrollbar-track, .notes-sidebar::-webkit-scrollbar-track,
+.mail-list::-webkit-scrollbar-track, .messages-sidebar::-webkit-scrollbar-track, .settings-sidebar::-webkit-scrollbar-track,
+.finder-sidebar::-webkit-scrollbar-track, .photos-grid::-webkit-scrollbar-track, .terminal::-webkit-scrollbar-track,
+.spotlight-results::-webkit-scrollbar-track { background:transparent; }
+.window-content::-webkit-scrollbar-thumb, .finder-content::-webkit-scrollbar-thumb, .notes-sidebar::-webkit-scrollbar-thumb,
+.mail-list::-webkit-scrollbar-thumb, .messages-sidebar::-webkit-scrollbar-thumb, .settings-sidebar::-webkit-scrollbar-thumb,
+.finder-sidebar::-webkit-scrollbar-thumb, .photos-grid::-webkit-scrollbar-thumb, .terminal::-webkit-scrollbar-thumb,
+.spotlight-results::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.2); border-radius:4px; }
+body.dark .window-content::-webkit-scrollbar-thumb, body.dark .finder-content::-webkit-scrollbar-thumb,
+body.dark .notes-sidebar::-webkit-scrollbar-thumb, body.dark .mail-list::-webkit-scrollbar-thumb,
+body.dark .messages-sidebar::-webkit-scrollbar-thumb, body.dark .settings-sidebar::-webkit-scrollbar-thumb,
+body.dark .finder-sidebar::-webkit-scrollbar-thumb, body.dark .photos-grid::-webkit-scrollbar-thumb,
+body.dark .terminal::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); }
+
+input, textarea { -webkit-user-select:text; user-select:text; }
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot-screen">
+  <div class="apple-logo"><i class="fab fa-apple"></i></div>
+  <div class="boot-bar"></div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="hidden">
+  <div class="login-clock">
+    <div class="time" id="login-time">--:--</div>
+    <div class="date" id="login-date">Loading...</div>
+  </div>
+  <div class="login-avatar">M</div>
+  <div class="login-name">Mike</div>
+  <div class="login-input-wrap">
+    <input type="password" class="login-input" placeholder="Enter Password" id="login-pass">
+    <button class="login-go" id="login-go"><i class="fas fa-arrow-right"></i></button>
+  </div>
+  <div class="login-hint">Press Enter or click → to log in (no password needed)</div>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop"></div>
+
+<!-- DESKTOP ICONS -->
+<div id="desktop-icons"></div>
+
+<!-- MENU BAR -->
+<div id="menubar">
+  <div class="mb-left" id="mb-left"></div>
+  <div class="mb-right" id="mb-right"></div>
+</div>
+
+<!-- DOCK -->
+<div id="dock-container">
+  <div id="dock"></div>
+</div>
+
+<!-- CONTROL CENTER -->
+<div id="control-center"></div>
+
+<!-- SPOTLIGHT -->
+<div id="spotlight-overlay">
+  <div id="spotlight">
+    <input type="text" id="spotlight-input" placeholder="Spotlight Search" autocomplete="off">
+    <div class="spotlight-results" id="spotlight-results"></div>
+  </div>
+</div>
+
+<!-- APP CONTAINER -->
+<div id="windows"></div>
+
+<!-- SCRIPT -->
+<script>
+// ===== STATE =====
+const State = {
+  windows: [],
+  zCounter: 100,
+  activeWindow: null,
+  activeAppId: null,
+  darkMode: false,
+  wifi: true,
+  bluetooth: true,
+  airdrop: false,
+  brightness: 80,
+  volume: 60,
+  doNotDisturb: false,
+  notes: [
+    { id:1, title:'Welcome to Notes', body:'<h1>Welcome to Notes</h1><p>This is your first note. Click the + button to create a new note, or start typing to edit this one.</p><p>Your notes are saved automatically in this session.</p>' },
+    { id:2, title:'Shopping List', body:'<h1>Shopping List</h1><p>• Milk<br>• Bread<br>• Eggs<br>• Coffee<br>• Apples</p>' },
+    { id:3, title:'Project Ideas', body:'<h1>Project Ideas</h1><p>1. Build a web desktop OS<br>2. Learn Rust<br>3. Create a game</p>' },
+  ],
+  reminders: {
+    'Today': [
+      { id:1, text:'Review pull requests', done:false },
+      { id:2, text:'Call the dentist', done:true },
+      { id:3, text:'Buy groceries', done:false },
+    ],
+    'Work': [
+      { id:4, text:'Finish quarterly report', done:false },
+      { id:5, text:'Email the team', done:true },
+    ],
+    'Personal': [
+      { id:6, text:'Plan weekend trip', done:false },
+      { id:7, text:'Read a book', done:false },
+    ],
+  },
+  stickies: [
+    { id:1, color:'#ffe66d', text:'Remember to check emails!' },
+    { id:2, color:'#ff6b6b', text:'Meeting at 3pm\nConference Room B' },
+    { id:3, color:'#4ecdc4', text:'Idea: Create a macOS web clone\nwith all working apps!' },
+  ],
+  currentReminderList: 'Today',
+  messages: [
+    { id:1, name:'Sarah Chen', avatar:'#ff6b6b', last:'See you tomorrow!', time:'9:41 AM', msgs:[{s:'received',t:'Hey! Are we still on for tomorrow?'},{s:'received',t:'I found a great new restaurant we should try'},{s:'sent',t:'Absolutely! What time works for you?'},{s:'received',t:'How about 7pm?'},{s:'sent',t:'Perfect, see you then!'},{s:'received',t:'See you tomorrow!'}] },
+    { id:2, name:'Mom', avatar:'#4ecdc4', last:'Did you eat yet?', time:'8:15 AM', msgs:[{s:'received',t:'Hi sweetie'},{s:'received',t:'Did you eat yet?'},{s:'sent',t:'Yes mom, I just had lunch'},{s:'received',t:'Good! Make sure you eat healthy'}] },
+    { id:3, name:'Dev Team', avatar:'#0a84ff', last:'Deploy is live!', time:'Yesterday', msgs:[{s:'received',t:'Build passed CI'},{s:'sent',t:'Great! Deploying to staging'},{s:'received',t:'Deploy is live!'}] },
+    { id:4, name:'Alex Kim', avatar:'#ff9f0a', last:'Thanks!', time:'Yesterday', msgs:[{s:'sent',t:'Hey, I sent you those files'},{s:'received',t:'Got them, thanks!'}] },
+    { id:5, name:'Pizza Place', avatar:'#ff5f57', last:'Your order is ready', time:'Mon', msgs:[{s:'received',t:'Your order #1234 is ready for pickup'},{s:'sent',t:'On my way!'}] },
+  ],
+  currentChat: 1,
+  finderPath: 'Desktop',
+  calendarEvents: {},
+  currentMonth: new Date(),
+  calcDisplay: '0',
+  calcPrev: null,
+  calcOp: null,
+  calcReset: false,
+  termHistory: [],
+  termLines: [],
+  musicPlaying: false,
+  musicCurrent: 0,
+  musicProgress: 0,
+  musicTimer: null,
+  weatherData: {
+    temp: 72, cond: 'Sunny', loc: 'Cupertino, CA', high: 78, low: 62,
+    hourly: [
+      {time:'Now', icon:'fa-sun', temp:'72°'},
+      {time:'1PM', icon:'fa-sun', temp:'74°'},
+      {time:'2PM', icon:'fa-sun', temp:'76°'},
+      {time:'3PM', icon:'fa-cloud-sun', temp:'75°'},
+      {time:'4PM', icon:'fa-cloud-sun', temp:'73°'},
+      {time:'5PM', icon:'fa-cloud', temp:'70°'},
+      {time:'6PM', icon:'fa-cloud', temp:'68°'},
+      {time:'7PM', icon:'fa-cloud-moon', temp:'66°'},
+    ],
+    daily: [
+      {day:'Today', icon:'fa-sun', high:'78°', low:'62°'},
+      {day:'Mon', icon:'fa-sun', high:'80°', low:'63°'},
+      {day:'Tue', icon:'fa-cloud-sun', high:'76°', low:'60°'},
+      {day:'Wed', icon:'fa-cloud-rain', high:'68°', low:'55°'},
+      {day:'Thu', icon:'fa-cloud', high:'72°', low:'58°'},
+      {day:'Fri', icon:'fa-sun', high:'79°', low:'61°'},
+      {day:'Sat', icon:'fa-sun', high:'82°', low:'64°'},
+    ]
+  }
+};
+
+// ===== APP REGISTRY =====
+const APPS = {};
+
+function registerApp(id, config) { APPS[id] = config; }
+
+// ===== WINDOW MANAGER =====
+let winIdCounter = 0;
+
+function createWindow(appId, options = {}) {
+  const app = APPS[appId];
+  if (!app) return null;
+  
+  // Check if single-instance and already open
+  if (app.singleInstance) {
+    const existing = State.windows.find(w => w.appId === appId);
+    if (existing) {
+      existing.el.classList.remove('minimized');
+      focusWindow(existing);
+      return existing;
+    }
+  }
+
+  const winId = ++winIdCounter;
+  const w = Math.min(options.width || app.defaultWidth || 600, window.innerWidth - 40);
+  const h = Math.min(options.height || app.defaultHeight || 450, window.innerHeight - 120);
+  const x = options.x ?? Math.max(20, (window.innerWidth - w) / 2 + (winIdCounter % 5) * 30 - 60);
+  const y = options.y ?? Math.max(40, (window.innerHeight - h - 100) / 2 + (winIdCounter % 5) * 20 - 40);
+
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px; z-index:${++State.zCounter};`;
+  
+  win.innerHTML = `
+    <div class="titlebar">
+      <div class="traffic-lights">
+        <button class="tl tl-close" title="Close"><span class="tl-icon"><i class="fas fa-times"></i></span></button>
+        <button class="tl tl-min" title="Minimize"><span class="tl-icon"><i class="fas fa-minus"></i></span></button>
+        <button class="tl tl-max" title="Zoom"><span class="tl-icon"><i class="fas fa-plus"></i></span></button>
+      </div>
+      <div class="titlebar-title">${options.title || app.title}</div>
+      <div class="titlebar-btns">${options.toolbar || ''}</div>
+    </div>
+    <div class="window-content"></div>
+    <div class="window-resizer wr-n"></div>
+    <div class="window-resizer wr-s"></div>
+    <div class="window-resizer wr-e"></div>
+    <div class="window-resizer wr-w"></div>
+    <div class="window-resizer wr-se"></div>
+    <div class="window-resizer wr-sw"></div>
+  `;
+
+  document.getElementById('windows').appendChild(win);
+
+  const winObj = { id: winId, appId, el: win, contentEl: win.querySelector('.window-content'), titleEl: win.querySelector('.titlebar-title'), maximized: false, prevRect: null };
+  State.windows.push(winObj);
+
+  // Render app content
+  if (app.render) {
+    app.render(winObj.contentEl, winObj);
+  }
+
+  // Traffic lights
+  win.querySelector('.tl-close').addEventListener('click', (e) => { e.stopPropagation(); closeWindow(winObj); });
+  win.querySelector('.tl-min').addEventListener('click', (e) => { e.stopPropagation(); minimizeWindow(winObj); });
+  win.querySelector('.tl-max').addEventListener('click', (e) => { e.stopPropagation(); toggleMaximize(winObj); });
+
+  // Double-click titlebar to maximize
+  win.querySelector('.titlebar').addEventListener('dblclick', (e) => {
+    if (!e.target.closest('.traffic-lights') && !e.target.closest('.titlebar-btns')) toggleMaximize(winObj);
+  });
+
+  // Focus on click
+  win.addEventListener('mousedown', () => focusWindow(winObj));
+
+  // Dragging
+  setupDrag(winObj);
+
+  // Resizing
+  setupResize(winObj);
+
+  // Update dock
+  updateDock();
+
+  // Update menubar
+  focusWindow(winObj);
+
+  return winObj;
+}
+
+function closeWindow(winObj) {
+  winObj.el.classList.add('closing');
+  setTimeout(() => {
+    winObj.el.remove();
+    State.windows = State.windows.filter(w => w !== winObj);
+    updateDock();
+    if (State.activeWindow === winObj) {
+      State.activeWindow = null;
+      const top = State.windows[State.windows.length - 1];
+      if (top) focusWindow(top);
+      else updateMenuBar();
+    }
+  }, 200);
+}
+
+function minimizeWindow(winObj) {
+  winObj.el.classList.add('minimizing');
+  setTimeout(() => {
+    winObj.el.classList.add('minimized');
+    winObj.el.classList.remove('minimizing');
+    updateDock();
+  }, 400);
+}
+
+function toggleMaximize(winObj) {
+  if (winObj.maximized) {
+    const r = winObj.prevRect;
+    winObj.el.style.left = r.left + 'px';
+    winObj.el.style.top = r.top + 'px';
+    winObj.el.style.width = r.width + 'px';
+    winObj.el.style.height = r.height + 'px';
+    winObj.el.classList.remove('maximized');
+    winObj.maximized = false;
+  } else {
+    winObj.prevRect = { left: parseInt(winObj.el.style.left), top: parseInt(winObj.el.style.top), width: parseInt(winObj.el.style.width), height: parseInt(winObj.el.style.height) };
+    winObj.el.style.left = '0px';
+    winObj.el.style.top = '28px';
+    winObj.el.style.width = '100%';
+    winObj.el.style.height = (window.innerHeight - 28 - 84) + 'px';
+    winObj.el.classList.add('maximized');
+    winObj.maximized = true;
+  }
+}
+
+function focusWindow(winObj) {
+  State.activeWindow = winObj;
+  State.activeAppId = winObj.appId;
+  winObj.el.style.zIndex = ++State.zCounter;
+  updateDock();
+  updateMenuBar();
+}
+
+function setupDrag(winObj) {
+  const titlebar = winObj.el.querySelector('.titlebar');
+  let dragging = false, dx = 0, dy = 0;
+  
+  titlebar.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.traffic-lights') || e.target.closest('.titlebar-btns')) return;
+    if (winObj.maximized) return;
+    dragging = true;
+    titlebar.classList.add('dragging');
+    dx = e.clientX - winObj.el.offsetLeft;
+    dy = e.clientY - winObj.el.offsetTop;
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    let nx = e.clientX - dx;
+    let ny = e.clientY - dy;
+    ny = Math.max(28, ny);
+    nx = Math.max(-winObj.el.offsetWidth + 100, Math.min(window.innerWidth - 100, nx));
+    winObj.el.style.left = nx + 'px';
+    winObj.el.style.top = ny + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging = false; titlebar.classList.remove('dragging'); }
+  });
+}
+
+function setupResize(winObj) {
+  const dirs = ['n','s','e','w','se','sw'];
+  dirs.forEach(dir => {
+    const handle = winObj.el.querySelector(`.wr-${dir}`);
+    if (!handle) return;
+    let resizing = false, sx, sy, sw, sh, sl, st;
+    
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (winObj.maximized) return;
+      resizing = true;
+      sx = e.clientX; sy = e.clientY;
+      sw = winObj.el.offsetWidth; sh = winObj.el.offsetHeight;
+      sl = winObj.el.offsetLeft; st = winObj.el.offsetTop;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!resizing) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (dir.includes('e')) winObj.el.style.width = Math.max(280, sw + dx) + 'px';
+      if (dir.includes('s')) winObj.el.style.height = Math.max(200, sh + dy) + 'px';
+      if (dir.includes('w')) { const nw = Math.max(280, sw - dx); winObj.el.style.width = nw + 'px'; winObj.el.style.left = (sl + dx) + 'px'; }
+      if (dir.includes('n')) { const nh = Math.max(200, sh - dy); winObj.el.style.height = nh + 'px'; winObj.el.style.top = Math.max(28, st + dy) + 'px'; }
+    });
+
+    document.addEventListener('mouseup', () => { resizing = false; });
+  });
+}
+
+// ===== DOCK =====
+const DOCK_APPS = [
+  { id:'finder', icon:'fa-folder', color:'#4a90d9', label:'Finder' },
+  { id:'safari', icon:'fa-compass', color:'#1a8fe3', label:'Safari' },
+  { id:'mail', icon:'fa-envelope', color:'#0a84ff', label:'Mail' },
+  { id:'messages', icon:'fa-comment', color:'#30d158', label:'Messages' },
+  { id:'maps', icon:'fa-map', color:'#ff3b30', label:'Maps' },
+  { id:'photos', icon:'fa-image', color:'#ff9f0a', label:'Photos' },
+  { id:'notes', icon:'fa-sticky-note', color:'#ffd60a', label:'Notes' },
+  { id:'reminders', icon:'fa-check-circle', color:'#ff453a', label:'Reminders' },
+  { id:'calendar', icon:'fa-calendar', color:'#ff3b30', label:'Calendar' },
+  { id:'music', icon:'fa-music', color:'#fa233b', label:'Music' },
+  { id:'weather', icon:'fa-cloud-sun', color:'#4a90d9', label:'Weather' },
+  { id:'clock', icon:'fa-clock', color:'#1a1a1a', label:'Clock' },
+  { id:'calculator', icon:'fa-calculator', color:'#1a1a1a', label:'Calculator' },
+  { id:'terminal', icon:'fa-terminal', color:'#2d2d2d', label:'Terminal' },
+  { id:'textedit', icon:'fa-file-alt', color:'#4a90d9', label:'TextEdit' },
+  { id:'stickies', icon:'fa-note-sticky', color:'#ffe66d', label:'Stickies' },
+  { id:'preview', icon:'fa-eye', color:'#4a90d9', label:'Preview' },
+  { id:'settings', icon:'fa-gear', color:'#8e8e93', label:'System Settings' },
+];
+
+function renderDock() {
+  const dock = document.getElementById('dock');
+  dock.innerHTML = '';
+  
+  DOCK_APPS.forEach((app, i) => {
+    if (i === 16) { const d = document.createElement('div'); d.className = 'dock-divider'; dock.appendChild(d); }
+    const item = document.createElement('div');
+    item.className = 'dock-item';
+    item.dataset.appId = app.id;
+    item.innerHTML = `
+      <div class="dock-icon" style="background:${app.color}"><i class="fas ${app.icon}" style="color:#fff"></i></div>
+      <div class="dock-label">${app.label}</div>
+      <div class="dock-dot"></div>
+    `;
+    item.addEventListener('click', () => launchApp(app.id));
+    dock.appendChild(item);
+  });
+  
+  // Trash
+  const trashDiv = document.createElement('div');
+  trashDiv.className = 'dock-divider';
+  dock.appendChild(trashDiv);
+  
+  const trash = document.createElement('div');
+  trash.className = 'dock-item';
+  trash.dataset.appId = 'trash';
+  trash.innerHTML = `
+    <div class="dock-icon" style="background:rgba(255,255,255,0.3)"><i class="fas fa-trash" style="color:#fff"></i></div>
+    <div class="dock-label">Trash</div>
+    <div class="dock-dot"></div>
+  `;
+  trash.addEventListener('click', () => showNotification('fa-trash', '#8e8e93', 'Trash', 'Trash is empty'));
+  dock.appendChild(trash);
+}
+
+function updateDock() {
+  document.querySelectorAll('.dock-item').forEach(item => {
+    const appId = item.dataset.appId;
+    const running = State.windows.some(w => w.appId === appId);
+    const active = State.activeWindow && State.activeAppId === appId;
+    item.classList.toggle('running', running);
+    item.classList.toggle('active', active);
+  });
+}
+
+function launchApp(appId) {
+  const existing = State.windows.find(w => w.appId === appId);
+  if (existing) {
+    if (existing.el.classList.contains('minimized')) {
+      existing.el.classList.remove('minimized');
+    }
+    focusWindow(existing);
+    return;
+  }
+  createWindow(appId);
+}
+
+// ===== MENU BAR =====
+const APPLE_MENU = [
+  { label:'About This Mac', action:() => createWindow('settings', {title:'About This Mac'}) },
+  { divider:true },
+  { label:'System Settings…', action:() => launchApp('settings'), shortcut:'⌘,' },
+  { label:'App Store…', action:() => showNotification('fa-app-store-ios','#0a84ff','App Store','Opening App Store…') },
+  { divider:true },
+  { label:'Sleep', action:() => sleepMac() },
+  { label:'Restart…', action:() => location.reload() },
+  { label:'Shut Down…', action:() => { document.body.style.opacity='0'; setTimeout(()=>location.reload(),1000); } },
+  { divider:true },
+  { label:'Lock Screen', action:() => lockScreen(), shortcut:'⌃⌘Q' },
+  { label:'Log Out…', action:() => logOut(), shortcut:'⇧⌘Q' },
+];
+
+function getAppMenus(appId) {
+  const app = APPS[appId];
+  if (app && app.menus) return app.menus;
+  return [
+    { label:'File', items:[{label:'New Window', action:()=>launchApp(appId)},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);},shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Redo', action:()=>document.execCommand('redo'),shortcut:'⇧⌘Z'},{divider:true},{label:'Cut', action:()=>document.execCommand('cut'),shortcut:'⌘X'},{label:'Copy', action:()=>document.execCommand('copy'),shortcut:'⌘C'},{label:'Paste', action:()=>document.execCommand('paste'),shortcut:'⌘V'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'},{label:'Zoom', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);}}] },
+    { label:'Help', items:[{label:'macOS Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Search for help topics')}] },
+  ];
+}
+
+function updateMenuBar() {
+  const left = document.getElementById('mb-left');
+  const right = document.getElementById('mb-right');
+  
+  const appTitle = State.activeAppId ? (APPS[State.activeAppId]?.title || 'Finder') : 'Finder';
+  const appIcon = State.activeAppId === 'finder' || !State.activeAppId ? '<i class="fab fa-apple"></i>' : '';
+  
+  left.innerHTML = '';
+  
+  // Apple menu
+  const appleItem = document.createElement('div');
+  appleItem.className = 'mb-item bold';
+  appleItem.innerHTML = '<i class="fab fa-apple"></i>';
+  appleItem.addEventListener('click', (e) => { e.stopPropagation(); openMenu(appleItem, APPLE_MENU); });
+  left.appendChild(appleItem);
+  
+  // App name
+  const nameItem = document.createElement('div');
+  nameItem.className = 'mb-item bold';
+  nameItem.textContent = appTitle;
+  left.appendChild(nameItem);
+  
+  // App menus
+  const menus = getAppMenus(State.activeAppId || 'finder');
+  menus.forEach(menu => {
+    const mItem = document.createElement('div');
+    mItem.className = 'mb-item';
+    mItem.textContent = menu.label;
+    mItem.addEventListener('click', (e) => { e.stopPropagation(); openMenu(mItem, menu.items || []); });
+    left.appendChild(mItem);
+  });
+  
+  // Right side
+  right.innerHTML = '';
+  
+  // Battery
+  const bat = document.createElement('div');
+  bat.className = 'mb-item';
+  bat.innerHTML = `<span class="mb-battery-icon">🔋</span> <span style="font-size:11px">87%</span>`;
+  right.appendChild(bat);
+  
+  // Wifi
+  const wifi = document.createElement('div');
+  wifi.className = 'mb-item';
+  wifi.innerHTML = `<i class="fas fa-wifi" style="${State.wifi?'':'opacity:0.3'}"></i>`;
+  wifi.addEventListener('click', (e) => { e.stopPropagation(); State.wifi = !State.wifi; updateMenuBar(); });
+  right.appendChild(wifi);
+  
+  // Bluetooth
+  const bt = document.createElement('div');
+  bt.className = 'mb-item';
+  bt.innerHTML = `<i class="fab fa-bluetooth-b" style="${State.bluetooth?'':'opacity:0.3'}"></i>`;
+  bt.addEventListener('click', (e) => { e.stopPropagation(); State.bluetooth = !State.bluetooth; updateMenuBar(); });
+  right.appendChild(bt);
+  
+  // Search
+  const search = document.createElement('div');
+  search.className = 'mb-item';
+  search.innerHTML = '<i class="fas fa-search"></i>';
+  search.addEventListener('click', (e) => { e.stopPropagation(); toggleSpotlight(); });
+  right.appendChild(search);
+  
+  // Control Center
+  const cc = document.createElement('div');
+  cc.className = 'mb-cc-btn';
+  cc.innerHTML = '<i class="fas fa-sliders-h"></i>';
+  cc.addEventListener('click', (e) => { e.stopPropagation(); toggleControlCenter(); });
+  right.appendChild(cc);
+  
+  // Date/Time
+  const dt = document.createElement('div');
+  dt.className = 'mb-item';
+  dt.id = 'mb-datetime';
+  updateClock();
+  dt.addEventListener('click', (e) => { e.stopPropagation(); launchApp('calendar'); });
+  right.appendChild(dt);
+}
+
+let currentDropdown = null;
+
+function openMenu(anchorEl, items) {
+  closeMenu();
+  
+  const dd = document.createElement('div');
+  dd.className = 'menu-dropdown';
+  
+  items.forEach(item => {
+    if (item.divider) {
+      const div = document.createElement('div');
+      div.className = 'dd-divider';
+      dd.appendChild(div);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'dd-item' + (item.disabled ? ' disabled' : '');
+      const check = item.checked ? '<span class="check">✓</span>' : '<span class="check"></span>';
+      const shortcut = item.shortcut ? `<span class="shortcut">${item.shortcut}</span>` : '';
+      el.innerHTML = `<span>${check}${item.label}</span>${shortcut}`;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (item.action) item.action();
+        closeMenu();
+      });
+      dd.appendChild(el);
+    }
+  });
+  
+  document.body.appendChild(dd);
+  const rect = anchorEl.getBoundingClientRect();
+  dd.style.left = rect.left + 'px';
+  dd.style.top = (rect.bottom + 2) + 'px';
+  
+  requestAnimationFrame(() => dd.classList.add('open'));
+  currentDropdown = dd;
+}
+
+function closeMenu() {
+  if (currentDropdown) { currentDropdown.remove(); currentDropdown = null; }
+}
+
+// ===== CLOCK =====
+function updateClock() {
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const day = days[now.getDay()];
+  const date = now.getDate();
+  const month = months[now.getMonth()];
+  let h = now.getHours();
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const dt = document.getElementById('mb-datetime');
+  if (dt) dt.textContent = `${day} ${month} ${date}  ${h}:${m} ${ampm}`;
+  
+  const lt = document.getElementById('login-time');
+  if (lt) lt.textContent = `${h}:${m}`;
+  const ld = document.getElementById('login-date');
+  if (ld) ld.textContent = `${day}, ${month} ${date}`;
+}
+setInterval(updateClock, 1000);
+
+// ===== CONTROL CENTER =====
+function renderControlCenter() {
+  const cc = document.getElementById('control-center');
+  cc.innerHTML = `
+    <div class="cc-row">
+      <div class="cc-tile ${State.wifi?'active':''}" id="cc-wifi">
+        <div class="cc-icon"><i class="fas fa-wifi"></i></div>
+        <div><div class="cc-label">Wi-Fi</div><div class="cc-sublabel">${State.wifi?'Home':'Off'}</div></div>
+      </div>
+      <div class="cc-tile ${State.bluetooth?'active':''}" id="cc-bt">
+        <div class="cc-icon"><i class="fab fa-bluetooth-b"></i></div>
+        <div><div class="cc-label">Bluetooth</div><div class="cc-sublabel">${State.bluetooth?'On':'Off'}</div></div>
+      </div>
+    </div>
+    <div class="cc-row">
+      <div class="cc-tile ${State.airdrop?'active':''}" id="cc-airdrop">
+        <div class="cc-icon"><i class="fas fa-broadcast-tower"></i></div>
+        <div><div class="cc-label">AirDrop</div><div class="cc-sublabel">${State.airdrop?'Everyone':'Off'}</div></div>
+      </div>
+      <div class="cc-tile ${State.doNotDisturb?'active':''}" id="cc-dnd">
+        <div class="cc-icon"><i class="fas fa-moon"></i></div>
+        <div><div class="cc-label">Focus</div><div class="cc-sublabel">${State.doNotDisturb?'On':'Off'}</div></div>
+      </div>
+    </div>
+    <div class="cc-slider-group">
+      <div class="cc-slider-row">
+        <div class="icon"><i class="fas fa-sun"></i></div>
+        <div class="cc-slider"><div class="cc-slider-track" id="cc-bright-track"><div class="cc-slider-fill" style="width:${State.brightness}%"></div></div></div>
+      </div>
+      <div class="cc-slider-row">
+        <div class="icon"><i class="fas fa-volume-up"></i></div>
+        <div class="cc-slider"><div class="cc-slider-track" id="cc-vol-track"><div class="cc-slider-fill" style="width:${State.volume}%"></div></div></div>
+      </div>
+    </div>
+    <div class="cc-row" style="margin-top:8px;margin-bottom:0">
+      <div class="cc-tile" id="cc-darkmode" style="${State.darkMode?'background:var(--accent);color:#fff':''}">
+        <div class="cc-icon"><i class="fas ${State.darkMode?'fa-sun':'fa-moon'}"></i></div>
+        <div><div class="cc-label">${State.darkMode?'Light Mode':'Dark Mode'}</div></div>
+      </div>
+      <div class="cc-tile" id="cc-screen-mirror">
+        <div class="cc-icon"><i class="fas fa-tv"></i></div>
+        <div><div class="cc-label">Screen Mirroring</div></div>
+      </div>
+    </div>
+  `;
+  
+  cc.querySelector('#cc-wifi').addEventListener('click', () => { State.wifi = !State.wifi; renderControlCenter(); updateMenuBar(); });
+  cc.querySelector('#cc-bt').addEventListener('click', () => { State.bluetooth = !State.bluetooth; renderControlCenter(); updateMenuBar(); });
+  cc.querySelector('#cc-airdrop').addEventListener('click', () => { State.airdrop = !State.airdrop; renderControlCenter(); });
+  cc.querySelector('#cc-dnd').addEventListener('click', () => { State.doNotDisturb = !State.doNotDisturb; renderControlCenter(); });
+  cc.querySelector('#cc-darkmode').addEventListener('click', () => { State.darkMode = !State.darkMode; document.body.classList.toggle('dark', State.darkMode); renderControlCenter(); updateMenuBar(); });
+  
+  // Slider interactions
+  cc.querySelector('#cc-bright-track').addEventListener('click', (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    State.brightness = Math.round(((e.clientX - r.left) / r.width) * 100);
+    document.getElementById('desktop').style.filter = `brightness(${0.3 + State.brightness/100 * 0.7})`;
+    renderControlCenter();
+  });
+  cc.querySelector('#cc-vol-track').addEventListener('click', (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    State.volume = Math.round(((e.clientX - r.left) / r.width) * 100);
+    renderControlCenter();
+  });
+}
+
+function toggleControlCenter() {
+  const cc = document.getElementById('control-center');
+  if (cc.classList.contains('open')) {
+    cc.classList.remove('open');
+  } else {
+    renderControlCenter();
+    cc.classList.add('open');
+    closeSpotlight();
+  }
+}
+
+// ===== SPOTLIGHT =====
+function toggleSpotlight() {
+  const overlay = document.getElementById('spotlight-overlay');
+  const input = document.getElementById('spotlight-input');
+  if (overlay.classList.contains('open')) {
+    closeSpotlight();
+  } else {
+    overlay.classList.add('open');
+    input.value = '';
+    document.getElementById('spotlight-results').innerHTML = '';
+    setTimeout(() => input.focus(), 50);
+    document.getElementById('control-center').classList.remove('open');
+  }
+}
+
+function closeSpotlight() {
+  document.getElementById('spotlight-overlay').classList.remove('open');
+}
+
+document.getElementById('spotlight-input').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  const results = document.getElementById('spotlight-results');
+  if (!q) { results.innerHTML = ''; return; }
+  
+  const matches = DOCK_APPS.filter(a => a.label.toLowerCase().includes(q) || a.id.includes(q)).map(a => ({
+    icon: a.icon, color: a.color, title: a.label, sub: 'Application', action: () => { launchApp(a.id); closeSpotlight(); }
+  }));
+  
+  // Search notes
+  State.notes.filter(n => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)).forEach(n => ({
+    icon:'fa-sticky-note', color:'#ffd60a', title:n.title, sub:'Note', action: () => { launchApp('notes'); closeSpotlight(); }
+  })).forEach(m => matches.push(m));
+  
+  // Calculations
+  if (/^[\d+\-*/.() ]+$/.test(q) && q.length > 1) {
+    try {
+      const result = eval(q);
+      matches.push({ icon:'fa-calculator', color:'#1a1a1a', title:`${q} = ${result}`, sub:'Calculator', action:()=>{ launchApp('calculator'); closeSpotlight(); } });
+    } catch(e) {}
+  }
+  
+  // Web search
+  matches.push({ icon:'fa-safari', color:'#1a8fe3', title:`Search the web for "${e.target.value}"`, sub:'Safari', action:()=>{ openInSafari(`https://www.google.com/search?q=${encodeURIComponent(e.target.value)}`); closeSpotlight(); } });
+  
+  if (matches.length === 0) {
+    results.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-secondary);font-size:13px">No results</div>';
+    return;
+  }
+  
+  results.innerHTML = matches.map((m,i) => `
+    <div class="spotlight-result ${i===0?'selected':''}" data-idx="${i}">
+      <div class="sr-icon" style="background:${m.color}"><i class="fas ${m.icon}" style="color:#fff"></i></div>
+      <div><div class="sr-title">${m.title}</div><div class="sr-sub">${m.sub}</div></div>
+    </div>
+  `).join('');
+  
+  results.querySelectorAll('.spotlight-result').forEach((el, i) => {
+    el.addEventListener('click', () => matches[i].action());
+  });
+});
+
+document.getElementById('spotlight-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSpotlight();
+  if (e.key === 'Enter') {
+    const sel = document.querySelector('.spotlight-result.selected');
+    if (sel) sel.click();
+  }
+});
+
+// ===== NOTIFICATIONS =====
+function showNotification(icon, color, title, body) {
+  const n = document.createElement('div');
+  n.className = 'notification';
+  n.innerHTML = `
+    <div class="n-icon" style="background:${color};color:#fff"><i class="fas ${icon}"></i></div>
+    <div><div class="n-title">${title}</div><div class="n-body">${body}</div></div>
+  `;
+  document.body.appendChild(n);
+  setTimeout(() => n.classList.add('show'), 10);
+  setTimeout(() => { n.classList.remove('show'); n.classList.add('hide'); setTimeout(()=>n.remove(),300); }, 4000);
+}
+
+// ===== CONTEXT MENU =====
+let currentContextMenu = null;
+
+function showContextMenu(x, y, items) {
+  if (currentContextMenu) currentContextMenu.remove();
+  const menu = document.createElement('div');
+  menu.className = 'context-menu';
+  
+  items.forEach(item => {
+    if (item.divider) {
+      const div = document.createElement('div');
+      div.className = 'dd-divider';
+      menu.appendChild(div);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'dd-item';
+      const shortcut = item.shortcut ? `<span class="shortcut">${item.shortcut}</span>` : '';
+      el.innerHTML = `<span>${item.label}</span>${shortcut}`;
+      el.addEventListener('click', () => { if (item.action) item.action(); closeContextMenu(); });
+      menu.appendChild(el);
+    }
+  });
+  
+  document.body.appendChild(menu);
+  menu.style.left = Math.min(x, window.innerWidth - 220) + 'px';
+  menu.style.top = Math.min(y, window.innerHeight - menu.offsetHeight - 20) + 'px';
+  requestAnimationFrame(() => menu.classList.add('open'));
+  currentContextMenu = menu;
+}
+
+function closeContextMenu() {
+  if (currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; }
+}
+
+// ===== DESKTOP ICONS =====
+function renderDesktopIcons() {
+  const container = document.getElementById('desktop-icons');
+  container.innerHTML = '';
+  const icons = [
+    { icon:'fa-folder', color:'#4a90d9', label:'Documents', action:()=>{ State.finderPath='Documents'; launchApp('finder'); } },
+    { icon:'fa-folder', color:'#4a90d9', label:'Downloads', action:()=>{ State.finderPath='Downloads'; launchApp('finder'); } },
+  ];
+  icons.forEach((ic, i) => {
+    const el = document.createElement('div');
+    el.className = 'desktop-icon';
+    el.style.left = '20px';
+    el.style.top = (50 + i * 90) + 'px';
+    el.innerHTML = `<div class="di-img"><i class="fas ${ic.icon}" style="color:${ic.color}"></i></div><div class="di-label">${ic.label}</div>`;
+    el.addEventListener('dblclick', ic.action);
+    container.appendChild(el);
+  });
+}
+
+// ===== DESKTOP RIGHT-CLICK =====
+document.getElementById('desktop').addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  showContextMenu(e.clientX, e.clientY, [
+    { label:'New Folder', action:()=>showNotification('fa-folder','#4a90d9','Finder','New folder created') },
+    { label:'Get Info', action:()=>showNotification('fa-info-circle','#0a84ff','Desktop','Desktop information') },
+    { divider:true },
+    { label:'Change Desktop Background…', action:()=>{ const wallpapers=[['Sunset','linear-gradient(135deg,#1a5276,#6dd5fa,#b5e8e3)'],['Aurora','linear-gradient(135deg,#0a0a2e,#16213e,#0f3460)'],['Spring','linear-gradient(135deg,#ff9a9e,#fad0c4,#a18cd1)'],['Ocean','linear-gradient(135deg,#2e86ab,#a8d8e8,#b5e8e3)']]; const w=prompt('Choose wallpaper:\n1. Sunset\n2. Aurora\n3. Spring\n4. Ocean','1'); if(w){const idx=parseInt(w)-1;if(wallpapers[idx])document.getElementById('desktop').style.background=wallpapers[idx][1];} } },
+    { label:'Use Dark Menu Bar', action:()=>{ State.darkMode=!State.darkMode; document.body.classList.toggle('dark'); } },
+    { divider:true },
+    { label:'Show View Options', action:()=>showNotification('fa-eye','#0a84ff','Finder','View options') },
+    { label:'Sort By', action:()=>{} },
+  ]);
+});
+
+// Close menus on click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.menu-dropdown') && !e.target.closest('.mb-item')) closeMenu();
+  if (!e.target.closest('#control-center') && !e.target.closest('.mb-cc-btn')) document.getElementById('control-center').classList.remove('open');
+  if (!e.target.closest('.context-menu')) closeContextMenu();
+  if (!e.target.closest('#spotlight-overlay') && !e.target.closest('.mb-item')) {
+    // don't close spotlight on every click, only on overlay click
+  }
+});
+
+document.getElementById('spotlight-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'spotlight-overlay') closeSpotlight();
+});
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', (e) => {
+  // Cmd+Space = Spotlight
+  if ((e.metaKey || e.ctrlKey) && e.code === 'Space') {
+    e.preventDefault();
+    toggleSpotlight();
+    return;
+  }
+  // Cmd+W = Close window
+  if ((e.metaKey || e.ctrlKey) && e.key === 'w' && !e.target.matches('input,textarea')) {
+    e.preventDefault();
+    if (State.activeWindow) closeWindow(State.activeWindow);
+    return;
+  }
+  // Cmd+M = Minimize
+  if ((e.metaKey || e.ctrlKey) && e.key === 'm' && !e.target.matches('input,textarea')) {
+    e.preventDefault();
+    if (State.activeWindow) minimizeWindow(State.activeWindow);
+    return;
+  }
+  // Escape closes spotlight/menus
+  if (e.key === 'Escape') {
+    closeSpotlight();
+    closeMenu();
+    closeContextMenu();
+    document.getElementById('control-center').classList.remove('open');
+  }
+});
+
+// ===== LOGIN / LOCK =====
+function lockScreen() {
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+function logOut() {
+  State.windows.forEach(w => w.el.remove());
+  State.windows = [];
+  updateDock();
+  document.getElementById('login-screen').classList.remove('hidden');
+}
+function sleepMac() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#666;font-size:14px;';
+  overlay.innerHTML = '<div>Click to wake</div>';
+  overlay.addEventListener('click', () => overlay.remove());
+  document.body.appendChild(overlay);
+}
+
+// ===== BOOT SEQUENCE =====
+function bootSequence() {
+  setTimeout(() => {
+    document.getElementById('boot-screen').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('boot-screen').style.display = 'none';
+      document.getElementById('login-screen').classList.remove('hidden');
+    }, 800);
+  }, 3500);
+}
+
+function login() {
+  document.getElementById('login-screen').classList.add('hidden');
+  setTimeout(() => {
+    showNotification('fa-apple', '#000', 'Welcome back, Mike', 'macOS Tahoe is ready');
+  }, 500);
+}
+
+document.getElementById('login-go').addEventListener('click', login);
+document.getElementById('login-pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+
+// ===== APP DEFINITIONS =====
+
+// --- Finder ---
+registerApp('finder', {
+  title:'Finder', singleInstance:false, defaultWidth:700, defaultHeight:480,
+  menus:[
+    { label:'File', items:[
+      {label:'New Finder Window', action:()=>launchApp('finder'), shortcut:'⌘N'},
+      {label:'New Folder', action:()=>showNotification('fa-folder','#4a90d9','Finder','New folder created'), shortcut:'⇧⌘N'},
+      {label:'New Tab', action:()=>{}, shortcut:'⌘T'},
+      {divider:true},
+      {label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'},
+    ]},
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Redo', action:()=>document.execCommand('redo'),shortcut:'⇧⌘Z'},{divider:true},{label:'Cut', action:()=>document.execCommand('cut'),shortcut:'⌘X'},{label:'Copy', action:()=>document.execCommand('copy'),shortcut:'⌘C'},{label:'Paste', action:()=>document.execCommand('paste'),shortcut:'⌘V'}] },
+    { label:'View', items:[{label:'as Icons', action:()=>{}, shortcut:'⌘1'},{label:'as List', action:()=>{}, shortcut:'⌘2'},{label:'as Columns', action:()=>{}, shortcut:'⌘3'},{divider:true},{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Go', items:[
+      {label:'Back', action:()=>{}, shortcut:'⌘['},
+      {label:'Forward', action:()=>{}, shortcut:'⌘]'},
+      {divider:true},
+      {label:'Documents', action:()=>{State.finderPath='Documents'; if(State.activeWindow)APPS.finder.render(State.activeWindow.contentEl,State.activeWindow);}},
+      {label:'Downloads', action:()=>{State.finderPath='Downloads'; if(State.activeWindow)APPS.finder.render(State.activeWindow.contentEl,State.activeWindow);}},
+      {label:'Desktop', action:()=>{State.finderPath='Desktop'; if(State.activeWindow)APPS.finder.render(State.activeWindow.contentEl,State.activeWindow);}},
+      {label:'Applications', action:()=>{State.finderPath='Applications'; if(State.activeWindow)APPS.finder.render(State.activeWindow.contentEl,State.activeWindow);}},
+    ]},
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Finder Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Finder Help')}] },
+  ],
+  render(el, win) {
+    const finderData = {
+      'Desktop':[
+        {name:'Documents', icon:'fa-folder', color:'#4a90d9'},
+        {name:'Downloads', icon:'fa-folder', color:'#4a90d9'},
+        {name:'Screenshot.png', icon:'fa-image', color:'#ff9f0a'},
+        {name:'Project.docx', icon:'fa-file-word', color:'#2b579a'},
+      ],
+      'Documents':[
+        {name:'Resume.pdf', icon:'fa-file-pdf', color:'#ff453a'},
+        {name:'Budget.xlsx', icon:'fa-file-excel', color:'#217346'},
+        {name:'Notes.txt', icon:'fa-file-alt', color:'#4a90d9'},
+        {name:'Projects', icon:'fa-folder', color:'#4a90d9'},
+        {name:'Taxes', icon:'fa-folder', color:'#4a90d9'},
+        {name:'Presentation.pptx', icon:'fa-file-powerpoint', color:'#d24726'},
+      ],
+      'Downloads':[
+        {name:'installer.dmg', icon:'fa-file', color:'#8e8e93'},
+        {name:'photo.jpg', icon:'fa-image', color:'#ff9f0a'},
+        {name:'archive.zip', icon:'fa-file-archive', color:'#ff9f0a'},
+        {name:'video.mp4', icon:'fa-file-video', color:'#ff453a'},
+        {name:'song.mp3', icon:'fa-file-audio', color:'#fa233b'},
+      ],
+      'Applications':[
+        {name:'Safari', icon:'fa-compass', color:'#1a8fe3'},
+        {name:'Mail', icon:'fa-envelope', color:'#0a84ff'},
+        {name:'Calculator', icon:'fa-calculator', color:'#1a1a1a'},
+        {name:'Terminal', icon:'fa-terminal', color:'#2d2d2d'},
+        {name:'Notes', icon:'fa-sticky-note', color:'#ffd60a'},
+        {name:'Music', icon:'fa-music', color:'#fa233b'},
+        {name:'Photos', icon:'fa-image', color:'#ff9f0a'},
+        {name:'Maps', icon:'fa-map', color:'#ff3b30'},
+        {name:'Calendar', icon:'fa-calendar', color:'#ff3b30'},
+        {name:'Weather', icon:'fa-cloud-sun', color:'#4a90d9'},
+        {name:'Clock', icon:'fa-clock', color:'#1a1a1a'},
+        {name:'TextEdit', icon:'fa-file-alt', color:'#4a90d9'},
+      ],
+      'Pictures':[
+        {name:'Beach.jpg', icon:'fa-image', color:'#ff9f0a'},
+        {name:'Mountain.jpg', icon:'fa-image', color:'#ff9f0a'},
+        {name:'Sunset.jpg', icon:'fa-image', color:'#ff9f0a'},
+        {name:'Family.jpg', icon:'fa-image', color:'#ff9f0a'},
+        {name:'City.jpg', icon:'fa-image', color:'#ff9f0a'},
+      ],
+    };
+    
+    const sidebarItems = [
+      {section:'Favorites', items:[
+        {name:'AirDrop', icon:'fa-broadcast-tower'},
+        {name:'Recents', icon:'fa-clock'},
+        {name:'Applications', icon:'fa-app-store-ios'},
+        {name:'Desktop', icon:'fa-desktop'},
+        {name:'Documents', icon:'fa-folder'},
+        {name:'Downloads', icon:'fa-download'},
+        {name:'Pictures', icon:'fa-image'},
+      ]},
+      {section:'Locations', items:[
+        {name:'iCloud Drive', icon:'fa-cloud'},
+        {name:'Macintosh HD', icon:'fa-hdd'},
+      ]},
+      {section:'Tags', items:[
+        {name:'Red', icon:'fa-tag', color:'#ff453a'},
+        {name:'Blue', icon:'fa-tag', color:'#0a84ff'},
+        {name:'Green', icon:'fa-tag', color:'#30d158'},
+      ]},
+    ];
+    
+    const currentPath = State.finderPath;
+    const files = finderData[currentPath] || [];
+    
+    el.innerHTML = `
+      <div class="finder">
+        <div class="finder-sidebar">
+          ${sidebarItems.map(s => `
+            <div class="fs-section">${s.section}</div>
+            ${s.items.map(i => `<div class="fs-item ${i.name===currentPath?'active':''}" data-path="${i.name}"><i class="fas ${i.icon}" style="${i.color?`color:${i.color}`:''}"></i>${i.name}</div>`).join('')}
+          `).join('')}
+        </div>
+        <div class="finder-main">
+          <div class="finder-toolbar">
+            <button class="ft-btn"><i class="fas fa-chevron-left"></i></button>
+            <button class="ft-btn"><i class="fas fa-chevron-right"></i></button>
+            <div class="finder-path">${currentPath}</div>
+            <button class="ft-btn"><i class="fas fa-th"></i></button>
+            <button class="ft-btn"><i class="fas fa-list"></i></button>
+            <button class="ft-btn"><i class="fas fa-share-alt"></i></button>
+            <button class="ft-btn"><i class="fas fa-tag"></i></button>
+            <button class="ft-btn"><i class="fas fa-trash"></i></button>
+          </div>
+          <div class="finder-content">
+            <div class="finder-grid">
+              ${files.map(f => `
+                <div class="finder-file" data-name="${f.name}">
+                  <div class="ff-icon"><i class="fas ${f.icon}" style="color:${f.color}"></i></div>
+                  <div class="ff-name">${f.name}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Sidebar navigation
+    el.querySelectorAll('.fs-item').forEach(item => {
+      item.addEventListener('click', () => {
+        State.finderPath = item.dataset.path;
+        this.render(el, win);
+      });
+    });
+    
+    // File double-click
+    el.querySelectorAll('.finder-file').forEach(f => {
+      f.addEventListener('click', () => {
+        el.querySelectorAll('.finder-file').forEach(x => x.classList.remove('selected'));
+        f.classList.add('selected');
+      });
+      f.addEventListener('dblclick', () => {
+        const name = f.dataset.name;
+        if (name.endsWith('.txt')) launchApp('textedit');
+        else if (name.endsWith('.jpg') || name.endsWith('.png')) launchApp('preview');
+        else if (name.endsWith('.mp3')) launchApp('music');
+        else if (name === 'Applications') { State.finderPath='Applications'; this.render(el, win); }
+        else showNotification('fa-folder','#4a90d9','Finder',`Opening ${name}...`);
+      });
+    });
+  }
+});
+
+// --- Safari ---
+function openInSafari(url) {
+  launchApp('safari');
+  setTimeout(() => {
+    const w = State.windows.find(x => x.appId === 'safari');
+    if (w) {
+      const iframe = w.contentEl.querySelector('.safari-iframe');
+      const urlBar = w.contentEl.querySelector('.safari-url');
+      if (urlBar) urlBar.value = url;
+      if (iframe) {
+        iframe.src = url;
+        iframe.style.display = 'block';
+      }
+      const startpage = w.contentEl.querySelector('.safari-startpage');
+      if (startpage) startpage.style.display = 'none';
+    }
+  }, 100);
+}
+
+registerApp('safari', {
+  title:'Safari', singleInstance:true, defaultWidth:900, defaultHeight:600,
+  menus:[
+    { label:'File', items:[{label:'New Window', action:()=>launchApp('safari'), shortcut:'⌘N'},{label:'New Tab', action:()=>{}, shortcut:'⌘T'},{divider:true},{label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Redo', action:()=>document.execCommand('redo'),shortcut:'⇧⌘Z'},{divider:true},{label:'Cut', action:()=>document.execCommand('cut'),shortcut:'⌘X'},{label:'Copy', action:()=>document.execCommand('copy'),shortcut:'⌘C'},{label:'Paste', action:()=>document.execCommand('paste'),shortcut:'⌘V'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'},{label:'Show Start Page', action:()=>{const w=State.windows.find(x=>x.appId==='safari');if(w){const sp=w.contentEl.querySelector('.safari-startpage');const ifr=w.contentEl.querySelector('.safari-iframe');if(sp)sp.style.display='block';if(ifr)ifr.style.display='none';}}}] },
+    { label:'History', items:[{label:'Show All History', action:()=>showNotification('fa-history','#1a8fe3','Safari','History')},{label:'Clear History…', action:()=>showNotification('fa-trash','#8e8e93','Safari','History cleared')}] },
+    { label:'Bookmarks', items:[{label:'Show Start Page', action:()=>{}}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Safari Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Safari Help')}] },
+  ],
+  render(el, win) {
+    const favorites = [
+      {name:'Apple', icon:'fab fa-apple', color:'#000', url:'https://www.apple.com'},
+      {name:'Google', icon:'fab fa-google', color:'#4285f4', url:'https://www.google.com'},
+      {name:'YouTube', icon:'fab fa-youtube', color:'#ff0000', url:'https://www.youtube.com'},
+      {name:'Wikipedia', icon:'fab fa-wikipedia-w', color:'#000', url:'https://www.wikipedia.org'},
+      {name:'GitHub', icon:'fab fa-github', color:'#181717', url:'https://github.com'},
+      {name:'Reddit', icon:'fab fa-reddit', color:'#ff4500', url:'https://reddit.com'},
+      {name:'Twitter', icon:'fab fa-twitter', color:'#1da1f2', url:'https://twitter.com'},
+      {name:'Amazon', icon:'fab fa-amazon', color:'#ff9900', url:'https://amazon.com'},
+    ];
+    
+    el.innerHTML = `
+      <div class="safari">
+        <div class="safari-toolbar">
+          <button class="st-btn" id="safari-back"><i class="fas fa-arrow-left"></i></button>
+          <button class="st-btn" id="safari-fwd"><i class="fas fa-arrow-right"></i></button>
+          <button class="st-btn" id="safari-reload"><i class="fas fa-redo"></i></button>
+          <input type="text" class="safari-url" placeholder="Search or enter website name" value="">
+          <button class="st-btn" id="safari-share"><i class="fas fa-share"></i></button>
+          <button class="st-btn" id="safari-newtab"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="safari-content">
+          <div class="safari-startpage">
+            <h2 style="font-size:28px;margin-bottom:30px;font-weight:300">Favorites</h2>
+            <div class="safari-favorites">
+              ${favorites.map(f => `
+                <div class="safari-fav" data-url="${f.url}">
+                  <div class="sf-icon" style="background:${f.color}"><i class="${f.icon}" style="color:#fff"></i></div>
+                  <div class="sf-name">${f.name}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <iframe class="safari-iframe" style="display:none;width:100%;height:100%;border:none;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+        </div>
+      </div>
+    `;
+    
+    const urlBar = el.querySelector('.safari-url');
+    const iframe = el.querySelector('.safari-iframe');
+    const startpage = el.querySelector('.safari-startpage');
+    
+    function navigate(url) {
+      if (!url.startsWith('http')) {
+        if (url.includes('.') && !url.includes(' ')) url = 'https://' + url;
+        else url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+      }
+      urlBar.value = url;
+      iframe.src = url;
+      iframe.style.display = 'block';
+      startpage.style.display = 'none';
+    }
+    
+    urlBar.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') navigate(urlBar.value);
+    });
+    
+    el.querySelector('#safari-back').addEventListener('click', () => { try { iframe.contentWindow.history.back(); } catch(e){} });
+    el.querySelector('#safari-fwd').addEventListener('click', () => { try { iframe.contentWindow.history.forward(); } catch(e){} });
+    el.querySelector('#safari-reload').addEventListener('click', () => { if (iframe.src) iframe.src = iframe.src; });
+    
+    el.querySelectorAll('.safari-fav').forEach(fav => {
+      fav.addEventListener('click', () => navigate(fav.dataset.url));
+    });
+  }
+});
+
+// --- Calculator ---
+registerApp('calculator', {
+  title:'Calculator', singleInstance:true, defaultWidth:300, defaultHeight:440,
+  menus:[
+    { label:'File', items:[{label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Copy', action:()=>navigator.clipboard.writeText(State.calcDisplay), shortcut:'⌘C'},{label:'Paste', action:()=>{navigator.clipboard.readText().then(t=>{State.calcDisplay=t;APPS.calculator.render(State.activeWindow.contentEl,State.activeWindow)})}, shortcut:'⌘V'}] },
+    { label:'View', items:[{label:'Basic', action:()=>{},checked:true},{label:'Scientific', action:()=>showNotification('fa-calculator','#1a1a1a','Calculator','Scientific mode coming soon')}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Calculator Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Calculator Help')}] },
+  ],
+  render(el, win) {
+    el.innerHTML = `
+      <div class="calc">
+        <div class="calc-display">${State.calcDisplay}</div>
+        <div class="calc-grid">
+          <button class="calc-btn fn" data-action="clear">AC</button>
+          <button class="calc-btn fn" data-action="negate">±</button>
+          <button class="calc-btn fn" data-action="percent">%</button>
+          <button class="calc-btn op" data-op="/">÷</button>
+          <button class="calc-btn num" data-num="7">7</button>
+          <button class="calc-btn num" data-num="8">8</button>
+          <button class="calc-btn num" data-num="9">9</button>
+          <button class="calc-btn op" data-op="*">×</button>
+          <button class="calc-btn num" data-num="4">4</button>
+          <button class="calc-btn num" data-num="5">5</button>
+          <button class="calc-btn num" data-num="6">6</button>
+          <button class="calc-btn op" data-op="-">−</button>
+          <button class="calc-btn num" data-num="1">1</button>
+          <button class="calc-btn num" data-num="2">2</button>
+          <button class="calc-btn num" data-num="3">3</button>
+          <button class="calc-btn op" data-op="+">+</button>
+          <button class="calc-btn num zero" data-num="0">0</button>
+          <button class="calc-btn num" data-num=".">.</button>
+          <button class="calc-btn op" data-op="=">=</button>
+        </div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.calc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const display = el.querySelector('.calc-display');
+        if (btn.dataset.num !== undefined) {
+          const n = btn.dataset.num;
+          if (State.calcReset) { State.calcDisplay = n === '.' ? '0.' : n; State.calcReset = false; }
+          else if (n === '.' && State.calcDisplay.includes('.')) return;
+          else State.calcDisplay = State.calcDisplay === '0' && n !== '.' ? n : State.calcDisplay + n;
+        } else if (btn.dataset.op) {
+          const op = btn.dataset.op;
+          if (op === '=') {
+            if (State.calcOp && State.calcPrev !== null) {
+              const a = parseFloat(State.calcPrev), b = parseFloat(State.calcDisplay);
+              let r = 0;
+              switch(State.calcOp) { case '+': r=a+b; break; case '-': r=a-b; break; case '*': r=a*b; break; case '/': r=b===0?'Error':a/b; break; }
+              State.calcDisplay = r === 'Error' ? 'Error' : String(parseFloat(r.toFixed(10)));
+              State.calcOp = null; State.calcPrev = null; State.calcReset = true;
+            }
+          } else {
+            if (State.calcOp && State.calcPrev !== null && !State.calcReset) {
+              const a = parseFloat(State.calcPrev), b = parseFloat(State.calcDisplay);
+              let r = 0;
+              switch(State.calcOp) { case '+': r=a+b; break; case '-': r=a-b; break; case '*': r=a*b; break; case '/': r=b===0?'Error':a/b; break; }
+              State.calcDisplay = r === 'Error' ? 'Error' : String(parseFloat(r.toFixed(10)));
+            }
+            State.calcPrev = State.calcDisplay;
+            State.calcOp = op;
+            State.calcReset = true;
+          }
+        } else if (btn.dataset.action === 'clear') {
+          State.calcDisplay = '0'; State.calcOp = null; State.calcPrev = null; State.calcReset = false;
+        } else if (btn.dataset.action === 'negate') {
+          State.calcDisplay = State.calcDisplay.startsWith('-') ? State.calcDisplay.slice(1) : '-' + State.calcDisplay;
+        } else if (btn.dataset.action === 'percent') {
+          State.calcDisplay = String(parseFloat(State.calcDisplay) / 100);
+        }
+        display.textContent = State.calcDisplay;
+      });
+    });
+  }
+});
+
+// --- Terminal ---
+registerApp('terminal', {
+  title:'Terminal', singleInstance:false, defaultWidth:680, defaultHeight:420,
+  menus:[
+    { label:'File', items:[{label:'New Window', action:()=>launchApp('terminal'), shortcut:'⌘N'},{label:'New Tab', action:()=>{}, shortcut:'⌘T'},{divider:true},{label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Copy', action:()=>{}, shortcut:'⌘C'},{label:'Paste', action:()=>{}, shortcut:'⌘V'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Shell', items:[{label:'New Window', action:()=>launchApp('terminal')},{label:'Clear', action:()=>{if(State.activeWindow){State.termLines=[];APPS.terminal.render(State.activeWindow.contentEl,State.activeWindow);}}}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Terminal Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Terminal Help')}] },
+  ],
+  render(el, win) {
+    el.innerHTML = '<div class="terminal" tabindex="0"></div>';
+    const term = el.querySelector('.terminal');
+    const user = 'mike';
+    const host = 'MacBook-Pro';
+    const cwd = '~';
+    const prompt = `<span class="term-prompt">${user}@${host} ${cwd} %</span> `;
+    
+    function addLine(text, isPrompt=false) {
+      const line = document.createElement('div');
+      line.className = 'term-line';
+      if (isPrompt) line.innerHTML = prompt + text;
+      else line.textContent = text;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+    
+    addLine('Last login: ' + new Date().toString());
+    addLine('Welcome to macOS Tahoe Terminal');
+    addLine('');
+    
+    function newPrompt() {
+      const line = document.createElement('div');
+      line.className = 'term-line';
+      line.innerHTML = prompt;
+      const input = document.createElement('input');
+      input.className = 'term-input';
+      input.autocomplete = 'off';
+      input.spellcheck = false;
+      line.appendChild(input);
+      term.appendChild(line);
+      input.focus();
+      
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const cmd = input.value.trim();
+          input.disabled = true;
+          if (cmd) {
+            const result = processCommand(cmd);
+            if (result) addLine(result);
+          }
+          if (cmd === 'exit' || cmd === 'logout') {
+            closeWindow(win);
+            return;
+          }
+          newPrompt();
+        }
+      });
+      term.scrollTop = term.scrollHeight;
+    }
+    
+    function processCommand(cmd) {
+      const parts = cmd.split(/\s+/);
+      const c = parts[0];
+      const args = parts.slice(1);
+      
+      switch(c) {
+        case 'help':
+          return 'Available commands:\n  help     - Show this help\n  ls       - List files\n  pwd      - Print working directory\n  echo     - Print text\n  date     - Show current date\n  whoami   - Show current user\n  clear    - Clear screen\n  open     - Open an app (open safari, open calculator, etc.)\n  uname    - System info\n  history  - Command history\n  neofetch - System info art\n  exit     - Close terminal';
+        case 'ls':
+          return 'Desktop    Documents  Downloads  Movies     Music      Pictures   Public';
+        case 'pwd':
+          return '/Users/mike';
+        case 'echo':
+          return args.join(' ');
+        case 'date':
+          return new Date().toString();
+        case 'whoami':
+          return 'mike';
+        case 'clear':
+          term.innerHTML = '';
+          newPrompt();
+          return null;
+        case 'open':
+          if (args[0]) {
+            const appMap = {safari:'safari', calc:'calculator', calculator:'calculator', notes:'notes', terminal:'terminal', settings:'settings', mail:'mail', messages:'messages', maps:'maps', weather:'weather', calendar:'calendar', music:'music', photos:'photos', clock:'clock', textedit:'textedit', reminders:'reminders', stickies:'stickies', preview:'preview', finder:'finder'};
+            const appId = appMap[args[0].toLowerCase()];
+            if (appId) { launchApp(appId); return `Opening ${args[0]}...`; }
+            return `open: ${args[0]}: application not found`;
+          }
+          return 'usage: open <app-name>';
+        case 'uname':
+          return args[0]==='-a' ? 'Darwin MacBook-Pro.local 25.0.0 Darwin Kernel Version 25.0.0 x86_64' : 'Darwin';
+        case 'history':
+          return '  1  help\n  2  ls\n  3  date';
+        case 'neofetch':
+          return '                    \'c.\n                 xN`.\n   .`  -<::::::``   user@mike\n   `\\-._  \\\\`:::::\\`  ----------\n      `-,  \\\\`:::::`   OS: macOS Tahoe 26.0\n       `\\-  \\\\`:::\\`    Host: MacBook Pro\n         I  l  I      Kernel: 25.0.0\n         l  !  l      Shell: zsh\n         I  l  I      CPU: Apple M4\n         l  !  l      Memory: 32GB';
+        case 'cat':
+          if (args[0] === 'README.md') return '# macOS Tahoe Web\nA complete macOS desktop clone built with HTML, CSS, and JavaScript.';
+          return `cat: ${args[0]||''}: No such file or directory`;
+        case 'mkdir':
+          return '';
+        case 'touch':
+          return '';
+        case 'rm':
+          return '';
+        case 'cd':
+          return '';
+        case '':
+          return null;
+        default:
+          return `zsh: command not found: ${c}`;
+      }
+    }
+    
+    newPrompt();
+    
+    term.addEventListener('click', () => {
+      const inputs = term.querySelectorAll('.term-input:not([disabled])');
+      if (inputs.length) inputs[inputs.length-1].focus();
+    });
+  }
+});
+
+// --- Notes ---
+registerApp('notes', {
+  title:'Notes', singleInstance:true, defaultWidth:700, defaultHeight:480,
+  menus:[
+    { label:'File', items:[{label:'New Note', action:()=>{State.notes.unshift({id:Date.now(),title:'New Note',body:'<h1>New Note</h1><p></p>'});if(State.activeWindow)APPS.notes.render(State.activeWindow.contentEl,State.activeWindow);}, shortcut:'⌘N'},{label:'Delete Note', action:()=>{if(State.notes.length>1){State.notes.shift();if(State.activeWindow)APPS.notes.render(State.activeWindow.contentEl,State.activeWindow);}}, shortcut:'⌫'},{divider:true},{label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Redo', action:()=>document.execCommand('redo'),shortcut:'⇧⌘Z'},{divider:true},{label:'Find', action:()=>{}, shortcut:'⌘F'},{label:'Spell Check', action:()=>{}}] },
+    { label:'Format', items:[{label:'Bold', action:()=>document.execCommand('bold'),shortcut:'⌘B'},{label:'Italic', action:()=>document.execCommand('italic'),shortcut:'⌘I'},{label:'Underline', action:()=>document.execCommand('underline'),shortcut:'⌘U'},{divider:true},{label:'Heading 1', action:()=>document.execCommand('formatBlock','H1')},{label:'Heading 2', action:()=>document.execCommand('formatBlock','H2')},{label:'Paragraph', action:()=>document.execCommand('formatBlock','P')}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Notes Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Notes Help')}] },
+  ],
+  render(el, win) {
+    let activeNote = 0;
+    const notes = State.notes;
+    
+    el.innerHTML = `
+      <div class="notes">
+        <div class="notes-sidebar">
+          <div class="ns-header"><span>${notes.length} Notes</span><span class="ns-new" id="notes-new"><i class="fas fa-pen-to-square"></i></span></div>
+          <div id="notes-list">
+            ${notes.map((n,i) => `
+              <div class="ns-item ${i===activeNote?'active':''}" data-idx="${i}">
+                <div class="ns-title">${n.title}</div>
+                <div class="ns-preview">${n.body.replace(/<[^>]+>/g,'').slice(0,50)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="notes-main">
+          <div class="notes-toolbar">
+            <button class="nt-btn" id="note-bold"><i class="fas fa-bold"></i></button>
+            <button class="nt-btn" id="note-italic"><i class="fas fa-italic"></i></button>
+            <button class="nt-btn" id="note-underline"><i class="fas fa-underline"></i></button>
+            <div class="te-divider"></div>
+            <button class="nt-btn" id="note-h1">H1</button>
+            <button class="nt-btn" id="note-h2">H2</button>
+            <button class="nt-btn" id="note-p">¶</button>
+            <div class="te-divider"></div>
+            <button class="nt-btn" id="note-list"><i class="fas fa-list-ul"></i></button>
+            <button class="nt-btn" id="note-checkbox"><i class="fas fa-check-square"></i></button>
+          </div>
+          <div class="notes-editor" contenteditable="true" id="notes-editor">${notes[activeNote]?.body || ''}</div>
+        </div>
+      </div>
+    `;
+    
+    const editor = el.querySelector('#notes-editor');
+    
+    function updateTitle() {
+      const text = editor.innerText.trim();
+      const title = text.split('\n')[0].slice(0,50) || 'New Note';
+      notes[activeNote].title = title;
+      notes[activeNote].body = editor.innerHTML;
+      const listEl = el.querySelector('#notes-list');
+      listEl.innerHTML = notes.map((n,i) => `
+        <div class="ns-item ${i===activeNote?'active':''}" data-idx="${i}">
+          <div class="ns-title">${n.title}</div>
+          <div class="ns-preview">${n.body.replace(/<[^>]+>/g,'').slice(0,50)}</div>
+        </div>
+      `).join('');
+      bindList();
+    }
+    
+    editor.addEventListener('input', () => { clearTimeout(win._noteTimer); win._noteTimer = setTimeout(updateTitle, 500); });
+    
+    function bindList() {
+      el.querySelectorAll('.ns-item').forEach(item => {
+        item.addEventListener('click', () => {
+          activeNote = parseInt(item.dataset.idx);
+          editor.innerHTML = notes[activeNote].body;
+          el.querySelectorAll('.ns-item').forEach(x => x.classList.remove('active'));
+          item.classList.add('active');
+          editor.focus();
+        });
+      });
+    }
+    bindList();
+    
+    el.querySelector('#notes-new').addEventListener('click', () => {
+      notes.unshift({ id:Date.now(), title:'New Note', body:'<h1>New Note</h1><p></p>' });
+      activeNote = 0;
+      this.render(el, win);
+    });
+    
+    el.querySelector('#note-bold').addEventListener('click', () => document.execCommand('bold'));
+    el.querySelector('#note-italic').addEventListener('click', () => document.execCommand('italic'));
+    el.querySelector('#note-underline').addEventListener('click', () => document.execCommand('underline'));
+    el.querySelector('#note-h1').addEventListener('click', () => document.execCommand('formatBlock','H1'));
+    el.querySelector('#note-h2').addEventListener('click', () => document.execCommand('formatBlock','H2'));
+    el.querySelector('#note-p').addEventListener('click', () => document.execCommand('formatBlock','P'));
+    el.querySelector('#note-list').addEventListener('click', () => document.execCommand('insertUnorderedList'));
+    el.querySelector('#note-checkbox').addEventListener('click', () => { document.execCommand('insertHTML', false, '<div>☐ </div>'); });
+  }
+});
+
+// --- TextEdit ---
+registerApp('textedit', {
+  title:'TextEdit', singleInstance:false, defaultWidth:600, defaultHeight:450,
+  menus:[
+    { label:'File', items:[{label:'New', action:()=>launchApp('textedit'), shortcut:'⌘N'},{label:'Open…', action:()=>showNotification('fa-folder','#4a90d9','TextEdit','Open file')},{divider:true},{label:'Save', action:()=>showNotification('fa-check','#30d158','TextEdit','Document saved'), shortcut:'⌘S'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Redo', action:()=>document.execCommand('redo'),shortcut:'⇧⌘Z'},{divider:true},{label:'Cut', action:()=>document.execCommand('cut'),shortcut:'⌘X'},{label:'Copy', action:()=>document.execCommand('copy'),shortcut:'⌘C'},{label:'Paste', action:()=>document.execCommand('paste'),shortcut:'⌘V'},{divider:true},{label:'Find', action:()=>{}, shortcut:'⌘F'}] },
+    { label:'Format', items:[{label:'Bold', action:()=>document.execCommand('bold'),shortcut:'⌘B'},{label:'Italic', action:()=>document.execCommand('italic'),shortcut:'⌘I'},{label:'Underline', action:()=>document.execCommand('underline'),shortcut:'⌘U'},{divider:true},{label:'Align Left', action:()=>document.execCommand('justifyLeft')},{label:'Align Center', action:()=>document.execCommand('justifyCenter')},{label:'Align Right', action:()=>document.execCommand('justifyRight')},{divider:true},{label:'Heading 1', action:()=>document.execCommand('formatBlock','H1')},{label:'Heading 2', action:()=>document.execCommand('formatBlock','H2')},{label:'Paragraph', action:()=>document.execCommand('formatBlock','P')}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'TextEdit Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','TextEdit Help')}] },
+  ],
+  render(el, win) {
+    el.innerHTML = `
+      <div class="textedit">
+        <div class="textedit-toolbar">
+          <select class="te-btn" id="te-font" style="padding:2px 6px">
+            <option>Inter</option><option>Helvetica</option><option>Georgia</option><option>Courier</option><option>Monaco</option>
+          </select>
+          <select class="te-btn" id="te-size" style="padding:2px 6px">
+            <option>12</option><option selected>14</option><option>16</option><option>18</option><option>24</option><option>32</option>
+          </select>
+          <div class="te-divider"></div>
+          <button class="te-btn" id="te-bold"><i class="fas fa-bold"></i></button>
+          <button class="te-btn" id="te-italic"><i class="fas fa-italic"></i></button>
+          <button class="te-btn" id="te-underline"><i class="fas fa-underline"></i></button>
+          <div class="te-divider"></div>
+          <button class="te-btn" id="te-left"><i class="fas fa-align-left"></i></button>
+          <button class="te-btn" id="te-center"><i class="fas fa-align-center"></i></button>
+          <button class="te-btn" id="te-right"><i class="fas fa-align-right"></i></button>
+          <div class="te-divider"></div>
+          <button class="te-btn" id="te-h1">H1</button>
+          <button class="te-btn" id="te-h2">H2</button>
+          <button class="te-btn" id="te-p">¶</button>
+          <div class="te-divider"></div>
+          <button class="te-btn" id="te-list"><i class="fas fa-list-ul"></i></button>
+          <button class="te-btn" id="te-ordered"><i class="fas fa-list-ol"></i></button>
+        </div>
+        <div class="textedit-area" contenteditable="true" id="te-area" style="font-size:14px"><h1>Welcome to TextEdit</h1><p>This is a rich text editor. You can format text using the toolbar above. Try bold, italic, headings, lists, and alignment.</p><p>Features:</p><ul><li>Rich text formatting</li><li>Multiple fonts and sizes</li><li>Alignment options</li><li>Lists</li></ul><p>Start typing to create your document!</p></div>
+      </div>
+    `;
+    
+    el.querySelector('#te-bold').addEventListener('click', () => document.execCommand('bold'));
+    el.querySelector('#te-italic').addEventListener('click', () => document.execCommand('italic'));
+    el.querySelector('#te-underline').addEventListener('click', () => document.execCommand('underline'));
+    el.querySelector('#te-left').addEventListener('click', () => document.execCommand('justifyLeft'));
+    el.querySelector('#te-center').addEventListener('click', () => document.execCommand('justifyCenter'));
+    el.querySelector('#te-right').addEventListener('click', () => document.execCommand('justifyRight'));
+    el.querySelector('#te-h1').addEventListener('click', () => document.execCommand('formatBlock','H1'));
+    el.querySelector('#te-h2').addEventListener('click', () => document.execCommand('formatBlock','H2'));
+    el.querySelector('#te-p').addEventListener('click', () => document.execCommand('formatBlock','P'));
+    el.querySelector('#te-list').addEventListener('click', () => document.execCommand('insertUnorderedList'));
+    el.querySelector('#te-ordered').addEventListener('click', () => document.execCommand('insertOrderedList'));
+    el.querySelector('#te-font').addEventListener('change', (e) => { el.querySelector('#te-area').style.fontFamily = e.target.value; });
+    el.querySelector('#te-size').addEventListener('change', (e) => { el.querySelector('#te-area').style.fontSize = e.target.value + 'px'; });
+  }
+});
+
+// --- System Settings ---
+registerApp('settings', {
+  title:'System Settings', singleInstance:true, defaultWidth:720, defaultHeight:500,
+  menus:[
+    { label:'File', items:[{label:'Close Window', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Settings Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Settings Help')}] },
+  ],
+  render(el, win) {
+    const panels = [
+      {id:'wifi', icon:'fa-wifi', name:'Wi-Fi'},
+      {id:'bluetooth', icon:'fab fa-bluetooth-b', name:'Bluetooth'},
+      {id:'network', icon:'fa-network-wired', name:'Network'},
+      {id:'general', icon:'fa-gear', name:'General'},
+      {id:'appearance', icon:'fa-palette', name:'Appearance'},
+      {id:'accessibility', icon:'fa-universal-access', name:'Accessibility'},
+      {id:'control', icon:'fa-sliders-h', name:'Control Center'},
+      {id:'siri', icon:'fa-microphone', name:'Siri & Spotlight'},
+      {id:'privacy', icon:'fa-shield-halved', name:'Privacy & Security'},
+      {id:'desktop', icon:'fa-desktop', name:'Desktop & Dock'},
+      {id:'display', icon:'fa-display', name:'Displays'},
+      {id:'sound', icon:'fa-volume-high', name:'Sound'},
+      {id:'storage', icon:'fa-hdd', name:'Storage'},
+      {id:'battery', icon:'fa-battery-half', name:'Battery'},
+    ];
+    
+    let activePanel = 'general';
+    
+    function renderPanel() {
+      const main = el.querySelector('.settings-main');
+      switch(activePanel) {
+        case 'wifi':
+          main.innerHTML = `<h2>Wi-Fi</h2><div class="settings-row"><span class="sr-label">Wi-Fi</span><div class="toggle ${State.wifi?'on':''}" id="set-wifi-toggle"></div></div><div class="settings-row"><span class="sr-label">Network Name</span><span class="sr-value">Home Network</span></div><div class="settings-row"><span class="sr-label">IP Address</span><span class="sr-value">192.168.1.42</span></div><div class="settings-row"><span class="sr-label">Router</span><span class="sr-value">192.168.1.1</span></div><div class="settings-row"><span class="sr-label">DNS</span><span class="sr-value">8.8.8.8</span></div>`;
+          break;
+        case 'bluetooth':
+          main.innerHTML = `<h2>Bluetooth</h2><div class="settings-row"><span class="sr-label">Bluetooth</span><div class="toggle ${State.bluetooth?'on':''}" id="set-bt-toggle"></div></div><div class="settings-row"><span class="sr-label">AirPods Pro</span><span class="sr-value">Connected</span></div><div class="settings-row"><span class="sr-label">Magic Mouse</span><span class="sr-value">Connected</span></div><div class="settings-row"><span class="sr-label">Magic Keyboard</span><span class="sr-value">Connected</span></div>`;
+          break;
+        case 'general':
+          main.innerHTML = `<h2>General</h2><div class="settings-row"><span class="sr-label">About</span><span class="sr-value">macOS Tahoe 26.0</span></div><div class="settings-row"><span class="sr-label">Software Update</span><span class="sr-value">Up to date</span></div><div class="settings-row"><span class="sr-label">Storage</span><span class="sr-value">412.3 GB available</span></div><div class="settings-row"><span class="sr-label">Apple ID</span><span class="sr-value">mike@example.com</span></div><div class="settings-row"><span class="sr-label">Language & Region</span><span class="sr-value">English (US)</span></div><div class="settings-row"><span class="sr-label">Date & Time</span><span class="sr-value">Automatic</span></div><div class="settings-row"><span class="sr-label">Time Zone</span><span class="sr-value">Pacific Time</span></div><div class="settings-row"><span class="sr-label">Sharing</span><span class="sr-value">AirDrop On</span></div>`;
+          break;
+        case 'appearance':
+          main.innerHTML = `<h2>Appearance</h2><div class="settings-row"><span class="sr-label">Dark Mode</span><div class="toggle ${State.darkMode?'on':''}" id="set-dark-toggle"></div></div><div class="settings-row"><span class="sr-label">Accent Color</span><span class="sr-value">Blue</span></div><div class="settings-row"><span class="sr-label">Show scroll bars</span><span class="sr-value">Automatic</span></div><div class="settings-row"><span class="sr-label">Allow wallpaper tinting</span><div class="toggle on"></div></div>`;
+          break;
+        case 'display':
+          main.innerHTML = `<h2>Displays</h2><div class="settings-row"><span class="sr-label">Built-in Display</span><span class="sr-value">14-inch</span></div><div class="settings-row"><span class="sr-label">Resolution</span><span class="sr-value">3024 × 1964</span></div><div class="settings-row"><span class="sr-label">Brightness</span><span class="sr-value">${State.brightness}%</span></div><div class="settings-row"><span class="sr-label">True Tone</span><div class="toggle on"></div></div><div class="settings-row"><span class="sr-label">Night Shift</span><div class="toggle"></div></div><div class="settings-row"><span class="sr-label">Refresh Rate</span><span class="sr-value">ProMotion 120Hz</span></div>`;
+          break;
+        case 'sound':
+          main.innerHTML = `<h2>Sound</h2><div class="settings-row"><span class="sr-label">Output Volume</span><span class="sr-value">${State.volume}%</span></div><div class="settings-row"><span class="sr-label">Output Device</span><span class="sr-value">Built-in Speakers</span></div><div class="settings-row"><span class="sr-label">Input Device</span><span class="sr-value">Built-in Microphone</span></div><div class="settings-row"><span class="sr-label">Play sound on startup</span><div class="toggle on"></div></div>`;
+          break;
+        case 'battery':
+          main.innerHTML = `<h2>Battery</h2><div class="settings-row"><span class="sr-label">Battery Level</span><span class="sr-value">87%</span></div><div class="settings-row"><span class="sr-label">Power Source</span><span class="sr-value">Battery</span></div><div class="settings-row"><span class="sr-label">Time Remaining</span><span class="sr-value">5h 42m</span></div><div class="settings-row"><span class="sr-label">Low Power Mode</span><div class="toggle"></div></div><div class="settings-row"><span class="sr-label">Optimized Battery Charging</span><div class="toggle on"></div></div><div class="settings-row"><span class="sr-label">Cycle Count</span><span class="sr-value">42</span></div>`;
+          break;
+        case 'storage':
+          main.innerHTML = `<h2>Storage</h2><div class="settings-row"><span class="sr-label">Macintosh HD</span><span class="sr-value">512 GB</span></div><div class="settings-row"><span class="sr-label">Used</span><span class="sr-value">99.7 GB</span></div><div class="settings-row"><span class="sr-label">Available</span><span class="sr-value">412.3 GB</span></div><div class="settings-row"><span class="sr-label">System</span><span class="sr-value">25.4 GB</span></div><div class="settings-row"><span class="sr-label">Documents</span><span class="sr-value">15.2 GB</span></div><div class="settings-row"><span class="sr-label">Apps</span><span class="sr-value">28.1 GB</span></div><div class="settings-row"><span class="sr-label">Photos</span><span class="sr-value">18.6 GB</span></div><div class="settings-row"><span class="sr-label">Other</span><span class="sr-value">12.4 GB</span></div>`;
+          break;
+        case 'privacy':
+          main.innerHTML = `<h2>Privacy & Security</h2><div class="settings-row"><span class="sr-label">Location Services</span><div class="toggle on"></div></div><div class="settings-row"><span class="sr-label">Analytics & Improvements</span><div class="toggle"></div></div><div class="settings-row"><span class="sr-label">FileVault</span><span class="sr-value">On</span></div><div class="settings-row"><span class="sr-label">Firewall</span><div class="toggle on"></div></div><div class="settings-row"><span class="sr-label">Touch ID</span><span class="sr-value">Set Up</span></div>`;
+          break;
+        default:
+          main.innerHTML = `<h2>${panels.find(p=>p.id===activePanel)?.name || 'Settings'}</h2><div class="settings-row"><span class="sr-label">This panel is under construction</span></div>`;
+      }
+      
+      // Wire toggles
+      const wifiT = main.querySelector('#set-wifi-toggle');
+      if (wifiT) wifiT.addEventListener('click', () => { State.wifi=!State.wifi; wifiT.classList.toggle('on'); updateMenuBar(); });
+      const btT = main.querySelector('#set-bt-toggle');
+      if (btT) btT.addEventListener('click', () => { State.bluetooth=!State.bluetooth; btT.classList.toggle('on'); updateMenuBar(); });
+      const darkT = main.querySelector('#set-dark-toggle');
+      if (darkT) darkT.addEventListener('click', () => { State.darkMode=!State.darkMode; document.body.classList.toggle('dark'); darkT.classList.toggle('on'); });
+    }
+    
+    el.innerHTML = `
+      <div class="settings">
+        <div class="settings-sidebar">
+          ${panels.map(p => `<div class="ss-item ${p.id===activePanel?'active':''}" data-id="${p.id}"><i class="fas ${p.icon}"></i>${p.name}</div>`).join('')}
+        </div>
+        <div class="settings-main"></div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.ss-item').forEach(item => {
+      item.addEventListener('click', () => {
+        activePanel = item.dataset.id;
+        el.querySelectorAll('.ss-item').forEach(x => x.classList.remove('active'));
+        item.classList.add('active');
+        renderPanel();
+      });
+    });
+    renderPanel();
+  }
+});
+
+// --- Calendar ---
+registerApp('calendar', {
+  title:'Calendar', singleInstance:true, defaultWidth:700, defaultHeight:500,
+  menus:[
+    { label:'File', items:[{label:'New Event', action:()=>showNotification('fa-calendar','#ff3b30','Calendar','New event created'), shortcut:'⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Day', action:()=>{}},{label:'Week', action:()=>{}},{label:'Month', action:()=>{},checked:true},{divider:true},{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Calendar Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Calendar Help')}] },
+  ],
+  render(el, win) {
+    const today = new Date();
+    const month = State.currentMonth.getMonth();
+    const year = State.currentMonth.getFullYear();
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const daysInPrev = new Date(year, month, 0).getDate();
+    
+    // Sample events
+    const events = {};
+    events[`${year}-${month}-${today.getDate()}`] = [{title:'Team Meeting', color:'#0a84ff'},{title:'Lunch', color:'#ff9f0a'}];
+    events[`${year}-${month}-${today.getDate()+2}`] = [{title:'Doctor', color:'#ff453a'}];
+    events[`${year}-${month}-${Math.min(28,today.getDate()+5)}`] = [{title:'Birthday Party', color:'#30d158'}];
+    events[`${year}-${month}-${Math.max(1,today.getDate()-3)}`] = [{title:'Conference Call', color:'#bf5af2'}];
+    
+    let cells = '';
+    // Previous month days
+    for (let i = firstDay - 1; i >= 0; i--) {
+      cells += `<div class="calendar-day other-month"><div class="day-num">${daysInPrev - i}</div></div>`;
+    }
+    // Current month days
+    for (let d = 1; d <= daysInMonth; d++) {
+      const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+      const eventKey = `${year}-${month}-${d}`;
+      const dayEvents = events[eventKey] || [];
+      cells += `<div class="calendar-day ${isToday?'today':''}" data-day="${d}">
+        <div class="day-num">${d}</div>
+        ${dayEvents.map(e => `<div class="calendar-event" style="background:${e.color};color:#fff">${e.title}</div>`).join('')}
+      </div>`;
+    }
+    // Next month days
+    const totalCells = firstDay + daysInMonth;
+    const remaining = (7 - (totalCells % 7)) % 7;
+    for (let d = 1; d <= remaining; d++) {
+      cells += `<div class="calendar-day other-month"><div class="day-num">${d}</div></div>`;
+    }
+    
+    el.innerHTML = `
+      <div class="calendar">
+        <div class="calendar-toolbar">
+          <button class="ct-btn" id="cal-prev"><i class="fas fa-chevron-left"></i></button>
+          <button class="ct-btn" id="cal-next"><i class="fas fa-chevron-right"></i></button>
+          <button class="ct-btn" id="cal-today">Today</button>
+          <div class="ct-title">${monthNames[month]} ${year}</div>
+          <button class="ct-btn" id="cal-week">Week</button>
+          <button class="ct-btn" id="cal-month">Month</button>
+        </div>
+        <div class="calendar-weekdays">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="calendar-days">${cells}</div>
+      </div>
+    `;
+    
+    el.querySelector('#cal-prev').addEventListener('click', () => { State.currentMonth = new Date(year, month-1, 1); this.render(el, win); });
+    el.querySelector('#cal-next').addEventListener('click', () => { State.currentMonth = new Date(year, month+1, 1); this.render(el, win); });
+    el.querySelector('#cal-today').addEventListener('click', () => { State.currentMonth = new Date(); this.render(el, win); });
+    
+    el.querySelectorAll('.calendar-day[data-day]').forEach(d => {
+      d.addEventListener('click', () => {
+        const day = d.dataset.day;
+        showNotification('fa-calendar', '#ff3b30', 'Calendar', `${monthNames[month]} ${day}, ${year}`);
+      });
+    });
+  }
+});
+
+// --- Weather ---
+registerApp('weather', {
+  title:'Weather', singleInstance:true, defaultWidth:380, defaultHeight:560,
+  menus:[
+    { label:'File', items:[{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Weather Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Weather Help')}] },
+  ],
+  render(el, win) {
+    const w = State.weatherData;
+    el.innerHTML = `
+      <div class="weather">
+        <div class="weather-hero">
+          <div class="w-loc">${w.loc}</div>
+          <div class="w-temp">${w.temp}°</div>
+          <div class="w-cond">${w.cond}</div>
+          <div class="w-range">H:${w.high}° L:${w.low}°</div>
+        </div>
+        <div class="weather-hourly">
+          ${w.hourly.map(h => `<div class="weather-hour"><div class="wh-time">${h.time}</div><div class="wh-icon"><i class="fas ${h.icon}"></i></div><div class="wh-temp">${h.temp}</div></div>`).join('')}
+        </div>
+        <div class="weather-daily">
+          ${w.daily.map(d => `<div class="weather-day"><div class="wd-name">${d.day}</div><div class="wd-icon"><i class="fas ${d.icon}"></i></div><div class="wd-temps"><span class="wd-low">${d.low}</span><span class="wd-high">${d.high}</span></div></div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+});
+
+// --- Photos ---
+registerApp('photos', {
+  title:'Photos', singleInstance:true, defaultWidth:700, defaultHeight:500,
+  menus:[
+    { label:'File', items:[{label:'Import…', action:()=>showNotification('fa-image','#ff9f0a','Photos','Import photos')},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Photos Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Photos Help')}] },
+  ],
+  render(el, win) {
+    const colors = ['#ff6b6b','#4ecdc4','#ffe66d','#ff9f0a','#0a84ff','#30d158','#bf5af2','#ff453a','#64d2ff','#ac8e68'];
+    const photos = Array.from({length:24}, (_,i) => ({ id:i, color:colors[i%colors.length], name:`Photo ${i+1}` }));
+    
+    el.innerHTML = `
+      <div class="photos">
+        <div class="photos-toolbar">
+          <div class="pt-title">Library</div>
+          <button class="ft-btn"><i class="fas fa-th"></i></button>
+          <button class="ft-btn"><i class="fas fa-share"></i></button>
+        </div>
+        <div class="photos-grid" id="photos-grid">
+          ${photos.map(p => `<div class="photo-thumb" style="background:linear-gradient(135deg,${p.color},${p.color}88)" data-idx="${p.id}"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;color:rgba(255,255,255,0.5)"><i class="fas fa-image"></i></div></div>`).join('')}
+        </div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.photo-thumb').forEach(t => {
+      t.addEventListener('click', () => {
+        const idx = parseInt(t.dataset.idx);
+        const p = photos[idx];
+        const viewer = document.createElement('div');
+        viewer.className = 'photo-viewer';
+        viewer.innerHTML = `<div style="width:80%;height:80%;border-radius:12px;background:linear-gradient(135deg,${p.color},${p.color}88);display:flex;align-items:center;justify-content:center;font-size:60px;color:rgba(255,255,255,0.3)"><i class="fas fa-image"></i></div><button class="pv-close"><i class="fas fa-times"></i></button>`;
+        el.querySelector('.photos').appendChild(viewer);
+        viewer.querySelector('.pv-close').addEventListener('click', () => viewer.remove());
+      });
+    });
+  }
+});
+
+// --- Music ---
+registerApp('music', {
+  title:'Music', singleInstance:true, defaultWidth:800, defaultHeight:540,
+  menus:[
+    { label:'File', items:[{label:'New Playlist', action:()=>showNotification('fa-music','#fa233b','Music','New playlist created'), shortcut:'⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Controls', items:[{label:'Play/Pause', action:()=>toggleMusic(State.activeWindow), shortcut:'␣'},{label:'Next', action:()=>nextSong(State.activeWindow)},{label:'Previous', action:()=>prevSong(State.activeWindow)}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Music Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Music Help')}] },
+  ],
+  render(el, win) {
+    const songs = [
+      {title:'Midnight City', artist:'Synthwave Dreams', color:'#ff6b6b'},
+      {title:'Ocean Drive', artist:'Coastal Beats', color:'#4ecdc4'},
+      {title:'Electric Soul', artist:'Voltage', color:'#ffe66d'},
+      {title:'Neon Nights', artist:'Retro Wave', color:'#bf5af2'},
+      {title:'Summer Breeze', artist:'Island Vibes', color:'#30d158'},
+      {title:'Crystal Clear', artist:'Ambient Echo', color:'#64d2ff'},
+      {title:'Desert Wind', artist:'Sahara', color:'#ff9f0a'},
+      {title:'Purple Rain', artist:'Royal', color:'#bf5af2'},
+    ];
+    
+    const albums = [
+      {title:'Synthwave Dreams', artist:'Various Artists', color:'#ff6b6b'},
+      {title:'Ocean Views', artist:'Coastal Beats', color:'#4ecdc4'},
+      {title:'Neon Lights', artist:'Retro Wave', color:'#bf5af2'},
+      {title:'Summer Hits', artist:'Various', color:'#30d158'},
+      {title:'Electric Nights', artist:'Voltage', color:'#ffe66d'},
+      {title:'Ambient World', artist:'Echo', color:'#64d2ff'},
+    ];
+    
+    const current = songs[State.musicCurrent];
+    
+    el.innerHTML = `
+      <div class="music">
+        <div class="music-main">
+          <div class="music-section-title">Listen Now</div>
+          <div class="music-grid">
+            ${albums.map(a => `
+              <div class="music-album" data-title="${a.title}">
+                <div class="ma-cover" style="background:linear-gradient(135deg,${a.color},${a.color}88)"><i class="fas fa-music" style="color:rgba(255,255,255,0.5);font-size:24px"></i></div>
+                <div class="ma-title">${a.title}</div>
+                <div class="ma-artist">${a.artist}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="music-section-title">Songs</div>
+          <div style="display:flex;flex-direction:column">
+            ${songs.map((s,i) => `
+              <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer" data-song="${i}">
+                <div style="width:32px;height:32px;border-radius:6px;background:${s.color};display:flex;align-items:center;justify-content:center"><i class="fas fa-music" style="color:rgba(255,255,255,0.5);font-size:12px"></i></div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:500">${s.title}</div><div style="font-size:11px;color:var(--text-secondary)">${s.artist}</div></div>
+                <div style="font-size:12px;color:var(--text-secondary)">3:${20+i*5}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="music-player">
+          <div class="mp-cover" style="background:${current.color}"><i class="fas fa-music" style="color:rgba(255,255,255,0.5);font-size:18px"></i></div>
+          <div class="mp-info">
+            <div class="mp-title">${current.title}</div>
+            <div class="mp-artist">${current.artist}</div>
+            <div class="music-progress" id="music-progress"><div class="mp-fill" style="width:${State.musicProgress}%"></div></div>
+          </div>
+          <div class="mp-btns">
+            <button class="mp-btn" id="music-prev"><i class="fas fa-backward-step"></i></button>
+            <button class="mp-btn play" id="music-play"><i class="fas ${State.musicPlaying?'fa-pause':'fa-play'}"></i></button>
+            <button class="mp-btn" id="music-next"><i class="fas fa-forward-step"></i></button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    function togglePlay() {
+      State.musicPlaying = !State.musicPlaying;
+      const btn = el.querySelector('#music-play');
+      if (btn) btn.innerHTML = `<i class="fas ${State.musicPlaying?'fa-pause':'fa-play'}"></i>`;
+      if (State.musicPlaying) {
+        State.musicTimer = setInterval(() => {
+          State.musicProgress += 0.5;
+          if (State.musicProgress >= 100) { State.musicProgress = 0; nextSong(); }
+          const fill = el.querySelector('.mp-fill');
+          if (fill) fill.style.width = State.musicProgress + '%';
+        }, 200);
+      } else {
+        clearInterval(State.musicTimer);
+      }
+    }
+    
+    function nextSong() {
+      State.musicCurrent = (State.musicCurrent + 1) % songs.length;
+      State.musicProgress = 0;
+      this_render();
+    }
+    
+    function prevSong() {
+      State.musicCurrent = (State.musicCurrent - 1 + songs.length) % songs.length;
+      State.musicProgress = 0;
+      this_render();
+    }
+    
+    const self = this;
+    function this_render() { self.render(el, win); if (State.musicPlaying) { const btn = el.querySelector('#music-play'); if (btn) btn.innerHTML = '<i class="fas fa-pause"></i>'; State.musicTimer = setInterval(()=>{ State.musicProgress += 0.5; if(State.musicProgress>=100){State.musicProgress=0;nextSong();} const fill=el.querySelector('.mp-fill'); if(fill) fill.style.width=State.musicProgress+'%'; }, 200); } }
+    
+    el.querySelector('#music-play').addEventListener('click', togglePlay);
+    el.querySelector('#music-next').addEventListener('click', nextSong);
+    el.querySelector('#music-prev').addEventListener('click', prevSong);
+    el.querySelectorAll('[data-song]').forEach(s => {
+      s.addEventListener('click', () => { State.musicCurrent = parseInt(s.dataset.song); State.musicProgress = 0; State.musicPlaying = true; this_render(); });
+    });
+    
+    // Resume playing if was playing
+    if (State.musicPlaying) {
+      State.musicTimer = setInterval(() => {
+        State.musicProgress += 0.5;
+        if (State.musicProgress >= 100) { State.musicProgress = 0; nextSong(); }
+        const fill = el.querySelector('.mp-fill');
+        if (fill) fill.style.width = State.musicProgress + '%';
+      }, 200);
+    }
+  }
+});
+
+function toggleMusic(win) {
+  if (!win) return;
+  const btn = win.contentEl.querySelector('#music-play');
+  if (btn) btn.click();
+}
+function nextSong(win) {
+  if (!win) return;
+  const btn = win.contentEl.querySelector('#music-next');
+  if (btn) btn.click();
+}
+function prevSong(win) {
+  if (!win) return;
+  const btn = win.contentEl.querySelector('#music-prev');
+  if (btn) btn.click();
+}
+
+// --- Maps ---
+registerApp('maps', {
+  title:'Maps', singleInstance:true, defaultWidth:800, defaultHeight:560,
+  menus:[
+    { label:'File', items:[{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Find', action:()=>{}, shortcut:'⌘F'}] },
+    { label:'View', items:[{label:'Map', action:()=>{},checked:true},{label:'Satellite', action:()=>{}},{divider:true},{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Go', items:[{label:'Current Location', action:()=>showNotification('fa-location-arrow','#ff3b30','Maps','Finding your location...')}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Maps Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Maps Help')}] },
+  ],
+  render(el, win) {
+    const pins = [
+      {x:30, y:40, name:'Apple Park', color:'#ff3b30'},
+      {x:60, y:55, name:'Coffee Shop', color:'#ff9f0a'},
+      {x:45, y:70, name:'Shopping Mall', color:'#0a84ff'},
+      {x:75, y:30, name:'Gas Station', color:'#30d158'},
+      {x:20, y:65, name:'Restaurant', color:'#bf5af2'},
+    ];
+    
+    el.innerHTML = `
+      <div class="maps">
+        <div class="maps-toolbar">
+          <button class="st-btn"><i class="fas fa-location-arrow"></i></button>
+          <input type="text" class="maps-search" placeholder="Search Maps" id="maps-search">
+          <button class="st-btn"><i class="fas fa-route"></i></button>
+          <button class="st-btn"><i class="fas fa-share"></i></button>
+        </div>
+        <div class="maps-canvas" id="maps-canvas">
+          <div class="map-grid"></div>
+          ${pins.map((p,i) => `<div class="maps-pin" style="left:${p.x}%;top:${p.y}%;color:${p.color}" data-idx="${i}"><i class="fas fa-map-pin"></i></div>`).join('')}
+          <div class="maps-info" id="maps-info" style="display:none">
+            <div style="font-size:14px;font-weight:600" id="mi-title"></div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:4px" id="mi-address"></div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="ct-btn" style="background:var(--accent);color:#fff">Directions</button>
+              <button class="ct-btn">Call</button>
+              <button class="ct-btn">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const addresses = ['1 Apple Park Way, Cupertino, CA','123 Main St, San Jose, CA','456 Oak Ave, Sunnyvale, CA','789 Pine St, Mountain View, CA','321 Elm Dr, Palo Alto, CA'];
+    
+    el.querySelectorAll('.maps-pin').forEach(pin => {
+      pin.addEventListener('click', () => {
+        const idx = parseInt(pin.dataset.idx);
+        const info = el.querySelector('#maps-info');
+        info.style.display = 'block';
+        el.querySelector('#mi-title').textContent = pins[idx].name;
+        el.querySelector('#mi-address').textContent = addresses[idx];
+      });
+    });
+    
+    el.querySelector('#maps-search').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.value.trim()) {
+        showNotification('fa-map-pin', '#ff3b30', 'Maps', `Searching for "${e.target.value}"...`);
+      }
+    });
+  }
+});
+
+// --- Mail ---
+registerApp('mail', {
+  title:'Mail', singleInstance:true, defaultWidth:850, defaultHeight:560,
+  menus:[
+    { label:'File', items:[{label:'New Message', action:()=>showNotification('fa-envelope','#0a84ff','Mail','New message'), shortcut:'⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Mailbox', items:[{label:'Get New Mail', action:()=>showNotification('fa-envelope','#0a84ff','Mail','Checking for new mail...'), shortcut:'⇧⌘N'},{label:'Mark as Read', action:()=>{}}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Mail Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Mail Help')}] },
+  ],
+  render(el, win) {
+    const folders = [
+      {section:'Mailboxes', items:[
+        {name:'Inbox', badge:'5', icon:'fa-inbox'},
+        {name:'VIP', icon:'fa-star'},
+        {name:'Drafts', badge:'2', icon:'fa-file'},
+        {name:'Sent', icon:'fa-paper-plane'},
+        {name:'Junk', icon:'fa-ban'},
+        {name:'Trash', icon:'fa-trash'},
+        {name:'Archive', icon:'fa-archive'},
+      ]},
+    ];
+    
+    const emails = [
+      {from:'Apple', subject:'Welcome to macOS Tahoe', preview:'Discover what\'s new in macOS Tahoe...', time:'9:41 AM', unread:true, body:'<p>Dear Mike,</p><p>Welcome to macOS Tahoe! We\'re excited to have you experience the all-new Liquid Glass design language that makes everything more beautiful and immersive.</p><p>Key features include:</p><ul><li>Liquid Glass interface</li><li>Redesigned Control Center</li><li>Enhanced Spotlight search</li><li>Updated app designs</li></ul><p>Explore your new Mac and enjoy!</p><p>Best,<br>Apple Team</p>'},
+      {from:'Sarah Chen', subject:'Meeting Tomorrow', preview:'Hi Mike, just a reminder about our meeting...', time:'8:32 AM', unread:true, body:'<p>Hi Mike,</p><p>Just a reminder about our meeting tomorrow at 10 AM. Please bring the quarterly report.</p><p>See you then!</p><p>Sarah</p>'},
+      {from:'GitHub', subject:'Pull Request #42 Approved', preview:'Your pull request has been approved and...', time:'7:15 AM', unread:true, body:'<p>Your pull request #42 "Add Liquid Glass support" has been approved by Alex Kim.</p><p>View the pull request on GitHub to merge.</p>'},
+      {from:'Netflix', subject:'New Shows Available', preview:'Check out what\'s new on Netflix this week...', time:'Yesterday', unread:false, body:'<p>New shows are available on Netflix!</p><ul><li>Mystery Island</li><li>The Last Kingdom</li><li>Code Breakers</li></ul>'},
+      {from:'Amazon', subject:'Your Order Has Shipped', preview:'Your order #12345 has shipped and will...', time:'Yesterday', unread:false, body:'<p>Your order #12345 has shipped!</p><p>Expected delivery: 2-3 business days</p><p>Track your package for real-time updates.</p>'},
+      {from:'Mike\'s Boss', subject:'Q3 Report', preview:'Please review the Q3 financial report...', time:'Mon', unread:false, body:'<p>Hi Mike,</p><p>Please review the Q3 financial report before our meeting on Wednesday. Let me know if you have any questions.</p><p>Thanks,<br>David</p>'},
+      {from:'LinkedIn', subject:'5 New Connection Requests', preview:'You have 5 new connection requests...', time:'Sun', unread:false, body:'<p>You have 5 new connection requests waiting for you on LinkedIn.</p><p>View your notifications to respond.</p>'},
+    ];
+    
+    let activeEmail = 0;
+    
+    el.innerHTML = `
+      <div class="mail">
+        <div class="mail-sidebar">
+          ${folders.map(s => `
+            <div class="ms-section">${s.section}</div>
+            ${s.items.map(i => `<div class="ms-item ${i.name==='Inbox'?'active':''}"><span><i class="fas ${i.icon}"></i> ${i.name}</span>${i.badge?`<span class="ms-badge">${i.badge}</span>`:''}</div>`).join('')}
+          `).join('')}
+        </div>
+        <div class="mail-list" id="mail-list">
+          ${emails.map((e,i) => `
+            <div class="mail-item ${i===activeEmail?'active':''} ${e.unread?'unread':''}" data-idx="${i}">
+              <span class="mi-time">${e.time}</span>
+              <div class="mi-from">${e.from}</div>
+              <div class="mi-subject">${e.subject}</div>
+              <div class="mi-preview">${e.preview}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="mail-content" id="mail-content">
+          <div class="mc-subject">${emails[activeEmail].subject}</div>
+          <div class="mc-from">From: <b>${emails[activeEmail].from}</b> · ${emails[activeEmail].time}</div>
+          <div class="mc-body">${emails[activeEmail].body}</div>
+        </div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.mail-item').forEach(item => {
+      item.addEventListener('click', () => {
+        activeEmail = parseInt(item.dataset.idx);
+        emails[activeEmail].unread = false;
+        el.querySelectorAll('.mail-item').forEach(x => { x.classList.remove('active','unread'); });
+        item.classList.add('active');
+        el.querySelector('#mail-content').innerHTML = `
+          <div class="mc-subject">${emails[activeEmail].subject}</div>
+          <div class="mc-from">From: <b>${emails[activeEmail].from}</b> · ${emails[activeEmail].time}</div>
+          <div class="mc-body">${emails[activeEmail].body}</div>
+        `;
+      });
+    });
+  }
+});
+
+// --- Messages ---
+registerApp('messages', {
+  title:'Messages', singleInstance:true, defaultWidth:750, defaultHeight:520,
+  menus:[
+    { label:'File', items:[{label:'New Message', action:()=>showNotification('fa-comment','#30d158','Messages','New message'), shortcut:'⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Find', action:()=>{}, shortcut:'⌘F'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Messages Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Messages Help')}] },
+  ],
+  render(el, win) {
+    const convs = State.messages;
+    let activeChat = State.currentChat;
+    
+    function renderChat() {
+      const chat = convs.find(c => c.id === activeChat) || convs[0];
+      const body = el.querySelector('.messages-body');
+      body.innerHTML = chat.msgs.map(m => `<div class="msg-bubble ${m.s}">${m.t}</div>`).join('');
+      body.scrollTop = body.scrollHeight;
+      el.querySelector('.messages-header').textContent = chat.name;
+    }
+    
+    el.innerHTML = `
+      <div class="messages">
+        <div class="messages-sidebar">
+          ${convs.map(c => `
+            <div class="messages-item ${c.id===activeChat?'active':''}" data-id="${c.id}">
+              <div class="mi-avatar" style="background:${c.avatar}">${c.name.charAt(0)}</div>
+              <div class="mi-info">
+                <div class="mi-top"><span class="mi-name">${c.name}</span><span class="mi-time">${c.time}</span></div>
+                <div class="mi-last">${c.last}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="messages-chat">
+          <div class="messages-header">${convs.find(c=>c.id===activeChat)?.name || ''}</div>
+          <div class="messages-body"></div>
+          <div class="messages-input">
+            <input type="text" placeholder="iMessage" id="msg-input">
+            <button id="msg-send"><i class="fas fa-arrow-up"></i></button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    renderChat();
+    
+    el.querySelectorAll('.messages-item').forEach(item => {
+      item.addEventListener('click', () => {
+        activeChat = parseInt(item.dataset.id);
+        State.currentChat = activeChat;
+        el.querySelectorAll('.messages-item').forEach(x => x.classList.remove('active'));
+        item.classList.add('active');
+        renderChat();
+      });
+    });
+    
+    const input = el.querySelector('#msg-input');
+    function send() {
+      const text = input.value.trim();
+      if (!text) return;
+      const chat = convs.find(c => c.id === activeChat);
+      chat.msgs.push({s:'sent', t:text});
+      chat.last = text;
+      input.value = '';
+      renderChat();
+      
+      // Auto-reply
+      setTimeout(() => {
+        const replies = ['That sounds great!','Cool!','Let me think about it.','Sure, no problem.','Thanks for letting me know!','Interesting...','I agree!','Haha that\'s funny 😄'];
+        chat.msgs.push({s:'received', t:replies[Math.floor(Math.random()*replies.length)]});
+        chat.last = chat.msgs[chat.msgs.length-1].t;
+        renderChat();
+        // Update sidebar
+        el.querySelectorAll('.messages-item').forEach(item => {
+          if (parseInt(item.dataset.id) === activeChat) {
+            item.querySelector('.mi-last').textContent = chat.last;
+          }
+        });
+      }, 1500 + Math.random() * 2000);
+    }
+    
+    el.querySelector('#msg-send').addEventListener('click', send);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+  }
+});
+
+// --- Clock ---
+registerApp('clock', {
+  title:'Clock', singleInstance:true, defaultWidth:420, defaultHeight:500,
+  menus:[
+    { label:'File', items:[{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Clock Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Clock Help')}] },
+  ],
+  render(el, win) {
+    let activeTab = 'world';
+    
+    function renderTab() {
+      const content = el.querySelector('.clock-content');
+      if (activeTab === 'world') {
+        const now = new Date();
+        const cities = [
+          {name:'Cupertino', offset:-8, time:now},
+          {name:'New York', offset:-5},
+          {name:'London', offset:0},
+          {name:'Paris', offset:1},
+          {name:'Tokyo', offset:9},
+          {name:'Sydney', offset:11},
+        ];
+        content.innerHTML = `
+          <div class="clock-world">
+            <div class="clock-face">
+              <div class="clock-hand hour" id="ch-hour"></div>
+              <div class="clock-hand minute" id="ch-minute"></div>
+              <div class="clock-hand second" id="ch-second"></div>
+              <div class="clock-center"></div>
+            </div>
+            <div class="clock-digital" id="cd-time"></div>
+            <div class="clock-cities" style="width:100%;margin-top:20px">
+              ${cities.map(c => {
+                const t = new Date(now.getTime() + (c.offset * 3600000) - (now.getTimezoneOffset() * 60000));
+                return `<div class="clock-city"><div><div class="cc-name">${c.name}</div><div class="cc-offset">UTC${c.offset>=0?'+':''}${c.offset}</div></div><div class="cc-time">${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</div></div>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        
+        function updateClock() {
+          const n = new Date();
+          const h = n.getHours() % 12;
+          const m = n.getMinutes();
+          const s = n.getSeconds();
+          const hourEl = el.querySelector('#ch-hour');
+          const minEl = el.querySelector('#ch-minute');
+          const secEl = el.querySelector('#ch-second');
+          const digEl = el.querySelector('#cd-time');
+          if (hourEl) hourEl.style.transform = `rotate(${h*30 + m*0.5}deg)`;
+          if (minEl) minEl.style.transform = `rotate(${m*6}deg)`;
+          if (secEl) secEl.style.transform = `rotate(${s*6}deg)`;
+          if (digEl) { const hh = n.getHours(); digEl.textContent = `${String(hh).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+        }
+        updateClock();
+        clearInterval(win._clockTimer);
+        win._clockTimer = setInterval(updateClock, 1000);
+      } else if (activeTab === 'stopwatch') {
+        content.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:30px;padding:40px"><div style="font-size:64px;font-weight:200" id="sw-display">00:00.0</div><div style="display:flex;gap:12px"><button class="ct-btn" id="sw-start" style="background:var(--accent);color:#fff;padding:8px 24px">Start</button><button class="ct-btn" id="sw-lap" style="padding:8px 24px">Lap</button><button class="ct-btn" id="sw-reset" style="padding:8px 24px">Reset</button></div><div id="sw-laps" style="width:100%;max-width:300px"></div></div>`;
+        let swTime = 0, swRunning = false, swTimer = null;
+        const display = el.querySelector('#sw-display');
+        el.querySelector('#sw-start').addEventListener('click', () => {
+          swRunning = !swRunning;
+          el.querySelector('#sw-start').textContent = swRunning ? 'Stop' : 'Start';
+          if (swRunning) {
+            swTimer = setInterval(() => {
+              swTime += 100;
+              const mins = Math.floor(swTime / 60000);
+              const secs = Math.floor((swTime % 60000) / 1000);
+              const tenths = Math.floor((swTime % 1000) / 100);
+              display.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.${tenths}`;
+            }, 100);
+          } else { clearInterval(swTimer); }
+        });
+        el.querySelector('#sw-reset').addEventListener('click', () => { swTime = 0; swRunning = false; clearInterval(swTimer); display.textContent = '00:00.0'; el.querySelector('#sw-start').textContent = 'Start'; el.querySelector('#sw-laps').innerHTML = ''; });
+        el.querySelector('#sw-lap').addEventListener('click', () => { if (swRunning) { const laps = el.querySelector('#sw-laps'); laps.innerHTML = `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--separator)"><span>Lap</span><span>${display.textContent}</span></div>` + laps.innerHTML; } });
+      } else if (activeTab === 'timer') {
+        content.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:30px;padding:40px"><div style="font-size:64px;font-weight:200" id="tm-display">00:00:00</div><div style="display:flex;gap:12px"><input type="number" id="tm-mins" placeholder="Min" style="width:60px;height:32px;text-align:center;border-radius:8px;border:0.5px solid var(--separator);background:rgba(255,255,255,0.1);color:var(--text-primary);font-size:14px;outline:none"><button class="ct-btn" id="tm-start" style="background:var(--accent);color:#fff;padding:8px 24px">Start</button><button class="ct-btn" id="tm-reset" style="padding:8px 24px">Reset</button></div></div>`;
+        let tmTime = 0, tmRunning = false, tmTimer = null;
+        const display = el.querySelector('#tm-display');
+        el.querySelector('#tm-start').addEventListener('click', () => {
+          if (!tmRunning) {
+            const mins = parseInt(el.querySelector('#tm-mins').value) || 0;
+            tmTime = mins * 60000;
+            tmRunning = true;
+            el.querySelector('#tm-start').textContent = 'Pause';
+            tmTimer = setInterval(() => {
+              tmTime -= 1000;
+              if (tmTime <= 0) { clearInterval(tmTimer); tmRunning = false; display.textContent = '00:00:00'; el.querySelector('#tm-start').textContent = 'Start'; showNotification('fa-bell','#ff453a','Timer','Time\'s up!'); return; }
+              const h = Math.floor(tmTime / 3600000);
+              const m = Math.floor((tmTime % 3600000) / 60000);
+              const s = Math.floor((tmTime % 60000) / 1000);
+              display.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            }, 1000);
+          } else {
+            clearInterval(tmTimer); tmRunning = false; el.querySelector('#tm-start').textContent = 'Resume';
+          }
+        });
+        el.querySelector('#tm-reset').addEventListener('click', () => { clearInterval(tmTimer); tmRunning = false; tmTime = 0; display.textContent = '00:00:00'; el.querySelector('#tm-start').textContent = 'Start'; });
+      }
+    }
+    
+    el.innerHTML = `
+      <div class="clock-app">
+        <div class="clock-tabs">
+          <div class="clock-tab ${activeTab==='world'?'active':''}" data-tab="world">World Clock</div>
+          <div class="clock-tab ${activeTab==='timer'?'active':''}" data-tab="timer">Timer</div>
+          <div class="clock-tab ${activeTab==='stopwatch'?'active':''}" data-tab="stopwatch">Stopwatch</div>
+        </div>
+        <div class="clock-content"></div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.clock-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        activeTab = t.dataset.tab;
+        el.querySelectorAll('.clock-tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        renderTab();
+      });
+    });
+    renderTab();
+  }
+});
+
+// --- Reminders ---
+registerApp('reminders', {
+  title:'Reminders', singleInstance:true, defaultWidth:500, defaultHeight:480,
+  menus:[
+    { label:'File', items:[{label:'New Reminder', action:()=>{}, shortcut:'⌘N'},{label:'New List', action:()=>{}, shortcut:'⇧⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Reminders Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Reminders Help')}] },
+  ],
+  render(el, win) {
+    const lists = Object.keys(State.reminders);
+    const currentList = State.currentReminderList;
+    const items = State.reminders[currentList] || [];
+    
+    el.innerHTML = `
+      <div class="reminders">
+        <div class="reminders-lists">
+          ${lists.map(l => `<div class="reminders-list-tab ${l===currentList?'active':''}" data-list="${l}">${l}</div>`).join('')}
+        </div>
+        <div class="reminders-content">
+          <h2 style="font-size:22px;margin-bottom:16px">${currentList}</h2>
+          ${items.map(r => `
+            <div class="reminder-item">
+              <div class="reminder-check ${r.done?'done':''}" data-id="${r.id}"></div>
+              <div class="reminder-text ${r.done?'done':''}">${r.text}</div>
+            </div>
+          `).join('')}
+          <div class="reminder-add">
+            <input type="text" placeholder="Add a reminder" id="rem-add-input">
+            <button id="rem-add-btn">Add</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    el.querySelectorAll('.reminder-check').forEach(c => {
+      c.addEventListener('click', () => {
+        const id = parseInt(c.dataset.id);
+        const r = State.reminders[currentList].find(x => x.id === id);
+        if (r) { r.done = !r.done; this.render(el, win); }
+      });
+    });
+    
+    el.querySelectorAll('.reminders-list-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        State.currentReminderList = t.dataset.list;
+        this.render(el, win);
+      });
+    });
+    
+    function addReminder() {
+      const input = el.querySelector('#rem-add-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const newId = Math.max(0, ...State.reminders[currentList].map(r => r.id)) + 1;
+      State.reminders[currentList].push({ id:newId, text, done:false });
+      input.value = '';
+      APPS.reminders.render(el, win);
+    }
+    
+    el.querySelector('#rem-add-btn').addEventListener('click', addReminder);
+    el.querySelector('#rem-add-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') addReminder(); });
+  }
+});
+
+// --- Stickies ---
+registerApp('stickies', {
+  title:'Stickies', singleInstance:true, defaultWidth:600, defaultHeight:420,
+  menus:[
+    { label:'File', items:[{label:'New Note', action:()=>{State.stickies.push({id:Date.now(),color:'#ffe66d',text:''});if(State.activeWindow)APPS.stickies.render(State.activeWindow.contentEl,State.activeWindow);}, shortcut:'⌘N'},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'}] },
+    { label:'View', items:[{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Stickies Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Stickies Help')}] },
+  ],
+  render(el, win) {
+    el.innerHTML = `
+      <div class="stickies">
+        ${State.stickies.map(s => `
+          <div class="sticky-note" style="background:${s.color}" data-id="${s.id}">
+            <textarea class="sn-text" style="color:${s.color==='#ffe66d'||s.color==='#ff6b6b'?'#5a4a00':'#fff'}">${s.text}</textarea>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    el.querySelectorAll('.sn-text').forEach(t => {
+      t.addEventListener('input', () => {
+        const note = t.closest('.sticky-note');
+        const id = parseInt(note.dataset.id);
+        const s = State.stickies.find(x => x.id === id);
+        if (s) s.text = t.value;
+      });
+      t.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const note = t.closest('.sticky-note');
+        const id = parseInt(note.dataset.id);
+        showContextMenu(e.clientX, e.clientY, [
+          {label:'Yellow', action:()=>{const s=State.stickies.find(x=>x.id===id);if(s){s.color='#ffe66d';this.render(el,win);}}},
+          {label:'Pink', action:()=>{const s=State.stickies.find(x=>x.id===id);if(s){s.color='#ff6b6b';this.render(el,win);}}},
+          {label:'Blue', action:()=>{const s=State.stickies.find(x=>x.id===id);if(s){s.color='#4ecdc4';this.render(el,win);}}},
+          {label:'Green', action:()=>{const s=State.stickies.find(x=>x.id===id);if(s){s.color='#30d158';this.render(el,win);}}},
+          {label:'Purple', action:()=>{const s=State.stickies.find(x=>x.id===id);if(s){s.color='#bf5af2';this.render(el,win);}}},
+          {divider:true},
+          {label:'Delete Note', action:()=>{State.stickies=State.stickies.filter(x=>x.id!==id);this.render(el,win);}},
+        ]);
+      });
+    });
+  }
+});
+
+// --- Preview ---
+registerApp('preview', {
+  title:'Preview', singleInstance:false, defaultWidth:600, defaultHeight:450,
+  menus:[
+    { label:'File', items:[{label:'Open…', action:()=>showNotification('fa-folder','#4a90d9','Preview','Open file')},{label:'Close', action:()=>{const w=State.activeWindow;if(w)closeWindow(w);}, shortcut:'⌘W'}] },
+    { label:'Edit', items:[{label:'Undo', action:()=>document.execCommand('undo'),shortcut:'⌘Z'},{label:'Copy', action:()=>{}, shortcut:'⌘C'}] },
+    { label:'View', items:[{label:'Zoom In', action:()=>{}, shortcut:'⌘+'},{label:'Zoom Out', action:()=>{}, shortcut:'⌘-'},{divider:true},{label:'Enter Full Screen', action:()=>{const w=State.activeWindow;if(w)toggleMaximize(w);},shortcut:'⌃⌘F'}] },
+    { label:'Tools', items:[{label:'Annotate', action:()=>{}},{label:'Crop', action:()=>{}}] },
+    { label:'Window', items:[{label:'Minimize', action:()=>{const w=State.activeWindow;if(w)minimizeWindow(w);},shortcut:'⌘M'}] },
+    { label:'Help', items:[{label:'Preview Help', action:()=>showNotification('fa-question-circle','#0a84ff','Help','Preview Help')}] },
+  ],
+  render(el, win) {
+    el.innerHTML = `
+      <div class="preview">
+        <div class="preview-toolbar">
+          <button class="ft-btn"><i class="fas fa-chevron-left"></i></button>
+          <button class="ft-btn"><i class="fas fa-chevron-right"></i></button>
+          <div style="flex:1;text-align:center;font-size:13px;color:var(--text-secondary)">Sunset.jpg</div>
+          <button class="ft-btn"><i class="fas fa-search-minus"></i></button>
+          <button class="ft-btn"><i class="fas fa-search-plus"></i></button>
+          <button class="ft-btn"><i class="fas fa-share"></i></button>
+        </div>
+        <div class="preview-canvas">
+          <div style="width:400px;height:280px;border-radius:12px;background:linear-gradient(135deg,#ff6b6b,#ffe66d,#4ecdc4,#0a84ff);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.5);font-size:60px"><i class="fas fa-image"></i></div>
+        </div>
+      </div>
+    `;
+  }
+});
+
+// ===== INIT =====
+renderDock();
+renderDesktopIcons();
+updateMenuBar();
+bootSequence();
+
+</script>
+</body>
+</html>

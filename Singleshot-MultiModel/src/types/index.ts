@@ -85,7 +85,7 @@ export interface CalculatorHistoryEntry {
 
 export interface TerminalHistoryLine {
   id: string;
-  type: 'input' | 'output';
+  type: 'input' | 'output' | 'error';
   text: string;
   createdAt: number;
 }

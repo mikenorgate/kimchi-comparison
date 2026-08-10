@@ -322,10 +322,18 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "GLM 5.2",
-    "durationMs": 1688000,
-    "cost": "$1.64",
+    "durationMs": 1867000,
+    "cost": "$1.55",
     "fermentId": null,
-    "thinkingLevel": "max"
+    "thinkingLevel": "max",
+    "tokenUsage": {
+      "inputTokens": 549291,
+      "cachedInputTokens": 1981696,
+      "cacheWriteTokens": 0,
+      "outputTokens": 60463,
+      "reasoningTokens": 0,
+      "requests": 39
+    }
   },
   {
     "id": "cc-sonnet5",

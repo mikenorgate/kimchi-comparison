@@ -1,0 +1,513 @@
+{
+  "id": "019febd9-0398-711f-9df4-b550985eb71a",
+  "name": "Tahoe Web Desktop Shell",
+  "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "status": "running",
+  "worktree": {
+    "path": "/Users/mike/tmp",
+    "branch": "main",
+    "commit": "e7eb52bdf2be968379bb73947378dd8becd22948"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Build a React-based, desktop-only web recreation of the macOS Tahoe interface, including the transparent menu bar, Dock, window manager, Spotlight, Control Center, and eight core apps as visual/interactive mockups with Liquid Glass styling.",
+      "confirmedAt": "2026-08-10T13:27:05.577Z"
+    },
+    "criteria": {
+      "answer": "React project scaffolded and runs with `npm run dev` with no build errors.\nmacOS Tahoe desktop shell renders: transparent menu bar, Dock, desktop wallpaper, and global context menu.\nLiquid Glass visual treatment applied to Dock, windows, sidebars, and menus using CSS backdrop-filter and translucent backgrounds.\nWindow manager supports open, close, minimize, maximize/restore, drag, resize, and z-index ordering for multiple app windows.\nCore apps open from Dock/Spotlight and display a visually faithful, mocked UI: Finder, Safari, Notes, System Settings, Calendar, Photos, Phone, Journal.\nSpotlight overlay opens via Cmd+Space or menu-bar click and lists apps plus common actions (visual only).\nControl Center dropdown opens from menu bar and shows toggles/sliders for Wi-Fi, Bluetooth, brightness, volume, etc. (visual only).\nAll apps use mock/fake data; no backend or real external integrations required.\nTarget is desktop (1024px+) with mouse/keyboard interaction; mobile responsiveness is out of scope.",
+      "confirmedAt": "2026-08-10T13:27:05.577Z"
+    },
+    "constraints": {
+      "answer": "React single-page app; no backend or external API integrations., Desktop-only target (1024px+), mouse and keyboard driven., Liquid Glass effects implemented with CSS backdrop-filter; no WebGL/Canvas simulation., All app content is mock/fake data; no persistence beyond in-memory React state., No mobile or tablet responsive layout; true macOS window model is preserved., No boot/login sequence; app loads straight into the desktop.",
+      "confirmedAt": "2026-08-10T13:27:05.577Z"
+    },
+    "phases": {
+      "answer": "Scaffold + Design System + Shell, Window Manager, Dock + App Registry, Liquid Glass UI Primitives, Core Apps Batch 1, Core Apps Batch 2, Spotlight + Control Center + Integration",
+      "confirmedAt": "2026-08-10T13:27:05.577Z"
+    },
+    "assumptions": {
+      "answer": "Vite + React + TypeScript is acceptable since the user specified React and no stack constraints.; Tailwind CSS is acceptable for styling utility classes.; SVG/PNG icons and static assets are sufficient; no custom icon font generation is needed.; The user will accept a curated set of eight core apps rather than literally every bundled macOS app.; Keyboard shortcuts such as Cmd+Space for Spotlight can use standard browser key handlers without overriding system shortcuts permanently.",
+      "confirmedAt": "2026-08-10T13:27:05.577Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Scaffold + Design System + Shell",
+      "goal": "Create the React/Vite/TypeScript project, set up global design tokens, and render the static desktop shell.",
+      "description": "",
+      "constraints": [
+        "No app windows yet.",
+        "Context menu is visual only; real actions wired later."
+      ],
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Scaffold project with Vite + React + TypeScript and configure Tailwind CSS.",
+          "status": "verified",
+          "verification": {
+            "command": "npm install && npm run dev starts without errors and serves a blank page at http://localhost:5173/",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T13:27:16.366Z",
+          "completedAt": "2026-08-10T13:28:53.890Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T13:28:53.890Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Create global theme tokens (colors, shadows, radii, spacing) matching Tahoe's light/dark palette.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -r 'tahoe' src/theme/ returns token definitions",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T13:29:04.926Z",
+          "completedAt": "2026-08-10T13:30:49.144Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T13:30:49.144Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Build desktop shell components: Wallpaper, MenuBar, Desktop area, and right-click context menu.",
+          "status": "verified",
+          "verification": {
+            "command": "MenuBar and Wallpaper render visibly in the browser with no console errors",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T13:31:15.975Z",
+          "completedAt": "2026-08-10T13:35:51.800Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T13:35:51.800Z"
+          }
+        }
+      ],
+      "startedAt": "2026-08-10T13:27:11.231Z",
+      "completedAt": "2026-08-10T13:44:21.405Z",
+      "summary": "Phase 1 completed after grader feedback: scaffolded React + TypeScript + Vite project with Tailwind CSS v4; created Tahoe theme tokens, ThemeProvider, and CSS variables; built Wallpaper, MenuBar, Desktop, and ContextMenu shell components. Added Vitest + Testing Library with 14 passing tests covering tokens, ThemeProvider dark-class toggle, MenuBar rendering and click handlers, and ContextMenu escape/edge-clamping behavior. Fixed ContextMenu to clamp to viewport using measured size with fallback defaults for jsdom. Verified with npm run build, npm test, and a headless Chrome screenshot showing the desktop shell.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All phase requirements are met with concrete evidence: `npm test` passes 14 tests (tokens, ThemeProvider dark-class toggle, MenuBar rendering/clicks, ContextMenu escape and viewport clamping), `npm run build` succeeds with a clean Vite production bundle, and the headless screenshot shows the Tahoe-style desktop with a transparent MenuBar and light-to-pink wallpaper. Code is cleanly scaffolded with React 19 + TypeScript + Vite + Tailwind CSS v4, theme tokens are comprehensive, and ContextMenu clamps using measured size with sensible jsdom fallbacks.",
+        "gradedAt": "2026-08-10T13:44:21.402Z",
+        "gradedBy": "kimchi-dev/kimi-k2.7"
+      }
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Window Manager",
+      "goal": "Implement draggable, resizable, focus-managed app windows.",
+      "description": "",
+      "constraints": [
+        "Minimize animates to Dock in a later phase; for now it collapses to taskbar-like state."
+      ],
+      "parallel": false,
+      "status": "active",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Create Window component with title bar, close/minimize/maximize buttons, and content slot.",
+          "status": "verified",
+          "verification": {
+            "command": "A test window renders with title bar buttons visible",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T13:45:36.188Z",
+          "completedAt": "2026-08-10T13:48:05.592Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T13:48:05.592Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Add drag and resize interactions with pointer events and bounds checking.",
+          "status": "verified",
+          "verification": {
+            "command": "User can drag and resize a test window within the viewport",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T13:49:22.097Z",
+          "completedAt": "2026-08-10T13:52:47.075Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T13:52:47.075Z"
+          },
+          "summary": "Added drag and resize interactions to the Window component using pointer events with viewport bounds checking. Dragging the title bar updates window position via onMove and clamps x/y so the window stays within the viewport. Dragging the bottom-right resize handle updates size via onResize with minimum dimensions and viewport clamping. Added guards for setPointerCapture/releasePointerCapture for jsdom compatibility. Updated Window.test.tsx with tests for drag, resize, and viewport clamping. Full test suite (20 tests) and production build pass."
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Implement window state store (open, minimized, maximized, position, size, z-index focus).",
+          "status": "pending",
+          "verification": {
+            "command": "Clicking a window brings it to front; z-index updates correctly",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ],
+      "startedAt": "2026-08-10T13:45:23.960Z"
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Dock + App Registry",
+      "goal": "Build the Tahoe Dock and a registry that maps apps to their icons and window contents.",
+      "description": "",
+      "constraints": [
+        "Dock uses CSS backdrop-filter Liquid Glass styling.",
+        "App icons can be SVG placeholders styled like Tahoe."
+      ],
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Create AppRegistry with metadata for the eight core apps plus generic app icon assets.",
+          "status": "pending",
+          "verification": {
+            "command": "AppRegistry exports an array of eight apps with name, id, icon, and component fields",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Build Dock component with app icons, hover tooltips, running indicators, and minimized windows area.",
+          "status": "pending",
+          "verification": {
+            "command": "Dock renders all eight app icons and click opens a window",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Wire Dock clicks to open/restore windows via the window manager store.",
+          "status": "pending",
+          "verification": {
+            "command": "Clicking Finder opens a Finder window; clicking again restores focus",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "index": 4,
+      "name": "Liquid Glass UI Primitives",
+      "goal": "Create reusable Liquid Glass-styled primitives used across apps and overlays.",
+      "description": "",
+      "constraints": [
+        "No custom shader effects; pure CSS."
+      ],
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Implement GlassPanel, GlassButton, GlassSidebar, GlassToolbar, and GlassPopover components with backdrop-filter.",
+          "status": "pending",
+          "verification": {
+            "command": "Storybook-like demo page shows all primitives with glass effect",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Add light/dark/tinted variants and a global theme toggle in System Settings scaffold.",
+          "status": "pending",
+          "verification": {
+            "command": "Toggle switches background theme and glass tint color",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Add focus/active states and subtle hover transitions.",
+          "status": "pending",
+          "verification": {
+            "command": "Hover and active states visible on all interactive primitives",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "index": 5,
+      "name": "Core Apps Batch 1",
+      "goal": "Build visual mockups for Finder, Safari, Notes, and System Settings.",
+      "description": "",
+      "constraints": [
+        "All data is mocked.",
+        "Apps use Liquid Glass primitives where appropriate."
+      ],
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Implement Finder with sidebar, toolbar, path bar, and mocked file grid.",
+          "status": "pending",
+          "verification": {
+            "command": "Finder window renders sidebar and file icons; folder double-click simulated",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Implement Safari with address bar, toolbar, tabs, and mocked web page content.",
+          "status": "pending",
+          "verification": {
+            "command": "Safari window renders address bar and a mocked webpage",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Implement Notes with note list sidebar and note editor area.",
+          "status": "pending",
+          "verification": {
+            "command": "Notes window shows list and editor with placeholder text",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Implement System Settings with settings categories sidebar and detail panes.",
+          "status": "pending",
+          "verification": {
+            "command": "System Settings window shows categories and a selected pane",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "index": 6,
+      "name": "Core Apps Batch 2",
+      "goal": "Build visual mockups for Calendar, Photos, Phone, and Journal.",
+      "description": "",
+      "constraints": [
+        "Same visual-mockup fidelity as Batch 1."
+      ],
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Implement Calendar with month grid and event dots.",
+          "status": "pending",
+          "verification": {
+            "command": "Calendar window renders month view with sample events",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Implement Photos with grid of placeholder images and single-photo view.",
+          "status": "pending",
+          "verification": {
+            "command": "Photos window shows image grid and opens a placeholder detail view",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Implement Phone with Recents, Contacts, and Voicemail tabs.",
+          "status": "pending",
+          "verification": {
+            "command": "Phone window shows tabs and mocked recents list",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Implement Journal with entry list and entry editor.",
+          "status": "pending",
+          "verification": {
+            "command": "Journal window shows entries and an editor area",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "index": 7,
+      "name": "Spotlight + Control Center + Integration",
+      "goal": "Add global overlays, keyboard shortcuts, and final integration polish.",
+      "description": "",
+      "constraints": [
+        "Spotlight actions are visual only; no real command execution.",
+        "Control Center toggles are visual only."
+      ],
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Implement Spotlight overlay with search input, app/action results, and Cmd+Space trigger.",
+          "status": "pending",
+          "verification": {
+            "command": "Cmd+Space opens Spotlight; typing filters app list",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Implement Control Center dropdown from menu bar with mocked toggles and sliders.",
+          "status": "pending",
+          "verification": {
+            "command": "Clicking menu-bar Control Center icon opens the dropdown panel",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Wire menu-bar app menu to show mocked per-app menus.",
+          "status": "pending",
+          "verification": {
+            "command": "Clicking an app name in the menu bar shows a dropdown menu",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Run build, lint, and final visual pass; fix console errors.",
+          "status": "pending",
+          "verification": {
+            "command": "npm run build exits 0 and npm run lint exits 0",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-08-10T13:24:55.832Z",
+  "updatedAt": "2026-08-10T13:52:47.075Z",
+  "goal": "Build a React-based, desktop-only web recreation of the macOS Tahoe interface, including the transparent menu bar, Dock, window manager, Spotlight, Control Center, and eight core apps as visual/interactive mockups with Liquid Glass styling.",
+  "successCriteria": [
+    "React project scaffolded and runs with `npm run dev` with no build errors.",
+    "macOS Tahoe desktop shell renders: transparent menu bar, Dock, desktop wallpaper, and global context menu.",
+    "Liquid Glass visual treatment applied to Dock, windows, sidebars, and menus using CSS backdrop-filter and translucent backgrounds.",
+    "Window manager supports open, close, minimize, maximize/restore, drag, resize, and z-index ordering for multiple app windows.",
+    "Core apps open from Dock/Spotlight and display a visually faithful, mocked UI: Finder, Safari, Notes, System Settings, Calendar, Photos, Phone, Journal.",
+    "Spotlight overlay opens via Cmd+Space or menu-bar click and lists apps plus common actions (visual only).",
+    "Control Center dropdown opens from menu bar and shows toggles/sliders for Wi-Fi, Bluetooth, brightness, volume, etc. (visual only).",
+    "All apps use mock/fake data; no backend or real external integrations required.",
+    "Target is desktop (1024px+) with mouse/keyboard interaction; mobile responsiveness is out of scope."
+  ],
+  "constraints": [
+    "React single-page app; no backend or external API integrations.",
+    "Desktop-only target (1024px+), mouse and keyboard driven.",
+    "Liquid Glass effects implemented with CSS backdrop-filter; no WebGL/Canvas simulation.",
+    "All app content is mock/fake data; no persistence beyond in-memory React state.",
+    "No mobile or tablet responsive layout; true macOS window model is preserved.",
+    "No boot/login sequence; app loads straight into the desktop."
+  ],
+  "charter": {
+    "intent": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "wowFactor": "The page feels like sitting at a real macOS Tahoe desktop, with Liquid Glass windows, a smooth Dock, and recognizable app UIs that respond instantly to clicks and keyboard shortcuts.",
+    "confirmedScope": "A React desktop-only recreation of the macOS Tahoe shell plus eight core apps (Finder, Safari, Notes, System Settings, Calendar, Photos, Phone, Journal) as visual/interactive mockups. Menus and overlays open and look correct but execute no real actions. Mobile/tablet, backend, and real integrations are out of scope.",
+    "demoScript": "Open the deployed page and see a Tahoe-style desktop with transparent menu bar and glass Dock. Click Dock icons to open draggable windows for Finder, Safari, Notes, etc. Press Cmd+Space to open Spotlight and search apps. Click the menu-bar Control Center icon to open a glass panel with toggles. Resize, drag, minimize, and close windows."
+  },
+  "lastActiveAt": "2026-08-10T13:45:23.960Z",
+  "activePhaseId": "phase-2"
+}
