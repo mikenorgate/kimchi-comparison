@@ -11,6 +11,7 @@
 
 import { useSettingsStore, useApplyAppearance } from '@/store/settings';
 import { getWallpaper } from './wallpapers';
+import { MenuBar } from './MenuBar';
 
 export function Desktop() {
   useApplyAppearance();
@@ -24,7 +25,8 @@ export function Desktop() {
       data-testid="desktop"
       style={{ background: wallpaper.css, backgroundSize: 'cover' }}
     >
-      {/* MenuBar, Dock, WindowManager, and system panels mount here in later steps */}
+      <MenuBar />
+      {/* Dock, WindowManager, and system panels mount here in later steps */}
     </div>
   );
 }

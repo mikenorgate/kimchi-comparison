@@ -342,26 +342,35 @@
           "id": "step-1",
           "index": 1,
           "description": "Finder: sidebar (Favorites, Locations) plus a file grid populated with mock files/folders.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "FinderApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T15:54:52.939Z"
+          "startedAt": "2026-08-10T15:54:52.939Z",
+          "completedAt": "2026-08-10T16:06:21.170Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:06:21.170Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Settings: preference pane with wallpaper picker, light/dark/auto toggle, and accent-color swatches (changes apply locally but do not persist on reload).",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "SettingsApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:07:00.873Z"
         },
         {
           "id": "step-3",
@@ -405,26 +414,35 @@
           "id": "step-1",
           "index": 1,
           "description": "Messages: conversation list and a chat view with mock threads.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "MessagesApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T15:54:52.964Z"
+          "startedAt": "2026-08-10T15:54:52.964Z",
+          "completedAt": "2026-08-10T16:06:21.174Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T16:06:21.174Z"
+          }
         },
         {
           "id": "step-2",
           "index": 2,
           "description": "Phone: Recents, Contacts, and Voicemail tabs with mock call records.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "PhoneApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:07:00.901Z"
         },
         {
           "id": "step-3",
@@ -489,13 +507,14 @@
           "id": "step-2",
           "index": 2,
           "description": "Photos: grid of sample images and a lightbox/detail viewer.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "PhotosApp.test.jsx passes",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T16:07:00.927Z"
         },
         {
           "id": "step-3",
@@ -600,7 +619,7 @@
   "decisions": [],
   "memories": [],
   "createdAt": "2026-08-10T14:15:49.009Z",
-  "updatedAt": "2026-08-10T16:00:23.687Z",
+  "updatedAt": "2026-08-10T16:07:00.927Z",
   "goal": "Build a greenfield React + Vite web app that approximates the macOS Tahoe desktop experience: a Liquid Glass shell (desktop, invisible menu bar, Dock, Control Center, Spotlight) plus draggable, UI-mock windows for a curated set of built-in apps.",
   "successCriteria": [
     "Project scaffold: A React + Vite codebase exists at the repository root, `npm install` succeeds, and `npm run build` exits 0 with no errors.",

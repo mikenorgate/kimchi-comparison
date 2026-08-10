@@ -63,17 +63,89 @@
     "agent": "kimchi",
     "model": "Kimi K2.7",
     "durationMs": 9498000,
-    "cost": "$11.35",
+    "cost": "$12.45",
     "fermentId": "019febd8-d1ed-739d-9dda-1b29acd44cd8",
     "thinkingLevel": "enabled",
     "tokenUsage": {
-      "inputTokens": 2362275,
-      "cachedInputTokens": 43151040,
+      "inputTokens": 2714830,
+      "cachedInputTokens": 45910400,
       "cacheWriteTokens": 0,
-      "outputTokens": 226843,
+      "outputTokens": 286144,
       "reasoningTokens": 0,
-      "requests": 583
-    }
+      "requests": 770
+    },
+    "subagents": [
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 1 grade: Scaffold + Design System + Shell"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 2 grade: Window Manager"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 3 grade: Dock + App Registry"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 4 grade: Liquid Glass primitives"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 5 grade: Spotlight + Control Center"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 6 grade: Finder + bundled apps"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 7 grade: Global overlays + polish"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 8 grade: Final integration"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 9 grade: System Settings + apps"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 10 grade: e2e tests + screenshots"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 11 grade: Code walkthrough"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Phase 12 grade: README + docs"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Final grade: Complete ferment verification"
+      },
+      {
+        "type": "Grader",
+        "model": "Kimi K2.7",
+        "description": "Post-completion review"
+      }
+    ]
   },
   {
     "id": "singleshot-kimi2-7",

@@ -4,6 +4,7 @@ import { useWindows, useWindowActions } from '../contexts/WindowContext.jsx';
 import FinderApp from './apps/FinderApp.jsx';
 import SafariApp from './apps/SafariApp.jsx';
 import MessagesApp from './apps/MessagesApp.jsx';
+import PhotosApp from './apps/PhotosApp.jsx';
 
 /**
  * WindowManager
@@ -50,6 +51,7 @@ const APP_COMPONENTS = {
   finder: FinderApp,
   safari: SafariApp,
   messages: MessagesApp,
+  photos: PhotosApp,
 };
 
 function WindowContent({ appId }) {
