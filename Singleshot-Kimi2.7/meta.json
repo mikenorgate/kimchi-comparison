@@ -1,22 +1,42 @@
 {
   "id": "singleshot-kimi2-7",
-  "title": "macOS Tahoe \u2014 Single Page",
-  "approach": "Single-page build",
+  "title": "macOS Tahoe — Kimi K2.7",
+  "approach": "Self-contained HTML/CSS/JS desktop",
   "workflow": "oneshot",
   "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
   "questionsAndAnswers": [
     {
-      "question": "Approach",
-      "answer": "Single-page build"
+      "question": "What level of completeness are you actually looking for?",
+      "answer": "Core desktop + a few working apps"
+    },
+    {
+      "question": "If you want working apps, which are the highest priority? (Pick up to 5)",
+      "answer": "Finder (file manager), Safari (web browser), System Settings, Terminal, Calculator, Notes, Photos, Music, Mail, Messages"
+    },
+    {
+      "question": "What technology stack do you prefer?",
+      "answer": "Vanilla HTML/CSS/JS"
+    },
+    {
+      "question": "Do the apps need real backend functionality?",
+      "answer": "Local-only / in-memory"
     }
   ],
   "sourcePath": "Singleshot-Kimi2.7",
-  "buildCommand": "python3 -m http.server 8765",
+  "buildCommand": "python3 -m http.server 8080",
   "entryPoint": "index.html",
   "agent": "kimchi",
   "model": "Kimi K2.7",
-  "durationMs": 1257000,
-  "cost": "$2.21",
+  "durationMs": 448000,
+  "cost": "$0.42",
   "thinkingLevel": "enabled",
-  "fermentId": null
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 38800,
+    "cachedInputTokens": 1393088,
+    "cacheWriteTokens": 0,
+    "outputTokens": 30546,
+    "reasoningTokens": 0,
+    "requests": 39
+  }
 }

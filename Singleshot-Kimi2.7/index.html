@@ -3,60 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>macOS Tahoe Web</title>
-  <link rel="stylesheet" href="styles/main.css" />
-  <link rel="stylesheet" href="styles/desktop.css" />
-  <link rel="stylesheet" href="styles/menubar.css" />
-  <link rel="stylesheet" href="styles/dock.css" />
-  <link rel="stylesheet" href="styles/window.css" />
-  <link rel="stylesheet" href="styles/apps.css" />
-  <link rel="stylesheet" href="styles/launchpad.css" />
+  <title>macOS Tahoe</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="boot-screen" class="boot-screen">
-    <div class="boot-logo"></div>
-    <div class="boot-progress"><div class="boot-progress-bar"></div></div>
+  <div id="desktop">
+    <div id="wallpaper"></div>
+
+    <div id="menu-bar">
+      <div id="menu-left">
+        <span id="apple-menu-btn" class="menu-item">&#63743;</span>
+        <span id="active-app-name" class="menu-item bold">Finder</span>
+        <span class="menu-item">File</span>
+        <span class="menu-item">Edit</span>
+        <span class="menu-item">View</span>
+        <span class="menu-item">Go</span>
+        <span class="menu-item">Window</span>
+        <span class="menu-item">Help</span>
+      </div>
+      <div id="menu-right">
+        <span class="menu-item" title="Wi-Fi">&#xf8ff;</span>
+        <span class="menu-item" title="Battery">100%</span>
+        <span class="menu-item" title="Control Center">&#9776;</span>
+        <span id="clock" class="menu-item"></span>
+      </div>
+    </div>
+
+    <div id="desktop-icons"></div>
+
+    <div id="dock">
+      <div id="dock-apps"></div>
+      <div id="dock-divider"></div>
+      <div id="dock-bin"></div>
+    </div>
+
+    <div id="context-menu" class="hidden">
+      <div class="ctx-item" data-action="new-folder">New Folder</div>
+      <div class="ctx-item" data-action="change-wallpaper">Change Wallpaper…</div>
+      <div class="ctx-separator"></div>
+      <div class="ctx-item" data-action="show-view-options">Show View Options</div>
+    </div>
+
+    <div id="windows-container"></div>
   </div>
 
-  <div id="desktop" class="desktop" style="display:none;">
-    <div class="wallpaper"></div>
-    <div class="desktop-icons" id="desktop-icons"></div>
-
-    <nav id="menubar" class="menubar">
-      <div class="menu-left">
-        <div class="menu-item apple-menu" data-menu="apple">
-          <span class="apple-logo"></span>
-          <div class="submenu" id="apple-submenu"></div>
-        </div>
-        <div class="menu-item app-name" id="active-app-name">Finder</div>
-        <div class="menu-items" id="app-menus"></div>
-      </div>
-      <div class="menu-right">
-        <div class="menu-item status-icons">
-          <span>🔊</span><span>🔋</span><span>Wi-Fi</span>
-        </div>
-        <div class="menu-item" id="clock">Mon 12:00 PM</div>
-      </div>
-    </nav>
-
-    <main id="window-layer" class="window-layer"></main>
-
-    <section id="launchpad" class="launchpad" style="display:none;">
-      <div class="launchpad-search">
-        <input type="text" placeholder="Search" id="launchpad-search" />
-      </div>
-      <div class="launchpad-grid" id="launchpad-grid"></div>
-    </section>
-
-    <footer id="dock" class="dock">
-      <div class="dock-apps" id="dock-apps"></div>
-      <div class="dock-separator"></div>
-      <div class="dock-trash" id="dock-trash" title="Trash">🗑️</div>
-    </footer>
-  </div>
-
-  <div id="context-menu" class="context-menu" style="display:none;"></div>
-
-  <script type="module" src="js/main.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

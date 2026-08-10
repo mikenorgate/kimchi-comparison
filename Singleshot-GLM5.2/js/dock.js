@@ -1,102 +1,129 @@
-/* ============================================================
-   macOS Tahoe — Dock
-   ============================================================ */
+/* ============================================
+   macOS Tahoe - Dock
+   ============================================ */
 
-const Dock = (() => {
-    const dockEl = document.getElementById('dock');
+const Dock = {
+  init() {
+    this.render();
+    this.initMagnification();
+  },
 
-    // Dock app list (order matters)
-    const dockApps = [
-        'finder', 'safari', 'messages', 'mail', 'maps', 'photos',
-        'notes', 'reminders', 'calendar', 'music', 'podcasts', 'tv',
-        'appstore', 'clock', 'weather', 'calculator', 'terminal',
-        'settings', 'phone', 'games', 'journal',
+  render() {
+    const dock = document.getElementById('dock');
+    const apps = Tahoe.state.apps;
+
+    let html = '';
+    const mainApps = Object.entries(apps).filter(([id, app]) => app.pinned && id !== 'trash');
+
+    mainApps.forEach(([id, app]) => {
+      html += this.renderDockItem(id, app);
+    });
+
+    // Separator
+    html += '<div class="dock-separator"></div>';
+
+    // Trash
+    const trash = apps.trash;
+    html += this.renderDockItem('trash', trash);
+
+    dock.innerHTML = html;
+    this.attachEvents();
+  },
+
+  renderDockItem(id, app) {
+    const running = app.running ? 'running' : '';
+    return `
+      <div class="dock-item ${running}" data-app="${id}">
+        <div class="dock-icon">${app.icon}</div>
+        <div class="dock-indicator"></div>
+        <div class="dock-tooltip">${app.name}</div>
+      </div>
+    `;
+  },
+
+  attachEvents() {
+    document.querySelectorAll('.dock-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const appId = item.dataset.app;
+        if (appId === 'trash') {
+          this.showTrashContextMenu(e);
+        } else {
+          Tahoe.launchApp(appId);
+        }
+      });
+
+      item.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        const appId = item.dataset.app;
+        this.showDockItemContextMenu(e, appId);
+      });
+    });
+  },
+
+  showTrashContextMenu(e) {
+    Tahoe.showContextMenu(e.clientX, e.clientY, [
+      { label: 'Open Trash', action: () => Tahoe.launchApp('finder') },
+      { separator: true },
+      { label: 'Empty Trash...', action: () => Tahoe.showNotification('Trash', 'Trash has been emptied.') },
+    ]);
+  },
+
+  showDockItemContextMenu(e, appId) {
+    const app = Tahoe.state.apps[appId];
+    const isRunning = app.running;
+    const items = [
+      { label: isRunning ? 'Quit ' + app.name : 'Open ' + app.name, action: () => {
+        if (isRunning) {
+          const win = Tahoe.state.windows.find(w => w.appId === appId);
+          if (win) WindowManager.closeWindow(win.id);
+        } else {
+          Tahoe.launchApp(appId);
+        }
+      }},
+      { separator: true },
+      { label: 'Options', submenu: true },
+      { separator: true },
+      { label: 'Show in Finder', action: () => Tahoe.launchApp('finder') },
     ];
+    Tahoe.showContextMenu(e.clientX, e.clientY, items);
+  },
 
-    // Separators after these apps
-    const dividersAfter = new Set(['maps', 'tv', 'settings', 'journal']);
+  initMagnification() {
+    const dock = document.getElementById('dock');
+    if (!dock) return;
 
-    function getDockIcon(appId) {
-        const app = OS.getApp(appId);
-        if (!app) return '';
-        return app.dockIcon || app.icon || '📦';
-    }
-
-    function getAppName(appId) {
-        const app = OS.getApp(appId);
-        return app ? app.name : appId;
-    }
-
-    function render() {
-        dockEl.innerHTML = '';
-
-        dockApps.forEach(appId => {
-            const app = OS.getApp(appId);
-            if (!app) return;
-
-            const item = document.createElement('div');
-            item.className = 'dock-item';
-            item.dataset.appId = appId;
-            item.innerHTML = `
-                <div class="dock-label">${getAppName(appId)}</div>
-                <div class="dock-icon ${app.iconClass}">
-                    ${app.dockIcon || app.icon || '📦'}
-                </div>
-                <div class="dock-indicator"></div>
-            `;
-            item.addEventListener('click', () => launchApp(appId));
-            dockEl.appendChild(item);
-
-            if (dividersAfter.has(appId)) {
-                const div = document.createElement('div');
-                div.className = 'dock-divider';
-                dockEl.appendChild(div);
-            }
-        });
-
-        updateRunning();
-    }
-
-    function launchApp(appId) {
-        const app = OS.getApp(appId);
-        if (!app) return;
-
-        // If already running, focus the window (or unminimize)
-        const windows = OS.getWindowsByApp(appId);
-        if (windows.length > 0) {
-            const visible = windows.find(w => !w.minimized);
-            if (visible) {
-                OS.focusWindow(visible.id);
-            } else {
-                OS.unminimizeWindow(windows[0].id);
-            }
-            return;
+    dock.addEventListener('mousemove', (e) => {
+      const items = dock.querySelectorAll('.dock-item .dock-icon');
+      items.forEach(icon => {
+        const rect = icon.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        const distance = Math.abs(e.clientX - center);
+        const maxDist = 120;
+        if (distance < maxDist) {
+          const scale = 1 + (1 - distance / maxDist) * 0.5;
+          const lift = (1 - distance / maxDist) * 12;
+          icon.style.transform = `scale(${scale}) translateY(-${lift}px)`;
+        } else {
+          icon.style.transform = '';
         }
+      });
+    });
 
-        // Bounce animation
-        const dockItem = dockEl.querySelector(`.dock-item[data-app-id="${appId}"]`);
-        if (dockItem) {
-            dockItem.classList.add('dock-bounce');
-            setTimeout(() => dockItem.classList.remove('dock-bounce'), 500);
-        }
+    dock.addEventListener('mouseleave', () => {
+      const items = dock.querySelectorAll('.dock-item .dock-icon');
+      items.forEach(icon => { icon.style.transform = ''; });
+    });
+  },
 
-        // Open window
-        OS.openWindow(appId);
+  updateRunningState(appId) {
+    const item = document.querySelector(`.dock-item[data-app="${appId}"]`);
+    if (!item) return;
+    const app = Tahoe.state.apps[appId];
+    if (app && app.running) {
+      item.classList.add('running');
+    } else {
+      item.classList.remove('running');
     }
-
-    function updateRunning() {
-        dockEl.querySelectorAll('.dock-item').forEach(item => {
-            const appId = item.dataset.appId;
-            const running = OS.isAppRunning(appId);
-            item.classList.toggle('running', running);
-        });
-    }
-
-    function init() {
-        render();
-    }
-
-    return { init, render, updateRunning, launchApp };
-})();
-
-window.Dock = Dock;
+  },
+};

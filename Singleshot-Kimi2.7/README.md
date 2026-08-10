@@ -1,55 +1,32 @@
-# macOS Tahoe Web
+# macOS Tahoe Web App
 
-A faithful, interactive recreation of the macOS desktop environment as a single-page web app. It features a working Desktop, Dock, Menu Bar, Launchpad, window manager, and a growing suite of built-in apps with localStorage persistence.
+A browser-based recreation of the macOS Tahoe desktop built with vanilla HTML, CSS, and JavaScript.
+
+## Run locally
+
+Open `index.html` directly in any modern browser, or serve the folder with a static server:
+
+```bash
+python3 -m http.server 8080
+```
+
+Then visit `http://localhost:8080`.
 
 ## Features
 
-- **Desktop** with wallpaper, desktop icons, and right-click context menu
-- **Menu Bar** with Apple menu and app-specific menus
-- **Dock** with running indicators, tooltips, and app launching
-- **Launchpad** with search
-- **Window manager** with drag, resize, minimize, maximize, focus, and z-order
-- **Apps** (23 total):
+- **Desktop shell**: wallpaper, translucent Menu Bar, Dock, desktop context menu
+- **Window manager**: drag, resize, minimize, maximize, close, focus / z-index management
+- **Working apps**
   - Finder with folder navigation
-  - Safari with real web browsing via iframe
-  - Terminal with a small shell
-  - Calculator
-  - Notes with persistence
-  - System Settings with appearance/wallpaper options
-  - Photos, Calendar, Music, Messages, Mail
-  - Clock, Weather, Maps
-  - App Store, TV, Podcasts, Reminders, FaceTime
-  - TextEdit, Preview, Activity Monitor, Contacts
-- **Persistence** using `localStorage` for Notes, Messages, Mail, Calendar, Reminders, Settings, Finder tree, etc.
-- **Keyboard shortcuts** like `Cmd+N` (Finder), `Cmd+T` (Terminal), `Cmd+,` (Settings), `Cmd+Space` (Launchpad)
-
-## Running locally
-
-```bash
-npm start
-```
-
-Then open http://localhost:8765 in your browser.
-
-## Testing
-
-```bash
-npm test
-```
-
-Runs a Playwright end-to-end smoke test that opens every app.
-
-## Project structure
-
-```
-.
-├── index.html           # Main shell
-├── styles/              # Global and app-specific CSS
-├── js/                  # Core framework (window manager, dock, menus, etc.)
-├── apps/                # Individual app implementations
-└── e2e.test.cjs         # Smoke test
-```
+  - Safari with address bar and iframe browsing
+  - Terminal with `help`, `ls`, `cd`, `pwd`, `cat`, `clear`, `echo`, `whoami`, `date`
+  - Calculator with keyboard support
+  - Notes with LocalStorage persistence
+  - System Settings (appearance, wallpaper, dock position/auto-hide)
+- **Shell apps with sample data**: Photos, Music, Mail, Messages
 
 ## Notes
 
-This is a foundation/demo. A complete 1:1 recreation of every macOS app would be a much larger project, but the framework here is modular and easy to extend: add a new folder under `apps/`, register your app, and import it in `js/main.js`.
+- Data is stored only in the browser's `localStorage`.
+- External images are loaded from Unsplash and Picsum.
+- Some sites block iframe embedding; Safari shows the browser's default error page for those URLs.
