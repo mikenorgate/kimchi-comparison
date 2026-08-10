@@ -12,6 +12,7 @@ export interface WindowProps {
   height: number
   minWidth?: number
   minHeight?: number
+  zIndex?: number
   isFocused?: boolean
   isMinimized?: boolean
   isMaximized?: boolean
@@ -25,6 +26,7 @@ export interface WindowProps {
 
 const DEFAULT_MIN_WIDTH = 240
 const DEFAULT_MIN_HEIGHT = 160
+const MENUBAR_HEIGHT = 32
 
 function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(value, max))
@@ -56,6 +58,7 @@ function TrafficLight({
 }
 
 export function Window({
+  id,
   title,
   icon,
   children,
@@ -65,6 +68,7 @@ export function Window({
   height,
   minWidth = DEFAULT_MIN_WIDTH,
   minHeight = DEFAULT_MIN_HEIGHT,
+  zIndex = 50,
   isFocused = true,
   isMinimized = false,
   isMaximized = false,
@@ -80,7 +84,9 @@ export function Window({
   const dragStartRef = useRef<{ x: number; y: number; startX: number; startY: number } | null>(null)
   const resizeStartRef = useRef<{ x: number; y: number; startWidth: number; startHeight: number } | null>(null)
 
-  if (isMinimized) return null
+  const layout = isMaximized
+    ? { left: 0, top: MENUBAR_HEIGHT, width: window.innerWidth, height: Math.max(MENUBAR_HEIGHT, window.innerHeight - MENUBAR_HEIGHT) }
+    : { left: x, top: y, width, height }
 
   const handleTitlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -183,15 +189,19 @@ export function Window({
     [],
   )
 
+  if (isMinimized) return null
+
   return (
     <div
+      data-testid="window-frame"
+      data-window-id={id}
       className="absolute flex flex-col overflow-hidden rounded-tahoe transition-shadow duration-150"
       style={{
-        left: x,
-        top: y,
-        width,
-        height,
-        zIndex: isFocused ? 100 : 50,
+        left: layout.left,
+        top: layout.top,
+        width: layout.width,
+        height: layout.height,
+        zIndex,
         background:
           mode === 'dark'
             ? 'rgba(35,35,35,0.72)'
@@ -211,9 +221,10 @@ export function Window({
       aria-label={title}
     >
       <div
+        data-testid="window-titlebar"
         className={`h-10 flex items-center px-4 select-none ${
-          isMaximized ? 'cursor-default' : 'cursor-default'
-        } ${mode === 'dark' ? 'border-white/10' : 'border-black/5'}`}
+          mode === 'dark' ? 'border-white/10' : 'border-black/5'
+        } ${isMaximized ? '' : 'cursor-default'}`}
         style={{ borderBottomWidth: '1px' }}
         onPointerDown={handleTitlePointerDown}
         onPointerMove={handleTitlePointerMove}

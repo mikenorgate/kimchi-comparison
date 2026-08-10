@@ -1,0 +1,505 @@
+{
+  "id": "019febf5-1d22-70c5-8520-61a6b165bdda",
+  "name": "macOS Tahoe Web Recreation",
+  "description": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "status": "running",
+  "worktree": {
+    "path": "/Users/mike/tmp",
+    "branch": "main",
+    "commit": "60b33b3e3fc9dfb2297c9e58f9ba6fb1f8d29dfb"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
+      "confirmedAt": "2026-08-10T14:01:45.349Z"
+    },
+    "criteria": {
+      "answer": "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.\nPlaywright e2e suite passes covering: desktop shell renders (#menubar, #dock, .desktop), window manager (open/drag/resize/minimize-genie/close/fullscreen/Spaces), menu bar dropdowns (Apple menu + app menus with working items), and Spotlight (Cmd+Space) / Control Center / Notification Center panels.\nFinder Playwright tests pass: icon/list/column view toggle, folder navigation, create/rename/delete file & folder, tabs, and tags over a seeded virtual filesystem.\nSystem Settings Playwright tests pass: sidebar navigation (Appearance, Wallpaper, Desktop & Dock, Network, etc.) and a control that changes desktop state (appearance toggle / menu-bar background).\nNotes Playwright test passes: create/edit/delete/search plus persistence across a full page reload.\nCalculator: Vitest unit tests pass for the arithmetic engine and Playwright e2e passes for UI + keyboard input.\nSafari Playwright tests pass: tabs, bookmarks bar, start page, and address-bar navigation over bundled mock pages (no real network).\nEach additional app (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) has a passing Playwright smoke test asserting its Tahoe UI renders and one core interaction works.\nAppearance modes (Light/Dark/Tinted) and Reduce Transparency toggle visibly change glass surfaces, asserted by a test checking the root class/state.\nEnd-to-end persistence test passes: notes + virtual filesystem changes + settings survive a full page reload via localStorage.\nLiquid Glass visual fidelity verified by a visual-regression snapshot on core shell components plus a recorded manual inspection against Tahoe reference screenshots.",
+      "confirmedAt": "2026-08-10T14:01:45.349Z"
+    },
+    "constraints": {
+      "answer": "No backend / no real network services: all data is mock/local and persisted to localStorage; Safari loads only bundled mock pages, Mail/Messages/Weather/Stocks show seeded mock content., Faithful Liquid Glass: real CSS translucency via backdrop-filter (blur + saturate), specular highlight gradients, depth shadows, squircle-rounded window corners, transparent menu bar with floating icons, glassy sidebars/toolbars — not flat mockups., No copyrighted Apple assets: SF Pro approximated via the -apple-system font stack; wallpapers and app icons are original approximations (SVG/CSS), not Apple's copyrighted artwork., All apps must be functional with local data; menu items that would require real services (real web fetch, real IMAP) degrade gracefully (disabled/no-op) rather than break., TypeScript strict mode; each step fits within ~25% of the model context window; keep diffs minimal and reviewable., Tests are required: Playwright e2e + Vitest unit; pnpm build && pnpm lint && pnpm test must all exit 0.",
+      "confirmedAt": "2026-08-10T14:01:45.349Z"
+    },
+    "phases": {
+      "answer": "Foundation & Liquid Glass Design System, Desktop Shell & Window Manager, Core Apps: Finder, System Settings, Notes, Calculator, Safari Shell, Additional Apps, Polish & Verification",
+      "confirmedAt": "2026-08-10T14:01:45.349Z"
+    },
+    "assumptions": {
+      "answer": "Greenfield project: the working directory /Users/mike/tmp/Ferment-GLM5.2 is empty, so Step 4 deep codebase exploration is skipped — there is no existing code to read. Tech stack assumed safe/standard and current as of scoping: Vite 8 + React 19 + TypeScript (strict) + Tailwind CSS v4 via the official @tailwindcss/vite plugin with `@import \\\"tailwindcss\\\"` and @theme tokens; state management via Zustand with the persist middleware to localStorage; testing via Playwright (e2e) and Vitest (unit), managed with pnpm. These are reversible defaults; if a chosen version is unavailable the implementer may pin the nearest stable. SF Pro is not freely licensed, so typography uses the -apple-system font stack as a faithful approximation. Real macOS wallpapers and app icons are copyrighted, so the project uses original gradient/SVG wallpapers and approximated SVG app icons. Calendar and Clock use the real current date/time; all other additional apps (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Reminders) use seeded mock data. The interview confirmed: include all app areas (desktop shell, Finder, Safari, Notes+Calculator, System Settings, and ~10 additional apps); apps are functional with local/mock data (no real services); visual fidelity is faithful Liquid Glass. Completion criteria were confirmed by the user with no changes.",
+      "confirmedAt": "2026-08-10T14:01:45.349Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Foundation & Liquid Glass Design System",
+      "goal": "Scaffold the project and build the faithful Liquid Glass design system (tokens + glass primitives + appearance modes) that every later phase consumes.",
+      "description": "",
+      "budget": "250k tokens",
+      "parallel": false,
+      "status": "active",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Scaffold Vite + React 19 + TypeScript (strict) project at /Users/mike/tmp/Ferment-GLM5.2; add Tailwind v4 (@tailwindcss/vite plugin, `@import \"tailwindcss\"` in src/styles/main.css), pnpm, path aliases, eslint. Files: package.json, vite.config.ts, tsconfig.json, index.html, src/main.tsx, src/App.tsx, src/styles/main.css.",
+          "status": "running",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm install && pnpm build",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-08-10T14:02:12.825Z"
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Define design tokens (src/design-system/tokens.ts + @theme block in main.css): Tahoe palette, squircle radii, backdrop blur+saturate values, specular highlight gradients, depth box-shadows, -apple-system font stack, spacing scale.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm build && test -f src/design-system/tokens.ts",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Build glass primitives: GlassPanel, Menu/MenuItem, Button, Squircle (CSS squircle border-radius), Toolbar, Sidebar in src/design-system/.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm lint && pnpm exec vitest run",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Implement appearance store (src/store/settings.ts) with Light/Dark/Tinted modes + Reduce Transparency toggle; applies a class/state to <html> that toggles backdrop-filter intensity across surfaces.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec vitest run -- settings",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Add Playwright + Vitest configs (playwright.config.ts, vitest.config.ts) and a smoke test asserting glass primitives render.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm test",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ],
+      "startedAt": "2026-08-10T14:01:51.407Z"
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Desktop Shell & Window Manager",
+      "goal": "Build the Tahoe desktop shell — wallpaper, transparent menu bar, magnifying Dock, full window manager, Spotlight/Control Center/Notification Center — consuming the Phase 1 design system.",
+      "description": "",
+      "budget": "300k tokens",
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Desktop + wallpaper layer (src/shell/Desktop.tsx) consuming settings store; renders .desktop root.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-desktop",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "MenuBar (src/shell/MenuBar.tsx): transparent bar with floating icons, Apple menu + active-app menus, functional dropdown menus using the Menu primitive.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-menubar",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Dock (src/shell/Dock.tsx): magnification on hover, app icons, running-app indicators.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-dock",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Window + WindowManager (src/shell/Window.tsx, src/shell/WindowManager.tsx): open (from Dock/Spotlight), drag, resize, minimize-to-Dock (genie), close, fullscreen, Spaces switching.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test window-manager",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Spotlight (Cmd+Space), Control Center, Notification Center panels (src/shell/Spotlight.tsx, ControlCenter.tsx, NotificationCenter.tsx).",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test shell-panels",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Core Apps: Finder, System Settings, Notes, Calculator",
+      "goal": "Establish the app-mounting pattern and build four fully functional core apps with local data, proving the pattern later apps reuse.",
+      "description": "",
+      "budget": "300k tokens",
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "App registry + window-content mounting pattern (src/apps/registry.ts) so the shell can launch and render any registered app.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec vitest run -- registry",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Virtual filesystem store (src/store/fs.ts) seeded with folders/files; Finder (src/apps/finder/) with sidebar, icon/list/column views, tabs, tags, create/rename/delete.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test finder",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "System Settings (src/apps/system-settings/): sidebar nav (Appearance, Wallpaper, Desktop & Dock, Network, etc.); controls change desktop behavior via the settings store.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test settings",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Notes (src/apps/notes/ + src/store/notes.ts): list + editor, create/edit/delete/search, persisted to localStorage.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test notes",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Calculator (src/apps/calculator/): real arithmetic engine + keyboard input; engine unit-tested.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec vitest run -- calculator && pnpm exec playwright test calculator",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "index": 4,
+      "name": "Safari Shell",
+      "goal": "Build the Safari browser shell with tabs, bookmarks, start page, and address-bar navigation over bundled mock pages.",
+      "description": "",
+      "budget": "150k tokens",
+      "parallel": true,
+      "groupIndex": 1,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Safari app (src/apps/safari/): tab bar (open/close/switch), bookmarks bar, start page, address bar that navigates within a bundled mock page set (src/apps/safari/mock-pages/); no real network.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test safari",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "index": 5,
+      "name": "Additional Apps",
+      "goal": "Build ~10 more built-in apps as interactive Tahoe UIs with mock data, each launched from the shell.",
+      "description": "",
+      "budget": "350k tokens",
+      "parallel": true,
+      "groupIndex": 1,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Mail (src/apps/mail/): mock inbox + message reader; open/read/reply-to-mock interaction.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test mail",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Messages (src/apps/messages/): mock threads + send (appends locally).",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test messages",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Photos (src/apps/photos/): mock library grid + viewer.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test photos",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Music (src/apps/music/): mock library + playback UI controls.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test music",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Terminal (src/apps/terminal/): tiny mock shell responding to ls/cd/pwd/echo/help over the virtual FS store.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test terminal",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "Weather (src/apps/weather/): mock forecasts UI.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test weather",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-7",
+          "index": 7,
+          "description": "Stocks (src/apps/stocks/): mock quotes UI.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test stocks",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-8",
+          "index": 8,
+          "description": "Calendar (src/apps/calendar/): real current date + mock events.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test calendar",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-9",
+          "index": 9,
+          "description": "Clock (src/apps/clock/): real-time world clock.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test clock",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-10",
+          "index": 10,
+          "description": "Reminders (src/apps/reminders/): mock lists + create/complete/delete persisted locally.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test reminders",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "index": 6,
+      "name": "Polish & Verification",
+      "goal": "Final visual-fidelity and coherence pass plus the end-to-end verification gate; converge output of all prior phases into a shippable, tested build.",
+      "description": "",
+      "budget": "150k tokens",
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Visual fidelity pass: align glass blur/specular/depth, typography, spacing, and motion across all apps against Tahoe reference screenshots; record manual inspection notes in .kimchi/docs/visual-inspection.md.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test visual-regression",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Cross-app coherence + appearance-mode propagation sweep: assert Light/Dark/Tinted and Reduce Transparency affect all glass surfaces.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test appearance-modes",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "End-to-end persistence test: notes + virtual FS changes + settings survive a full page reload.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec playwright test persistence-e2e",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Final build/lint/test gate.",
+          "status": "pending",
+          "verification": {
+            "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm build && pnpm lint && pnpm test",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-08-10T13:55:37.378Z",
+  "updatedAt": "2026-08-10T14:02:12.825Z",
+  "goal": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
+  "successCriteria": [
+    "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.",
+    "Playwright e2e suite passes covering: desktop shell renders (#menubar, #dock, .desktop), window manager (open/drag/resize/minimize-genie/close/fullscreen/Spaces), menu bar dropdowns (Apple menu + app menus with working items), and Spotlight (Cmd+Space) / Control Center / Notification Center panels.",
+    "Finder Playwright tests pass: icon/list/column view toggle, folder navigation, create/rename/delete file & folder, tabs, and tags over a seeded virtual filesystem.",
+    "System Settings Playwright tests pass: sidebar navigation (Appearance, Wallpaper, Desktop & Dock, Network, etc.) and a control that changes desktop state (appearance toggle / menu-bar background).",
+    "Notes Playwright test passes: create/edit/delete/search plus persistence across a full page reload.",
+    "Calculator: Vitest unit tests pass for the arithmetic engine and Playwright e2e passes for UI + keyboard input.",
+    "Safari Playwright tests pass: tabs, bookmarks bar, start page, and address-bar navigation over bundled mock pages (no real network).",
+    "Each additional app (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) has a passing Playwright smoke test asserting its Tahoe UI renders and one core interaction works.",
+    "Appearance modes (Light/Dark/Tinted) and Reduce Transparency toggle visibly change glass surfaces, asserted by a test checking the root class/state.",
+    "End-to-end persistence test passes: notes + virtual filesystem changes + settings survive a full page reload via localStorage.",
+    "Liquid Glass visual fidelity verified by a visual-regression snapshot on core shell components plus a recorded manual inspection against Tahoe reference screenshots."
+  ],
+  "constraints": [
+    "No backend / no real network services: all data is mock/local and persisted to localStorage; Safari loads only bundled mock pages, Mail/Messages/Weather/Stocks show seeded mock content.",
+    "Faithful Liquid Glass: real CSS translucency via backdrop-filter (blur + saturate), specular highlight gradients, depth shadows, squircle-rounded window corners, transparent menu bar with floating icons, glassy sidebars/toolbars — not flat mockups.",
+    "No copyrighted Apple assets: SF Pro approximated via the -apple-system font stack; wallpapers and app icons are original approximations (SVG/CSS), not Apple's copyrighted artwork.",
+    "All apps must be functional with local data; menu items that would require real services (real web fetch, real IMAP) degrade gracefully (disabled/no-op) rather than break.",
+    "TypeScript strict mode; each step fits within ~25% of the model context window; keep diffs minimal and reviewable.",
+    "Tests are required: Playwright e2e + Vitest unit; pnpm build && pnpm lint && pnpm test must all exit 0."
+  ],
+  "charter": {
+    "intent": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+    "wowFactor": "A web app that genuinely feels like sitting at a Mac running Tahoe — real Liquid Glass translucency over a wallpaper, magnifying Dock, genie minimize, Spotlight, and 20+ apps you can actually use with data that survives a reload.",
+    "confirmedScope": "In: full desktop shell + window manager + Spotlight/Control Center/Notification Center; faithful Liquid Glass design system (real translucency); Finder, System Settings, Notes, Calculator, and Safari fully functional with local data; ~10 additional apps (Mail, Messages, Photos, Music, Terminal, Weather, Stocks, Calendar, Clock, Reminders) as interactive Tahoe UIs with mock data; appearance modes (Light/Dark/Tinted) + Reduce Transparency toggle; localStorage persistence; Playwright e2e + Vitest unit tests. Out: real backend services, real network fetches, Apple's copyrighted wallpapers/icons/fonts, iCloud sync, Siri/Apple Intelligence/AI features.",
+    "demoScript": "Load the app and see a Tahoe desktop with a transparent glass menu bar (floating icons) and a magnifying Dock. Click an app in the Dock — a window opens with Liquid Glass chrome and squircle corners. Press Cmd+Space for Spotlight, search and launch Calculator, and do real math. Open Notes, create a note, reload the page — the note persists. Open System Settings, toggle the appearance, and watch the entire desktop switch modes."
+  },
+  "lastActiveAt": "2026-08-10T14:01:51.407Z",
+  "activePhaseId": "phase-1"
+}

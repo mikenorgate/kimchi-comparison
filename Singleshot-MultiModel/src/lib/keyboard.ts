@@ -43,7 +43,11 @@ export function normalizeShortcut(event: KeyboardEvent): string {
   const mac = isMac();
   const parts: string[] = [];
 
-  if (mac ? event.metaKey : event.ctrlKey) {
+  // Treat Cmd and Ctrl independently so either modifier emits its own label.
+  // This keeps the helper platform-agnostic for tests and matches user
+  // intuition: Cmd on Mac, Ctrl on Windows/Linux. `metaKey` takes precedence
+  // on Mac, `ctrlKey` on non-Mac, but both always normalize to a label.
+  if (mac ? event.metaKey || event.ctrlKey : event.ctrlKey || event.metaKey) {
     parts.push(mac ? 'Cmd' : 'Ctrl');
   }
   if (event.altKey) parts.push(mac ? 'Option' : 'Alt');

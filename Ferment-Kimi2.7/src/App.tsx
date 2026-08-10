@@ -1,10 +1,13 @@
 import { ThemeProvider } from './theme'
 import { Desktop } from './components/shell'
+import { WindowManagerProvider } from './components/window'
 
 function App() {
   return (
     <ThemeProvider>
-      <Desktop />
+      <WindowManagerProvider>
+        <Desktop />
+      </WindowManagerProvider>
     </ThemeProvider>
   )
 }

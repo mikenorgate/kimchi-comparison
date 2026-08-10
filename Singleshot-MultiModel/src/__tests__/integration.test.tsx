@@ -59,7 +59,7 @@ function dispatchKey(
   opts: KeyboardEventInit & { key: string },
   target: EventTarget = window,
 ) {
-  fireEvent.keyDown(target, opts);
+  fireEvent.keyDown(target as Element | Document | Window, opts);
 }
 
 describe('End-to-end integration', () => {
@@ -67,9 +67,10 @@ describe('End-to-end integration', () => {
     render(<App />);
 
     // Open Finder via Dock (the integrated path). Clicking the dock entry
-    // creates a window because there isn't one yet.
+    // creates a window because there isn't one yet. We target the DockItem
+    // explicitly because the menu bar also exposes a "Finder" button.
     act(() => {
-      fireEvent.click(screen.getByRole('button', { name: 'Finder' }));
+      fireEvent.click(screen.getByTestId('dock-item-finder').querySelector('button')!);
     });
 
     const orderBeforeClose = useWindowStore.getState().windowOrder.length;
@@ -257,8 +258,11 @@ describe('End-to-end integration', () => {
     });
     expect(screen.getByTestId('context-menu')).toBeInTheDocument();
 
+    // ContextMenu listens for `mousedown` on document. Dispatching the
+    // event on document ensures the listener fires even when no element is
+    // hit (which is what would happen when clicking on a true outside target).
     act(() => {
-      fireEvent.pointerDown(document.body);
+      fireEvent.mouseDown(document);
     });
     expect(screen.queryByTestId('context-menu')).not.toBeInTheDocument();
   });
@@ -303,29 +307,18 @@ describe('End-to-end integration', () => {
 });
 
 describe('Keyboard normalization helpers', () => {
-  it('normalizeShortcut builds a Cmd-prefixed string on Mac', async () => {
+  it('normalizeShortcut emits the platform-appropriate primary-modifier label', async () => {
     const { isMac, normalizeShortcut } = await import('../lib/keyboard');
-    // We can't change navigator.platform mid-test, but we can verify the
-    // structural shape of the helper output for an arbitrary event.
+    // On Mac, pressing the Cmd key emits "Cmd+W"; on non-Mac the equivalent
+    // is "Ctrl+W" (regardless of which physical modifier key was held, the
+    // helper normalizes to the platform's command modifier).
     const ev = { metaKey: true, ctrlKey: false, altKey: false, shiftKey: false, key: 'W' } as KeyboardEvent;
-    const out = normalizeShortcut(ev);
-    if (isMac()) {
-      expect(out).toBe('Cmd+W');
-    } else {
-      // On non-Mac we still pass the event through; Cmd is only emitted when
-      // metaKey is set, so the result is consistent regardless of platform.
-      expect(out).toBe('Cmd+W');
-    }
+    expect(normalizeShortcut(ev)).toBe(isMac() ? 'Cmd+W' : 'Ctrl+W');
   });
 
-  it('normalizeShortcut emits Ctrl for Ctrl-modified events', async () => {
+  it('normalizeShortcut combines Option/Alt with Escape for the Force Quit shortcut', async () => {
     const { isMac, normalizeShortcut } = await import('../lib/keyboard');
-    const ev = { metaKey: false, ctrlKey: true, altKey: false, shiftKey: false, key: 'w' } as KeyboardEvent;
-    const out = normalizeShortcut(ev);
-    if (isMac()) {
-      expect(out).toBe('Ctrl+W');
-    } else {
-      expect(out).toBe('Ctrl+W');
-    }
+    const ev = { metaKey: true, ctrlKey: false, altKey: true, shiftKey: false, key: 'Escape' } as KeyboardEvent;
+    expect(normalizeShortcut(ev)).toBe(isMac() ? 'Cmd+Option+Escape' : 'Ctrl+Alt+Escape');
   });
 });

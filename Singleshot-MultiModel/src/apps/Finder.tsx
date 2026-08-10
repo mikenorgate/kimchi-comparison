@@ -291,7 +291,7 @@ export default function Finder({ windowId }: FinderProps) {
 
       <div className="flex flex-1 overflow-hidden">
         <FinderSidebar
-          currentRootId={currentPath[0] ?? HOME_ID}
+          currentFolderId={currentPath[currentPath.length - 1] ?? HOME_ID}
           onSelectFolder={(id) => navigateToId(id)}
         />
 

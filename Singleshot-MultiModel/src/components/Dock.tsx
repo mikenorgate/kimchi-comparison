@@ -14,7 +14,6 @@ const FALLOFF_PX = 110;
  */
 export default function Dock() {
   const pinned = useDockStore((s) => s.pinned);
-  const running = useDockStore((s) => s.running);
   const bouncing = useDockStore((s) => s.bouncing);
   const size = useDockStore((s) => s.size);
   const magnificationEnabled = useDockStore((s) => s.magnificationEnabled);
@@ -26,6 +25,20 @@ export default function Dock() {
   const focusWindow = useWindowStore((s) => s.focusWindow);
   const windows = useWindowStore((s) => s.windows);
   const windowOrder = useWindowStore((s) => s.windowOrder);
+
+  // Derive running indicators from the actual window state instead of the
+  // separate `dockStore.running` field, so opening or closing a window
+  // always updates the dot under the dock icon.
+  const runningAppIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const wid of windowOrder) {
+      const win = windows[wid];
+      if (!win) continue;
+      if (win.minimized) continue;
+      ids.add(win.appId);
+    }
+    return Array.from(ids);
+  }, [windows, windowOrder]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -102,7 +115,7 @@ export default function Dock() {
               size={size}
               magnificationEnabled={magnificationEnabled}
               magnificationFactor={magnification[app.id] ?? 0}
-              isRunning={running.includes(app.id)}
+              isRunning={runningAppIds.includes(app.id)}
               isBouncing={bouncing?.appId === app.id}
               index={idx}
               total={visibleApps.length}

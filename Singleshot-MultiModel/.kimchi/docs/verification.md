@@ -1,84 +1,81 @@
-# Finder Fix Verification
-
-## Summary
-
-The four previously failing Finder tests were already passing thanks to the
-`event.type === 'dblclick'` change in `src/apps/Finder.tsx`. The remaining
-work was to clean up dead code that blocked `tsc -b` (and thus `npm run build`)
-under the project's `noUnusedLocals` TypeScript setting.
-
-## Changes Made
-
-### 1. `src/__tests__/finder.test.tsx`
-Removed the leftover `console.log('DEBUG: ...')` debug line and its now-unused
-`appDef` reference inside the `renders current folder contents (root shows
-seeded folders)` test. The test still asserts the same expectations.
-
-### 2. `src/apps/Finder.tsx`
-Removed two unused `useCallback` helpers, `handleRenameSelected` and
-`handleDeleteSelected`, which were declared but never referenced. They were
-uncovered because the menu-bar wiring for rename/delete was never added; the
-context menu performs the equivalent actions directly. No other callers exist.
-
-### 3. `src/lib/apps.ts`
-Removed the unused `STANDARD_MENUS` constant. It was declared but not exported
-and not referenced anywhere in the codebase.
-
-## Files NOT Modified
-
-- `src/apps/FinderIconView.tsx` — the existing `onDoubleClick` handler
-  correctly forwards to `onItemActivate`, and the central
-  `handleItemActivate` in `Finder.tsx` keys off `event.type === 'dblclick'`.
-- `src/apps/FinderListView.tsx` — same as above; no change needed.
-
-## Test Output
-
-```
-RUN  v2.1.9 /Users/mike/tmp/Singleshot-MultiModel
-
-✓ src/__tests__/stores.test.tsx (19 tests) 21ms
-✓ src/__tests__/window.test.tsx (11 tests) 242ms
-✓ src/__tests__/chrome.test.tsx (14 tests) 208ms
-✓ src/__tests__/finder.test.tsx (15 tests) 316ms
-
-Test Files  4 passed (4)
-     Tests  59 passed (59)
-```
-
-All 15 Finder tests pass, including the four previously failing ones:
-
-- `double-clicking a folder navigates into it and updates the path` — passes
-  (`currentPath` becomes `['root', 'documents']`).
-- `double-clicking a .app file launches that app` — passes (Calculator window
-  is opened in addition to the Finder window).
-- `double-clicking a .txt file opens a read-only preview overlay` — passes
-  (`finder-preview` element renders with the `Welcome to Tahoe` content).
-- `back/forward buttons navigate through history` — passes (Documents → Pictures
-  → Back → Documents → Forward → Pictures all work).
-
-## Build Output
-
-```
-> tsc -b && vite build
-
-vite v6.4.3 building for production...
-transforming...
-✓ 1612 modules transformed.
-rendering chunks...
-computing gzip size...
-dist/index.html                   0.45 kB │ gzip:  0.29 kB
-dist/assets/index-CfIRmriC.css   24.90 kB │ gzip:  5.29 kB
-dist/assets/index-BfUsXX_p.js   249.98 kB │ gzip: 76.41 kB
-✓ built in 922ms
-```
-
-`npm run build` succeeds. No TypeScript errors, no Vite warnings.
+# Verification — macOS Tahoe Web-App Prototype Fixes
 
 ## Verdict
 
 ALL_PASS
 
-- 59 tests passing, 0 failures
-- Build succeeds, 0 TypeScript errors
-- All four originally failing Finder tests now pass without further changes
-  to `FinderIconView` / `FinderListView`
+## Test output
+
+- Command: `npx vitest run` (invoked as `npm run test`)
+- Test files: 10 passed (10)
+- Tests: 133 passed (133), 0 failed
+- Up from 130 in the original review; added 3 new tests:
+  - `chrome.test.tsx`: dock running dot updates when a window opens/closes
+  - `chrome.test.tsx`: dock running dot hides while window is minimized
+  - `chrome.test.tsx`: desktop folder icon navigates Finder to target folder
+- Pre-existing `act(...)` warnings remain in `safari.test.tsx`; they are
+  unrelated to the fixes and the suite still passes.
+
+## Build output
+
+- Command: `npm run build`
+- Result: success (no errors, no warnings)
+- `tsc -b` clean, `vite build` emitted `dist/` artifacts.
+
+## Fixes applied
+
+1. **Notes.tsx — nested `<button>` removed**
+   - File: `src/apps/Notes.tsx`
+   - Outer note list item is now a `<li>` containing a non-interactive
+     `<div role="listitem" tabIndex={0}>` that owns the row click handler
+     and keyboard activation. The Delete button is rendered as a sibling
+     `<button>` outside that container. No more `<button>` inside `<button>`.
+
+2. **Dock.tsx — running indicators driven by window state**
+   - File: `src/components/Dock.tsx`
+   - Removed the `running` subscription from `useDockStore`. A new
+     `runningAppIds` memo derives the running app set from
+     `Object.values(windows)` (excluding minimized windows), so opening or
+     closing any window automatically updates the dot under the matching
+     dock icon.
+
+3. **Desktop.tsx — folder icons open Finder at the target**
+   - File: `src/components/Desktop.tsx`
+   - `handleIconDoubleClick` now calls
+     `useFileSystemStore.getState().navigateTo(icon.target)` after
+     `openWindow('finder', ...)` so the Applications icon opens Finder
+     rooted at Applications, the Home icon at Documents, etc.
+
+4. **Window.tsx — drag clamped to keep title bar reachable**
+   - File: `src/components/Window.tsx`
+   - `handleDragMove` clamps the proposed (x, y) so:
+     - x is bounded to `[-current.width + 80, viewportW - 80]`
+     - y is bounded to `[MENU_BAR_HEIGHT, viewportH - 20]`
+   - The user can no longer drag a window fully off-screen; the title bar
+     always remains inside the viewport.
+
+5. **Finder.tsx + FinderSidebar.tsx — sidebar highlight follows current folder**
+   - Files: `src/apps/Finder.tsx`, `src/apps/FinderSidebar.tsx`
+   - `FinderSidebar` now receives `currentFolderId` (renamed from
+     `currentRootId`) set to `currentPath[currentPath.length - 1] ?? HOME_ID`,
+     and the active comparison uses that id. The highlight now tracks the
+     actual open folder rather than always landing on Home.
+
+## Files changed
+
+- `src/apps/Notes.tsx`
+- `src/components/Dock.tsx`
+- `src/components/Desktop.tsx`
+- `src/components/Window.tsx`
+- `src/apps/Finder.tsx`
+- `src/apps/FinderSidebar.tsx`
+- `src/__tests__/chrome.test.tsx` (updated one stale Dock-running test,
+  added three new tests covering the fixed behaviours)
+
+## Notes
+
+- `useDockStore.setRunning` and the `running` field are still in
+  `dockStore.ts` for backwards compatibility with existing store tests
+  (`stores.test.tsx` exercises them directly). The Dock UI no longer
+  consults them; the live source of truth is the window store.
+- No new features or refactors were introduced beyond the review's scope.

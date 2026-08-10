@@ -1,10 +1,44 @@
-import { useState, useCallback, type ReactNode } from 'react'
+import { useState, useCallback, useEffect, type ReactNode } from 'react'
 import { Wallpaper } from './Wallpaper'
 import { MenuBar } from './MenuBar'
 import { ContextMenu } from './ContextMenu'
+import { WindowManager, useWindowManager } from '../window'
 
 interface DesktopProps {
   children?: ReactNode
+}
+
+function SampleWindows() {
+  const { openWindow } = useWindowManager()
+
+  useEffect(() => {
+    openWindow({
+      id: 'finder-1',
+      appId: 'finder',
+      title: 'Finder',
+      x: 120,
+      y: 100,
+      width: 520,
+      height: 320,
+      isOpen: true,
+      isMinimized: false,
+      isMaximized: false,
+    })
+    openWindow({
+      id: 'safari-1',
+      appId: 'safari',
+      title: 'Safari',
+      x: 360,
+      y: 160,
+      width: 520,
+      height: 320,
+      isOpen: true,
+      isMinimized: false,
+      isMaximized: false,
+    })
+  }, [openWindow])
+
+  return null
 }
 
 export function Desktop({ children }: DesktopProps) {
@@ -23,7 +57,11 @@ export function Desktop({ children }: DesktopProps) {
     <div className="relative z-0 w-full h-full overflow-hidden" onContextMenu={handleContextMenu}>
       <Wallpaper />
       <MenuBar />
-      <div className="absolute inset-0 pt-8">{children}</div>
+      <div className="absolute inset-0 pt-8">
+        {children}
+        <WindowManager />
+        <SampleWindows />
+      </div>
       {contextMenu && (
         <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={closeContextMenu} />
       )}

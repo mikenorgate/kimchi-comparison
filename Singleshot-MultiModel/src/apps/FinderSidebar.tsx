@@ -18,13 +18,13 @@ const FAVORITES: SidebarEntry[] = [
 ];
 
 interface FinderSidebarProps {
-  /** The id of the topmost folder in the current path; used for highlight. */
-  currentRootId: string;
+  /** The id of the currently-open folder; used for highlight. */
+  currentFolderId: string;
   /** Called with the favorite's fs node id when the user clicks it. */
   onSelectFolder: (id: string) => void;
 }
 
-export default function FinderSidebar({ currentRootId, onSelectFolder }: FinderSidebarProps) {
+export default function FinderSidebar({ currentFolderId, onSelectFolder }: FinderSidebarProps) {
   return (
     <aside
       className="w-48 flex-shrink-0 overflow-y-auto border-r border-slate-200 bg-slate-50 py-2 text-sm"
@@ -36,7 +36,7 @@ export default function FinderSidebar({ currentRootId, onSelectFolder }: FinderS
       <ul className="flex flex-col">
         {FAVORITES.map((entry) => {
           const Icon = entry.Icon;
-          const active = entry.fsNodeId === currentRootId;
+          const active = entry.fsNodeId === currentFolderId;
           return (
             <li key={entry.id}>
               <button

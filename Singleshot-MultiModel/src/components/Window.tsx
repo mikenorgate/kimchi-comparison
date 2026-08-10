@@ -115,7 +115,22 @@ export default function Window({ windowId }: WindowProps) {
         toggleMaximize(windowId);
         return;
       }
-      moveWindow(windowId, current.x + delta.dx, current.y + delta.dy);
+      // Clamp so the title bar (and therefore the drag handle) stays inside
+      // the viewport. Without clamping the user can drag the window fully
+      // off-screen and lose the ability to grab it again.
+      const viewportW = typeof window !== 'undefined' ? window.innerWidth : 0;
+      const viewportH = typeof window !== 'undefined' ? window.innerHeight : 0;
+      // Keep at least 80px of the window's width visible horizontally so the
+      // title bar / grab area stays reachable; the top edge cannot be dragged
+      // above the menu bar.
+      const minVisibleX = 80;
+      const maxX = Math.max(viewportW - minVisibleX, viewportW - 1);
+      const maxY = Math.max(viewportH - 20, MENU_BAR_HEIGHT);
+      const proposedX = current.x + delta.dx;
+      const proposedY = current.y + delta.dy;
+      const nextX = Math.min(Math.max(proposedX, -current.width + minVisibleX), maxX);
+      const nextY = Math.min(Math.max(proposedY, MENU_BAR_HEIGHT), maxY);
+      moveWindow(windowId, nextX, nextY);
     },
     [windowId, moveWindow, toggleMaximize],
   );

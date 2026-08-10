@@ -6,6 +6,7 @@ import Desktop from '../components/Desktop';
 import { useSystemStore } from '../stores/systemStore';
 import { useWindowStore } from '../stores/windowStore';
 import { useDockStore } from '../stores/dockStore';
+import { useFileSystemStore } from '../stores/fileSystemStore';
 import { APP_REGISTRY } from '../lib/apps';
 
 beforeEach(() => {
@@ -96,13 +97,46 @@ describe('Dock', () => {
     expect(useWindowStore.getState().activeWindowId).toBe(wid);
   });
 
-  it('shows running dots only for running apps', () => {
+  it('shows running dots only for apps with an open window', () => {
+    // Open a Finder window so the dot should appear under the Finder icon.
     act(() => {
-      useDockStore.getState().setRunning('finder', true);
+      useWindowStore.getState().openWindow('finder');
     });
     render(<Dock />);
     expect(screen.getByTestId('dock-running-finder')).toBeInTheDocument();
     expect(screen.queryByTestId('dock-running-calculator')).not.toBeInTheDocument();
+  });
+
+  it('updates the running dot when a window opens or closes', () => {
+    render(<Dock />);
+    // No windows open yet, so no running dots.
+    expect(screen.queryByTestId('dock-running-calculator')).not.toBeInTheDocument();
+
+    let wid = '';
+    act(() => {
+      wid = useWindowStore.getState().openWindow('calculator');
+    });
+    expect(screen.getByTestId('dock-running-calculator')).toBeInTheDocument();
+
+    // Closing the window should remove the dot.
+    act(() => {
+      useWindowStore.getState().closeWindow(wid);
+    });
+    expect(screen.queryByTestId('dock-running-calculator')).not.toBeInTheDocument();
+  });
+
+  it('hides the running dot while the window is minimized', () => {
+    let wid = '';
+    act(() => {
+      wid = useWindowStore.getState().openWindow('notes');
+    });
+    render(<Dock />);
+    expect(screen.getByTestId('dock-running-notes')).toBeInTheDocument();
+
+    act(() => {
+      useWindowStore.getState().minimizeWindow(wid);
+    });
+    expect(screen.queryByTestId('dock-running-notes')).not.toBeInTheDocument();
   });
 
   it('reports magnification data on every dock item', () => {
@@ -158,6 +192,23 @@ describe('Desktop', () => {
     expect(useWindowStore.getState().windowOrder.length).toBe(orderBefore + 1);
     const latestId = useWindowStore.getState().windowOrder.at(-1)!;
     expect(useWindowStore.getState().windows[latestId].appId).toBe('finder');
+  });
+
+  it('navigates Finder to the target folder when a desktop folder icon is opened', () => {
+    render(<Desktop />);
+    // Start with a clean Finder path so the navigation is observable.
+    act(() => {
+      useFileSystemStore.getState().navigateTo('root');
+    });
+    fireEvent.doubleClick(screen.getByTestId('desktop-icon-home'));
+    // The Home icon's target is 'documents'.
+    expect(useFileSystemStore.getState().currentPath).toEqual(['root', 'documents']);
+
+    act(() => {
+      useFileSystemStore.getState().navigateTo('root');
+    });
+    fireEvent.doubleClick(screen.getByTestId('desktop-icon-applications'));
+    expect(useFileSystemStore.getState().currentPath).toEqual(['root', 'applications']);
   });
 
   it('opens a context menu on right-click and offers a background change', () => {

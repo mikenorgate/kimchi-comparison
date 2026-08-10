@@ -3,6 +3,7 @@ import './App.css';
 import examples from './data/examples.json';
 import { ExampleList } from './components/ExampleList';
 import { ExampleDetail } from './components/ExampleDetail';
+import { RankingCharts } from './components/RankingCharts';
 import type { Example } from './types';
 
 function formatDuration(ms: number | null) {
@@ -137,6 +138,10 @@ function LandingPage() {
       <div className="divider" aria-hidden="true" />
 
       <SharedPrompt />
+
+      <div className="divider" aria-hidden="true" />
+
+      <RankingCharts examples={examples} />
 
       <div className="divider" aria-hidden="true" />
 

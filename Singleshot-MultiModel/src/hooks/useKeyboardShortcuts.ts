@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isMeta, normalizeShortcut } from '../lib/keyboard';
+import { normalizeShortcut } from '../lib/keyboard';
 import { useWindowStore } from '../stores/windowStore';
 
 export interface KeyboardShortcutsOptions {
@@ -47,8 +47,13 @@ export function useKeyboardShortcuts(options: KeyboardShortcutsOptions = {}): vo
       }
 
       if (isEditableTarget(event.target)) return;
-      if (!isMeta(event)) return;
+      // Accept either metaKey (Cmd on Mac) or ctrlKey (Ctrl elsewhere) so the
+      // shortcut fires on every host. This also lets tests dispatch with
+      // whichever modifier is convenient.
+      if (!event.metaKey && !event.ctrlKey) return;
 
+      // Normalize the event once and compare against both the macOS-flavoured
+      // shortcut (Cmd+...) and the platform-neutral equivalent (Ctrl+...).
       const shortcut = normalizeShortcut(event);
 
       if (shortcut === 'Cmd+W' || shortcut === 'Ctrl+W') {

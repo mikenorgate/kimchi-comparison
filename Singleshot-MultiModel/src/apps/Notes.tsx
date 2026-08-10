@@ -126,14 +126,26 @@ export default function Notes({ windowId }: NotesProps) {
           {orderedNotes.map((note) => {
             const active = note.id === selectedId;
             return (
-              <li key={note.id}>
-                <button
-                  type="button"
+              <li
+                key={note.id}
+                className={`flex items-stretch border-b border-neutral-100 hover:bg-white ${
+                  active ? 'bg-white shadow-inner' : ''
+                }`}
+              >
+                <div
+                  role="listitem"
+                  tabIndex={0}
+                  aria-current={active ? 'true' : undefined}
                   data-testid={`note-item-${note.id}`}
+                  data-active={active ? 'true' : 'false'}
                   onClick={() => setSelectedId(note.id)}
-                  className={`w-full text-left px-3 py-2 border-b border-neutral-100 hover:bg-white ${
-                    active ? 'bg-white shadow-inner' : ''
-                  }`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedId(note.id);
+                    }
+                  }}
+                  className="flex-1 cursor-pointer px-3 py-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                 >
                   <div
                     data-testid={`note-title-${note.id}`}
@@ -143,22 +155,22 @@ export default function Notes({ windowId }: NotesProps) {
                   </div>
                   <div className="mt-0.5 flex items-center justify-between text-[11px] text-neutral-400">
                     <span className="truncate">{formatTimestamp(note.updatedAt)}</span>
-                    {active && (
-                      <button
-                        type="button"
-                        data-testid={`delete-note-${note.id}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(note.id);
-                        }}
-                        className="ml-2 inline-flex items-center gap-1 rounded px-1 py-0.5 text-neutral-500 hover:bg-red-50 hover:text-red-600"
-                        aria-label="Delete note"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    )}
                   </div>
-                </button>
+                </div>
+                {active && (
+                  <button
+                    type="button"
+                    data-testid={`delete-note-${note.id}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(note.id);
+                    }}
+                    className="m-2 inline-flex items-center gap-1 self-start rounded px-1 py-0.5 text-neutral-500 hover:bg-red-50 hover:text-red-600"
+                    aria-label="Delete note"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                )}
               </li>
             );
           })}

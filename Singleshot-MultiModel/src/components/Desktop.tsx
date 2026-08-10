@@ -68,9 +68,10 @@ export default function Desktop({ children }: DesktopProps) {
       openWindow(icon.target);
       return;
     }
-    // Folders: open Finder at the requested folder. For Chunk 2 we simply
-    // launch Finder; later chunks can pre-navigate to the right path.
+    // Folders: open Finder and navigate to the requested folder so the user
+    // lands inside the target rather than at the filesystem root.
     openWindow('finder', { title: 'Finder' });
+    useFileSystemStore.getState().navigateTo(icon.target);
   };
 
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
