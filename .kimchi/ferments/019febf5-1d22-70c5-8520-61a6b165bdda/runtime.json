@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
   "stepStartCounts": {
-    "phase-1:step-3": 1
+    "phase-1:step-4": 1
   },
   "blockRetries": {},
   "lastBlockHashes": {},
   "stepCompleteAttempts": {
     "phase-1:step-1": 1,
-    "phase-1:step-2": 1
+    "phase-1:step-2": 1,
+    "phase-1:step-3": 1
   },
   "phaseStartRefs": {
     "phase-1": "60b33b3e3fc9dfb2297c9e58f9ba6fb1f8d29dfb"
@@ -15,6 +16,7 @@
   "stepStartRefs": {
     "phase-1:step-1": "60b33b3e3fc9dfb2297c9e58f9ba6fb1f8d29dfb",
     "phase-1:step-2": "a3a49acfd587565be6e8405c66972c2a156e480a",
-    "phase-1:step-3": "a3a49acfd587565be6e8405c66972c2a156e480a"
+    "phase-1:step-3": "a3a49acfd587565be6e8405c66972c2a156e480a",
+    "phase-1:step-4": "fd9dc799b86bc6f32c77baf85fc52b6762781309"
   }
 }

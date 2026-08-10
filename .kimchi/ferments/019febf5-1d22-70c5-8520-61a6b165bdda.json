@@ -87,26 +87,35 @@
           "id": "step-3",
           "index": 3,
           "description": "Build glass primitives: GlassPanel, Menu/MenuItem, Button, Squircle (CSS squircle border-radius), Toolbar, Sidebar in src/design-system/.",
-          "status": "running",
+          "status": "verified",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm lint && pnpm exec vitest run",
             "retries": 2,
             "retryDelayMs": 1000
           },
           "parallel": false,
-          "startedAt": "2026-08-10T14:12:36.559Z"
+          "startedAt": "2026-08-10T14:12:36.559Z",
+          "completedAt": "2026-08-10T14:22:34.700Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-08-10T14:22:34.700Z"
+          }
         },
         {
           "id": "step-4",
           "index": 4,
           "description": "Implement appearance store (src/store/settings.ts) with Light/Dark/Tinted modes + Reduce Transparency toggle; applies a class/state to <html> that toggles backdrop-filter intensity across surfaces.",
-          "status": "pending",
+          "status": "running",
           "verification": {
             "command": "cd /Users/mike/tmp/Ferment-GLM5.2 && pnpm exec vitest run -- settings",
             "retries": 2,
             "retryDelayMs": 1000
           },
-          "parallel": false
+          "parallel": false,
+          "startedAt": "2026-08-10T14:23:53.872Z"
         },
         {
           "id": "step-5",
@@ -498,7 +507,7 @@
     }
   ],
   "createdAt": "2026-08-10T13:55:37.378Z",
-  "updatedAt": "2026-08-10T14:12:36.559Z",
+  "updatedAt": "2026-08-10T14:23:53.872Z",
   "goal": "Recreate macOS Tahoe's full desktop interface — Liquid Glass design language, desktop shell with window manager, and ~20 working built-in apps — as a faithful, interactive single-page web app using mock/local data persisted to localStorage.",
   "successCriteria": [
     "`pnpm build`, `pnpm lint`, and `pnpm test` all exit 0.",

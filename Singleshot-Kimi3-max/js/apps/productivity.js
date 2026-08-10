@@ -62,16 +62,17 @@
     });
     const addF = h('div', { class: 'side-item' }, h('span', { class: 'glyph', html: Mac.GLYPH.plus }), 'New Folder');
     addF.addEventListener('click', () => {
+      const inp = h('input', { class: 'inp', style: { width: '100%', marginTop: '8px' }, placeholder: 'Folder name' });
       Mac.System.alert({
         title: 'New Folder', message: 'Name for the new folder:', icon: 'notes',
-        extra: h('input', { class: 'inp', style: { width: '100%', marginTop: '8px' }, placeholder: 'Folder name' }),
+        extra: inp,
         buttons: [{ label: 'Cancel' }, { label: 'Create', primary: true }]
       }).then(i => {
         if (i !== 1) return;
-        const v = document.querySelector('.alert input')?.value.trim();
+        const v = inp.value.trim();
         if (v && !notesDB.folders.includes(v)) { notesDB.folders.push(v); saveNotes(); }
       });
-      setTimeout(() => document.querySelector('.alert input')?.focus(), 50);
+      setTimeout(() => inp.focus(), 50);
     });
     folders.append(addF);
 
@@ -358,7 +359,12 @@
     const b = (txt, cmd, style) => {
       const btn = h('button', { class: 'tb-btn', style }, txt);
       btn.addEventListener('mousedown', e => e.preventDefault());
-      btn.addEventListener('click', () => { ed.focus(); document.execCommand(cmd, false, null); ed.dispatchEvent(new Event('input')); });
+      btn.addEventListener('click', () => {
+        ed.focus();
+        if (cmd === '__heading') document.execCommand('formatBlock', false, '<h2>');
+        else document.execCommand(cmd, false, null);
+        ed.dispatchEvent(new Event('input'));
+      });
       return btn;
     };
     const openBtn = h('button', { class: 'tb-btn', html: Mac.GLYPH.folder, title: 'Open…' });
@@ -369,10 +375,8 @@
       openBtn, saveBtn,
       h('span', { style: { width: '6px' } }),
       b('B', 'bold', { fontWeight: '700' }), b('I', 'italic', { fontStyle: 'italic' }), b('U', 'underline', { textDecoration: 'underline' }),
-      b('H', 'formatBlock', {}),
+      b('H', '__heading', {}),
       b('•≡', 'insertUnorderedList', {}), b('1≡', 'insertOrderedList', {}));
-    // H button special:
-    toolbar.children[6].addEventListener('click', () => { ed.focus(); document.execCommand('formatBlock', false, '<h2>'); ed.dispatchEvent(new Event('input')); });
     const wrap = h('div', { class: 'te-body' }, ed);
     body.append(toolbar, wrap);
     win._teEd = ed;

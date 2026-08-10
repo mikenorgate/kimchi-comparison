@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: dark: variant triggers on .appearance-dark ancestor */
+@custom-variant dark (&:where(.appearance-dark, .appearance-dark *));
+
 /* ════════════════════════════════════════════════════════════════
    macOS Tahoe — Liquid Glass Design System @theme tokens
    Tailwind v4 maps these to utility classes (e.g. bg-glass, shadow-window)

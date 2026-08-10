@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, type ReactNode } from 'react'
 import { Wallpaper } from './Wallpaper'
 import { MenuBar } from './MenuBar'
 import { ContextMenu } from './ContextMenu'
+import { Dock } from './Dock'
 import { WindowManager, useWindowManager } from '../window'
 
 interface DesktopProps {
@@ -62,6 +63,7 @@ export function Desktop({ children }: DesktopProps) {
         <WindowManager />
         <SampleWindows />
       </div>
+      <Dock />
       {contextMenu && (
         <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={closeContextMenu} />
       )}

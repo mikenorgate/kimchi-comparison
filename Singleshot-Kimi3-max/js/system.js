@@ -83,7 +83,7 @@
       document.querySelector('.ls-bottom').style.opacity = '1';
       setTimeout(() => pass.focus(), 60);
     };
-    document.getElementById('ls-bottom').style.opacity = '.96';
+    document.querySelector('.ls-bottom').style.opacity = '.96';
     lockEl().onclick = () => wake();
     setTimeout(wake, 450);
   }
@@ -429,7 +429,7 @@
     mcOpen = force !== undefined ? force : !mcOpen;
     const el = mcEl();
     if (!mcOpen) { el.classList.add('hidden'); document.getElementById('windows').style.visibility = 'visible'; return; }
-    const wins = Mac.wm.windows.filter(w => !w.closed);
+    const wins = Mac.wm.windows.filter(w => !w.closed && w.state !== 'min');
     if (!wins.length) { mcOpen = false; return; }
     closeOverlays(['mc']);
     el.innerHTML = '';

@@ -1,5 +1,15 @@
 import { Window } from './Window'
 import { useWindowManager } from './windowStore'
+import { getAppById } from '../../apps'
+
+function AppContent({ appId, windowId }: { appId: string; windowId: string }) {
+  const app = getAppById(appId)
+  if (!app) {
+    return <div className="w-full h-full" />
+  }
+  const AppComponent = app.component
+  return <AppComponent windowId={windowId} />
+}
 
 export function WindowManager() {
   const {
@@ -38,7 +48,7 @@ export function WindowManager() {
           onMove={(x, y) => moveWindow(w.id, x, y)}
           onResize={(width, height) => resizeWindow(w.id, width, height)}
         >
-          <div className="w-full h-full" />
+          <AppContent appId={w.appId} windowId={w.id} />
         </Window>
       ))}
     </>

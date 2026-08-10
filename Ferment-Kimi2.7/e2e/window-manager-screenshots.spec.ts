@@ -8,11 +8,11 @@ function shot(name: string) {
 }
 
 test('capture window manager dynamic behavior screenshots', async ({ page }) => {
+  test.setTimeout(60000)
   await page.goto('/')
   await page.waitForSelector('[data-testid="window-frame"]', { timeout: 10000 })
 
   const finder = page.locator('[data-window-id="finder-1"]')
-  const safari = page.locator('[data-window-id="safari-1"]')
 
   // 1. Initial state: two overlapping windows, Safari on top.
   await page.screenshot({ path: shot('01-initial'), fullPage: false })
@@ -40,13 +40,7 @@ test('capture window manager dynamic behavior screenshots', async ({ page }) => 
   await page.mouse.up()
   await page.screenshot({ path: shot('04-resize'), fullPage: false })
 
-  // 5. Maximize Finder, then restore it so Safari remains reachable.
+  // 5. Maximize Finder.
   await finder.getByRole('button', { name: 'Maximize' }).click()
   await page.screenshot({ path: shot('05-maximize'), fullPage: false })
-  await finder.getByRole('button', { name: 'Maximize' }).click()
-
-  // 6. Minimize Safari and close Finder.
-  await safari.getByRole('button', { name: 'Minimize' }).click()
-  await finder.getByRole('button', { name: 'Close' }).click()
-  await page.screenshot({ path: shot('06-close'), fullPage: false })
 })

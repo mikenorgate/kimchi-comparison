@@ -530,7 +530,8 @@
     if (!host) return;
     host.innerHTML = '';
     // Macintosh HD
-    host.append(deskIcon('Macintosh HD', `<div class="fi-img" style="width:52px;height:52px">${Mac.ICONS.desktop}</div>`, () => Mac.openFinder('/')));
+    const hdSvg = `<svg viewBox="0 0 48 48" style="width:52px;height:52px"><defs><linearGradient id="g-hd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe3e9"/><stop offset="1" stop-color="#9aa3ae"/></linearGradient></defs><rect x="4" y="20" width="40" height="13" rx="3.5" fill="url(#g-hd)" stroke="#848d97" stroke-width=".8"/><rect x="4" y="30.5" width="40" height="2.5" rx="1" fill="#7d8791"/><circle cx="39" cy="26.5" r="1.6" fill="#5fdc78"/></svg>`;
+    host.append(deskIcon('Macintosh HD', hdSvg, () => Mac.openFinder('/')));
     FS().list(HOME + '/Desktop').forEach(n => {
       const path = FS().join(HOME + '/Desktop', n.name);
       const inner = n.kind === 'photo'

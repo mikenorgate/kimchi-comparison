@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "fermentId": "019febd9-0398-711f-9df4-b550985eb71a",
+  "phaseId": "phase-2",
+  "phaseName": "Window Manager",
+  "attempt": 2,
+  "timestamp": "2026-08-10T14:17:29.824Z",
+  "goal": "Implement draggable, resizable, focus-managed app windows.",
+  "summary": "Phase 2 — Window Manager completed (retry after grader feedback). Implemented a fully interactive window manager: Window component with Liquid Glass title bar and traffic-light buttons; pointer-event drag/resize with viewport bounds checking and jsdom-safe pointer-capture guards; WindowManagerProvider reducer store supporting open/close/minimize/maximize/restore/focus/move/resize with incremental z-index ordering; WindowManager renderer wiring store state to Window. Added Playwright e2e suite verifying render, focus/z-index, drag, resize, maximize/restore, minimize/close in a real Chromium browser. Captured a sequence of screenshots showing focus, drag, resize, and maximize transitions. Full Vitest (26 tests) and Playwright (6 tests) suites pass; production build succeeds. Source diff archived at /tmp/phase2-window-diff.patch.",
+  "stepSummaries": "  1. Create Window component with title bar, close/minimize/maximize buttons, and content slot. [verified]\n  2. Add drag and resize interactions with pointer events and bounds checking. [verified]\n  3. Implement window state store (open, minimized, maximized, position, size, z-index focus). [verified]",
+  "diffAvailable": false,
+  "diffFilesChanged": "(git unavailable)",
+  "evidence": "$ npm test\nTest Files 6 passed (6)\nTests 26 passed (26)\n$ npm run test:e2e\nRunning 6 tests using 6 workers\n✓ renders sample Finder and Safari windows\n✓ focuses a window on click and raises its z-index\n✓ drags a window by the title bar\n✓ resizes a window from the bottom-right corner\n✓ maximizes and restores a window\n✓ minimizes and closes a window\n6 passed\n$ npm run build\n✓ built in 96ms\nScreenshots:\n/tmp/tahoe-wm-screenshots/01-initial.png (252.7K)\n/tmp/tahoe-wm-screenshots/02-focus.png (252.9K)\n/tmp/tahoe-wm-screenshots/03-drag.png (247.7K)\n/tmp/tahoe-wm-screenshots/04-resize.png (242.4K)\n/tmp/tahoe-wm-screenshots/05-maximize.png (50.4K)\nSource diff: /tmp/phase2-window-diff.patch (21K)",
+  "flags": [],
+  "derivedGrade": "A",
+  "reviewerRationale": "All gates pass; project checks validate.",
+  "gateVerdicts": [
+    {
+      "id": "F1",
+      "verdict": "pass",
+      "rationale": "All verification is real: Vitest unit tests, Playwright browser e2e tests, build, and rendered screenshots. No proxy-only checks.",
+      "evidence": "Vitest: 26 passed; Playwright e2e/window-manager.spec.ts: 6 passed; npm run build: ✓ built in 96ms; screenshots /tmp/tahoe-wm-screenshots/*.png."
+    },
+    {
+      "id": "F2",
+      "verdict": "pass",
+      "rationale": "The combined output delivers the phase goal: draggable, resizable, focus-managed app windows with macOS-style interactions.",
+      "evidence": "Window.tsx + windowStore.tsx + WindowManager.tsx + integration in App.tsx/Desktop.tsx; e2e tests exercise drag, resize, focus/z-index, maximize/restore, minimize/close; screenshots show dynamic transitions."
+    },
+    {
+      "id": "F3",
+      "verdict": "pass",
+      "rationale": "All planned work completed, including grader-requested e2e tests, screenshots, and source diff. Nothing deferred.",
+      "evidence": "e2e/window-manager.spec.ts and e2e/window-manager-screenshots.spec.ts added; playwright.config.ts added; /tmp/phase2-window-diff.patch created."
+    }
+  ],
+  "projectChecks": {
+    "discovered": false,
+    "anyFailed": false,
+    "commands": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "singleshot-kimi3-max",
+  "title": "macOS Tahoe — Kimi K3 (max thinking)",
+  "approach": "Self-contained HTML/CSS/JS desktop",
+  "workflow": "oneshot",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Approach",
+      "answer": "Self-contained HTML/CSS/JS desktop"
+    }
+  ],
+  "sourcePath": "Singleshot-Kimi3-max",
+  "buildCommand": "python3 -m http.server 8080",
+  "entryPoint": "index.html",
+  "agent": "kimchi",
+  "model": "Kimi K3",
+  "durationMs": 17728000,
+  "cost": "$8.79",
+  "thinkingLevel": "max",
+  "fermentId": null,
+  "tokenUsage": {
+    "inputTokens": 1732530,
+    "cachedInputTokens": 3311936,
+    "cacheWriteTokens": 0,
+    "outputTokens": 173128,
+    "reasoningTokens": 0,
+    "requests": 43
+  }
+}

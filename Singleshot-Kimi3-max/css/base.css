@@ -316,7 +316,7 @@ body.dark .drun { background:rgba(235,235,240,.85); }
 #spotlight { position:fixed; inset:0; z-index:8000; display:flex; justify-content:center; }
 .spot-box { margin-top:22vh; width:640px; max-width:92vw; height:fit-content; border-radius:18px; overflow:hidden;
   background:var(--menu-bg); -webkit-backdrop-filter:blur(60px) saturate(1.9); backdrop-filter:blur(60px) saturate(1.9);
-  box-shadow:0 24px 80px rgba(0,0,0,.4), 0 0 0 .5px var(--hairline); animation:menu fade .09s; }
+  box-shadow:0 24px 80px rgba(0,0,0,.4), 0 0 0 .5px var(--hairline); animation:menufade .09s; }
 .spot-inputwrap { display:flex; align-items:center; gap:10px; padding:13px 16px; }
 .spot-icon { width:22px; height:22px; flex:none; background:currentColor; color:var(--text2);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10 2a8 8 0 105.29 14.06l5.33 5.33 1.41-1.41-5.33-5.33A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z'/%3E%3C/svg%3E") center/contain no-repeat; mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10 2a8 8 0 105.29 14.06l5.33 5.33 1.41-1.41-5.33-5.33A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z'/%3E%3C/svg%3E") center/contain no-repeat; }

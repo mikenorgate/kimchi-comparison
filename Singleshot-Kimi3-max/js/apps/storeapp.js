@@ -33,7 +33,7 @@
   function buildStore(body, win, st) {
     const side = h('div', { class: 'sidebar' });
     side.append(h('div', { class: 'side-h' }, 'Store'));
-    [['Discover', 'discover', 'star'], ['Apps', 'apps', 'grid'], ['Updates', 'updates', 'update']].forEach(([label, id, ico]) => {
+    [['Discover', 'discover', 'apps'], ['Apps', 'apps', 'grid'], ['Updates', 'updates', 'update']].forEach(([label, id, ico]) => {
       const pending = STORE_APPS.length - updated.length - 0;
       const badge = id === 'updates' && pending > 0 ? h('span', { class: 'si-count' }, 3) : null;
       const el = h('div', { class: 'side-item' + (st.tab === id ? ' sel' : ''), 'data-t': id },
