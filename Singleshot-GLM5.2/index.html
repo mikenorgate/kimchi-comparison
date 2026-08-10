@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>macOS Tahoe 26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===================== DESKTOP ===================== -->
+<div id="desktop">
+  <!-- Wallpaper set dynamically -->
+  <div id="wallpaper"></div>
+
+  <!-- Desktop icons -->
+  <div id="desktop-icons">
+    <div class="desktop-icon" ondblclick="MacOS.openApp('finder')">
+      <svg viewBox="0 0 64 64"><path fill="#4a9eff" d="M8 12h22l4 6h22a4 4 0 0 1 4 4v8H4v-8a8 8 0 0 1 4-8z"/><path fill="#5ab4ff" d="M4 28h56v24a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V28z"/></svg>
+      <span>Macintosh HD</span>
+    </div>
+  </div>
+
+  <!-- ===================== MENU BAR ===================== -->
+  <div id="menubar">
+    <div class="menubar-left">
+      <div class="menu-item apple-menu" data-menu="apple">
+        <svg viewBox="0 0 16 16" class="apple-logo"><path fill="currentColor" d="M11.2 8.5c0-1.9 1.6-2.8 1.6-2.8-.9-1.3-2.2-1.5-2.7-1.5-1.2-.1-2.2.7-2.8.7s-1.5-.7-2.5-.7c-1.3 0-2.4.7-3.1 1.9-1.3 2.2-.3 5.5 1 7.3.6.9 1.3 1.9 2.2 1.9.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c.9 0 1.6-.9 2.1-1.8.7-1 .9-2 .9-2-.1 0-2.2-.9-2.2-3.4zm-1.9-5.6c.5-.6.8-1.4.7-2.2-.7 0-1.5.5-2 1.1-.4.5-.8 1.3-.7 2.1.8.1 1.5-.4 2-1z"/></svg>
+      </div>
+      <div class="menu-item app-name" id="active-app-name">Finder</div>
+      <div class="menu-item" data-menu="file">File</div>
+      <div class="menu-item" data-menu="edit">Edit</div>
+      <div class="menu-item" data-menu="view">View</div>
+      <div class="menu-item" data-menu="window">Window</div>
+      <div class="menu-item" data-menu="help">Help</div>
+    </div>
+    <div class="menubar-right">
+      <div class="menu-item menu-tray-item" id="battery-item">
+        <svg viewBox="0 0 28 14" class="tray-icon"><rect x="1" y="2" width="22" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/><rect x="3" y="4" width="16" height="6" rx="1" fill="currentColor"/><rect x="24" y="5" width="2" height="4" rx="1" fill="currentColor" opacity="0.5"/></svg>
+      </div>
+      <div class="menu-item menu-tray-item" id="wifi-item">
+        <svg viewBox="0 0 20 14" class="tray-icon"><path fill="currentColor" d="M10 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm0-4c-1.9 0-3.6.8-4.8 2.1l1.3 1.3C7.2 8.4 8.5 7.8 10 7.8s2.8.6 3.8 1.6l1.3-1.3C13.6 6.8 11.9 6 10 6.5zm0-3.8c-2.9 0-5.5 1.2-7.4 3.1l1.3 1.3C5.5 6.5 7.6 5.5 10 5.5s4.5 1 6.1 2.6l1.3-1.3C15.5 4.9 12.9 3.7 10 3.7z"/></svg>
+      </div>
+      <div class="menu-item menu-tray-item" id="search-item" onclick="MacOS.toggleSpotlight()">
+        <svg viewBox="0 0 16 14" class="tray-icon"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="13.5" y2="13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="menu-item menu-tray-item" id="control-center-item" onclick="MacOS.toggleControlCenter()">
+        <svg viewBox="0 0 18 14" class="tray-icon"><rect x="1" y="2" width="7" height="5" rx="1.5" fill="currentColor" opacity="0.85"/><rect x="10" y="2" width="7" height="5" rx="1.5" fill="currentColor" opacity="0.5"/><rect x="1" y="9" width="7" height="3" rx="1.5" fill="currentColor" opacity="0.5"/><rect x="10" y="9" width="7" height="3" rx="1.5" fill="currentColor" opacity="0.85"/></svg>
+      </div>
+      <div class="menu-item" id="datetime-item" onclick="MacOS.toggleNotifications()">
+        <span id="datetime-text">--:--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown menus -->
+  <div id="menu-dropdown-container"></div>
+
+  <!-- ===================== WINDOWS LAYER ===================== -->
+  <div id="windows-layer"></div>
+
+  <!-- ===================== DOCK ===================== -->
+  <div id="dock-container">
+    <div id="dock">
+      <div class="dock-item" data-app="finder" onclick="MacOS.openApp('finder')" title="Finder">
+        <svg viewBox="0 0 64 64" class="dock-icon"><path fill="#4a9eff" d="M8 12h22l4 6h22a4 4 0 0 1 4 4v8H4v-8a8 8 0 0 1 4-8z"/><path fill="#5ab4ff" d="M4 28h56v24a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V28z"/><path fill="#fff" opacity="0.3" d="M4 28h56v2H4z"/></svg>
+        <span class="dock-label">Finder</span>
+      </div>
+      <div class="dock-item" data-app="safari" onclick="MacOS.openApp('safari')" title="Safari">
+        <svg viewBox="0 0 64 64" class="dock-icon"><circle cx="32" cy="32" r="28" fill="#1a1a2e"/><circle cx="32" cy="32" r="26" fill="none" stroke="#e8e8f0" stroke-width="0.5"/><path d="M32 8l4 22-4 4-4-4z" fill="#ff3b30"/><path d="M56 32l-22 4-4-4 4-4z" fill="#fff"/><circle cx="32" cy="32" r="3" fill="#fff"/></svg>
+        <span class="dock-label">Safari</span>
+      </div>
+      <div class="dock-item" data-app="notes" onclick="MacOS.openApp('notes')" title="Notes">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="10" y="8" width="44" height="48" rx="6" fill="#fff"/><rect x="10" y="8" width="44" height="12" rx="6" fill="#febb2e"/><line x1="16" y1="28" x2="48" y2="28" stroke="#ddd" stroke-width="2"/><line x1="16" y1="36" x2="48" y2="36" stroke="#ddd" stroke-width="2"/><line x1="16" y1="44" x2="40" y2="44" stroke="#ddd" stroke-width="2"/></svg>
+        <span class="dock-label">Notes</span>
+      </div>
+      <div class="dock-item" data-app="calculator" onclick="MacOS.openApp('calculator')" title="Calculator">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="10" y="6" width="44" height="52" rx="8" fill="#1a1a2e"/><rect x="16" y="12" width="32" height="12" rx="3" fill="#2a2a3e"/><circle cx="20" cy="34" r="3" fill="#666"/><circle cx="32" cy="34" r="3" fill="#666"/><circle cx="44" cy="34" r="3" fill="#ff9500"/><circle cx="20" cy="46" r="3" fill="#666"/><circle cx="32" cy="46" r="3" fill="#666"/><circle cx="44" cy="46" r="3" fill="#ff9500"/></svg>
+        <span class="dock-label">Calculator</span>
+      </div>
+      <div class="dock-item" data-app="terminal" onclick="MacOS.openApp('terminal')" title="Terminal">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="6" y="8" width="52" height="48" rx="8" fill="#1a1a1a"/><rect x="6" y="8" width="52" height="10" rx="8" fill="#2a2a2a"/><text x="14" y="36" fill="#4ade80" font-family="monospace" font-size="14" font-weight="bold">&gt;_</text></svg>
+        <span class="dock-label">Terminal</span>
+      </div>
+      <div class="dock-item" data-app="settings" onclick="MacOS.openApp('settings')" title="Settings">
+        <svg viewBox="0 0 64 64" class="dock-icon"><circle cx="32" cy="32" r="26" fill="#8a8a9e"/><path fill="#fff" d="M32 18l2 4 4-1 1 4 4 2-1 4 1 4-4 2-1 4-4-1-2 4-2-4-4 1-1-4-4-2 1-4-1-4 4-2 1-4 4 1z"/><circle cx="32" cy="32" r="6" fill="#8a8a9e"/></svg>
+        <span class="dock-label">Settings</span>
+      </div>
+      <div class="dock-item" data-app="photos" onclick="MacOS.openApp('photos')" title="Photos">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="6" y="10" width="52" height="44" rx="8" fill="#fff"/><circle cx="20" cy="24" r="4" fill="#fbbf24"/><path d="M6 44l14-14 10 10 10-8 18 16v2a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="#34d399"/></svg>
+        <span class="dock-label">Photos</span>
+      </div>
+      <div class="dock-item" data-app="calendar" onclick="MacOS.openApp('calendar')" title="Calendar">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="8" y="8" width="48" height="48" rx="6" fill="#fff"/><rect x="8" y="8" width="48" height="12" rx="6" fill="#ff3b30"/><text x="32" y="40" fill="#ff3b30" font-family="Inter" font-size="18" font-weight="700" text-anchor="middle" id="dock-calendar-day">10</text></svg>
+        <span class="dock-label">Calendar</span>
+      </div>
+      <div class="dock-item" data-app="music" onclick="MacOS.openApp('music')" title="Music">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="8" y="8" width="48" height="48" rx="10" fill="gradient" /><rect x="8" y="8" width="48" height="48" rx="10" fill="#fa233b"/><path fill="#fff" d="M26 20l16-4v20c0 3-2 5-5 5s-5-2-5-5 2-5 5-5c.7 0 1.3.1 2 .3V24l-8 2v16c0 3-2 5-5 5s-5-2-5-5 2-5 5-5c.7 0 1.3.1 2 .3V20z"/></svg>
+        <span class="dock-label">Music</span>
+      </div>
+      <div class="dock-item" data-app="messages" onclick="MacOS.openApp('messages')" title="Messages">
+        <svg viewBox="0 0 64 64" class="dock-icon"><path d="M12 10h40a8 8 0 0 1 8 8v22a8 8 0 0 1-8 8H28l-12 8v-8h-4a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8z" fill="#34c759"/><circle cx="22" cy="29" r="3" fill="#fff"/><circle cx="32" cy="29" r="3" fill="#fff"/><circle cx="42" cy="29" r="3" fill="#fff"/></svg>
+        <span class="dock-label">Messages</span>
+      </div>
+      <div class="dock-item" data-app="weather" onclick="MacOS.openApp('weather')" title="Weather">
+        <svg viewBox="0 0 64 64" class="dock-icon"><circle cx="24" cy="24" r="10" fill="#fbbf24"/><path d="M18 44c0-6 5-10 11-10s11 4 11 10c4 0 7 3 7 7s-3 6-7 6H18c-4 0-7-2-7-6s3-7 7-7z" fill="#cbd5e1"/></svg>
+        <span class="dock-label">Weather</span>
+      </div>
+      <div class="dock-item" data-app="maps" onclick="MacOS.openApp('maps')" title="Maps">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="6" y="8" width="52" height="48" rx="6" fill="#e8f0e8"/><path d="M6 14l16-4 20 6 16-4v44l-16 4-20-6-16 4z" fill="#a8d8a8"/><path d="M22 10v44M42 16v44" stroke="#8ab88a" stroke-width="1" fill="none"/><path d="M32 20c4 0 6 3 6 6 0 4-6 10-6 10s-6-6-6-10c0-3 2-6 6-6z" fill="#ff3b30"/><circle cx="32" cy="26" r="2" fill="#fff"/></svg>
+        <span class="dock-label">Maps</span>
+      </div>
+      <div class="dock-item" data-app="textedit" onclick="MacOS.openApp('textedit')" title="TextEdit">
+        <svg viewBox="0 0 64 64" class="dock-icon"><rect x="10" y="6" width="44" height="52" rx="4" fill="#fff"/><line x1="18" y1="18" x2="46" y2="18" stroke="#bbb" stroke-width="2"/><line x1="18" y1="28" x2="46" y2="28" stroke="#bbb" stroke-width="2"/><line x1="18" y1="38" x2="40" y2="38" stroke="#bbb" stroke-width="2"/><path d="M40 44l8-8 4 4-8 8-4 1z" fill="#4a9eff"/></svg>
+        <span class="dock-label">TextEdit</span>
+      </div>
+      <div class="dock-divider"></div>
+      <div class="dock-item" data-app="trash" onclick="MacOS.toggleTrash()" title="Trash">
+        <svg viewBox="0 0 64 64" class="dock-icon"><path d="M16 16h32l-2 38a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z" fill="#e0e0e0"/><path d="M12 12h40" stroke="#999" stroke-width="3" stroke-linecap="round"/><path d="M26 8h12v4H26z" fill="#ccc"/><line x1="24" y1="24" x2="24" y2="48" stroke="#bbb" stroke-width="2"/><line x1="32" y1="24" x2="32" y2="48" stroke="#bbb" stroke-width="2"/><line x1="40" y1="24" x2="40" y2="48" stroke="#bbb" stroke-width="2"/></svg>
+        <span class="dock-label">Trash</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SPOTLIGHT ===================== -->
+  <div id="spotlight-overlay" class="hidden">
+    <div id="spotlight-box">
+      <div class="spotlight-input-wrap">
+        <svg class="spotlight-search-icon" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><line x1="13" y1="13" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="spotlight-input" placeholder="Spotlight Search" autocomplete="off">
+      </div>
+      <div id="spotlight-results"></div>
+    </div>
+  </div>
+
+  <!-- ===================== CONTROL CENTER ===================== -->
+  <div id="control-center" class="hidden">
+    <div class="cc-row">
+      <div class="cc-tile cc-wide">
+        <div class="cc-tile-inner">
+          <div class="cc-toggle-row">
+            <div class="cc-icon-btn active" id="cc-wifi" onclick="MacOS.toggleCCToggle('cc-wifi')">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0-6c-2.8 0-5.3 1.1-7.1 2.9l1.4 1.4C7.8 14.9 9.8 14 12 14s4.2.9 5.7 2.3l1.4-1.4C17.3 13.1 14.8 12 12 12zm0-6c-4 0-7.7 1.6-10.4 4.2l1.4 1.4C5.3 8.5 8.5 7 12 7s6.7 1.5 9 3.6l1.4-1.4C19.7 7.6 16 6 12 6z"/></svg>
+              <span>Wi-Fi</span>
+              <span class="cc-sublabel">Home</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cc-tile cc-wide">
+        <div class="cc-tile-inner">
+          <div class="cc-toggle-row">
+            <div class="cc-icon-btn active" id="cc-bluetooth" onclick="MacOS.toggleCCToggle('cc-bluetooth')">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l4 4-4 4V8l-2 2 2 2v-2l4 4-4 4v-2l-2 2 2 2v-4l-4-4 4-4V2zm0 8v4l2-2-2-2z"/></svg>
+              <span>Bluetooth</span>
+              <span class="cc-sublabel">On</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cc-row">
+      <div class="cc-tile" id="cc-airdrop" onclick="MacOS.toggleCCToggle('cc-airdrop')">
+        <div class="cc-pill-icon"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a8 8 0 0 1 8 8 8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8m0-2a10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2z"/></svg></div>
+        <span>AirDrop</span>
+      </div>
+      <div class="cc-tile" id="cc-focus" onclick="MacOS.toggleCCToggle('cc-focus')">
+        <div class="cc-pill-icon"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/></svg></div>
+        <span>Focus</span>
+      </div>
+      <div class="cc-tile" id="cc-stage" onclick="MacOS.toggleCCToggle('cc-stage')">
+        <div class="cc-pill-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="8" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="8" height="16" rx="1" fill="currentColor"/></svg></div>
+        <span>Stage Mgr</span>
+      </div>
+    </div>
+    <div class="cc-row">
+      <div class="cc-tile cc-slider-tile">
+        <div class="cc-slider-label"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c-3 0-5 2-5 5v3H5v8h14v-8h-2V9c0-3-2-5-5-5z"/></svg> Screen</div>
+        <div class="cc-slider-track"><div class="cc-slider-fill" style="width:75%"></div><div class="cc-slider-thumb" style="left:75%"></div></div>
+      </div>
+      <div class="cc-tile cc-slider-tile">
+        <div class="cc-slider-label"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg> Sound</div>
+        <div class="cc-slider-track"><div class="cc-slider-fill" style="width:60%"></div><div class="cc-slider-thumb" style="left:60%"></div></div>
+      </div>
+    </div>
+    <div class="cc-row">
+      <div class="cc-tile cc-music-tile">
+        <div class="cc-now-playing">
+          <div class="cc-np-icon">🎵</div>
+          <div class="cc-np-info">
+            <div class="cc-np-title" id="cc-np-title">Not Playing</div>
+            <div class="cc-np-artist" id="cc-np-artist">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== NOTIFICATION CENTER ===================== -->
+  <div id="notification-center" class="hidden">
+    <div class="notif-widget">
+      <div class="notif-widget-header">
+        <svg viewBox="0 0 40 40" class="clock-face"><circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="20" y1="20" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" id="clock-hour"/><line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" id="clock-min"/></svg>
+        <div class="clock-text"><div id="notif-time">--:--</div><div id="notif-date">---</div></div>
+      </div>
+    </div>
+    <div class="notif-widget">
+      <div class="notif-widget-title">Calendar</div>
+      <div class="notif-cal-event">
+        <div class="notif-cal-dot" style="background:#ff3b30"></div>
+        <div><div class="notif-cal-name">Design Review</div><div class="notif-cal-time">10:00 AM</div></div>
+      </div>
+      <div class="notif-cal-event">
+        <div class="notif-cal-dot" style="background:#34c759"></div>
+        <div><div class="notif-cal-name">Lunch with Team</div><div class="notif-cal-time">12:30 PM</div></div>
+      </div>
+    </div>
+    <div class="notif-widget">
+      <div class="notif-widget-title">Weather</div>
+      <div class="notif-weather-row">
+        <span class="notif-weather-temp">72°</span>
+        <span class="notif-weather-cond">Sunny</span>
+      </div>
+      <div class="notif-weather-hi">H:78° L:64°</div>
+    </div>
+  </div>
+
+  <!-- ===================== BOOT / LOGIN ===================== -->
+  <div id="boot-screen">
+    <div id="boot-logo">
+      <svg viewBox="0 0 100 120" class="boot-apple"><path fill="#fff" d="M70 55c0-12 10-18 10-18-5-8-13-10-16-10-7 0-13 4-17 4s-9-4-15-4c-8 0-15 4-19 12-8 14-2 34 6 46 4 6 8 12 14 12s8-4 14-4 8 4 14 4c6 0 10-6 13-11 4-7 6-13 6-13 0 0-14-6-14-21zM56 15c3-4 5-9 4-14-5 0-10 3-13 7-3 3-5 8-4 13 5 1 10-2 13-6z"/></svg>
+      <div id="boot-progress"><div id="boot-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ===================== CONTEXT MENU ===================== -->
+  <div id="context-menu" class="hidden"></div>
+
+  <!-- ===================== TOAST ===================== -->
+  <div id="toast" class="hidden"></div>
+</div>
+
+<script src="app.js"></script>
+<script src="apps.js"></script>
+</body>
+</html>

@@ -232,10 +232,18 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "GLM 5.2",
-    "durationMs": 815000,
-    "cost": "$5.38",
+    "durationMs": 2391000,
+    "cost": "$1.63",
     "fermentId": null,
-    "thinkingLevel": "medium"
+    "thinkingLevel": "medium",
+    "tokenUsage": {
+      "inputTokens": 722256,
+      "cachedInputTokens": 1275264,
+      "cacheWriteTokens": 0,
+      "outputTokens": 64566,
+      "reasoningTokens": 0,
+      "requests": 35
+    }
   },
   {
     "id": "codex-gpt5-6-sol",
