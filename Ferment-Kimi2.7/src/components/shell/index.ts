@@ -1,7 +1,0 @@
-export { Desktop } from './Desktop'
-export { Wallpaper } from './Wallpaper'
-export { MenuBar } from './MenuBar'
-export { ContextMenu } from './ContextMenu'
-export { Dock } from './Dock'
-export { Spotlight } from './Spotlight'
-export { ControlCenter } from './ControlCenter'

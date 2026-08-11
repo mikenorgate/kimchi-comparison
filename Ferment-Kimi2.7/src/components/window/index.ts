@@ -1,6 +1,0 @@
-export { Window } from './Window'
-export type { WindowProps } from './Window'
-export { WindowManager } from './WindowManager'
-export { WindowManagerProvider } from './windowStore'
-export { useWindowManager } from './useWindowManager'
-export type { WindowItem, WindowManagerState } from './windowStore'
