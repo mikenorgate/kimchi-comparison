@@ -20,3 +20,5 @@ Archive.zip
 
 # Nested git directories (each example may have its own history)
 /*/.git
+
+.kimchi
