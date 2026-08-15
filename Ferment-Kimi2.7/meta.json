@@ -15,22 +15,32 @@
   "entryPoint": "index.html",
   "agent": "kimchi",
   "model": "Kimi K2.7",
-  "durationMs": 9252000,
-  "cost": "$38.04",
+  "durationMs": 9258300,
+  "cost": "$12.73",
   "thinkingLevel": "high",
   "fermentId": "01a005cd-3580-764e-b232-dd0e96b60722",
   "tokenUsage": {
-    "inputTokens": 16758473,
-    "cachedInputTokens": 78346688,
+    "inputTokens": 7273937,
+    "cachedInputTokens": 24727168,
     "cacheWriteTokens": 0,
-    "outputTokens": 1797469,
+    "outputTokens": 279914,
     "reasoningTokens": 0,
-    "requests": 3527
+    "requests": 491
   },
   "subagents": [
-    {"type": "Builder", "model": "Kimi K2.7", "description": "40 builder subagents for app development"},
-    {"type": "Grader", "model": "Kimi K2.7", "description": "170 grader subagents for phase verification"},
-    {"type": "Builder", "model": "GLM 5.2", "description": "3 test sessions"},
-    {"type": "Builder", "model": "Kimi K3", "description": "1 test session"}
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 1 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 2 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 3 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 4 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 5 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 6 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 7 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 8 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 9 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 10 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 11 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Phase 12 grade"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Final grade: Complete ferment verification"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "Post-completion review"}
   ]
 }
