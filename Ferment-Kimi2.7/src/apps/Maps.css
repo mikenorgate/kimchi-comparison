@@ -1,0 +1,191 @@
+.maps {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  border-radius: var(--window-radius);
+  overflow: hidden;
+}
+
+.maps-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--tahoe-bg-secondary);
+  border-right: 1px solid var(--tahoe-border);
+}
+
+.maps-search {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.maps-search input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--tahoe-border);
+  border-radius: 8px;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  font-size: 13px;
+  outline: none;
+}
+
+.maps-search button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.maps-results {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.maps-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--tahoe-text);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+}
+
+.maps-result:hover,
+.maps-result.active {
+  background: var(--glass-bg-hover);
+}
+
+.maps-result-name {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.maps-result-address {
+  font-size: 12px;
+  color: var(--tahoe-text-secondary);
+}
+
+.maps-card {
+  padding: var(--spacing-md);
+  border-radius: var(--glass-radius-sm);
+  background: var(--tahoe-bg);
+  border: 1px solid var(--tahoe-border);
+}
+
+.maps-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.maps-card p {
+  margin: 0 0 var(--spacing-sm);
+  font-size: 12px;
+  color: var(--tahoe-text-secondary);
+}
+
+.maps-directions {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.maps-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #e8f4e8;
+  cursor: grab;
+  touch-action: none;
+}
+
+.maps-canvas.dragging {
+  cursor: grabbing;
+}
+
+.maps-map {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(82, 163, 93, 0.25), transparent 30%),
+    radial-gradient(circle at 70% 60%, rgba(82, 163, 93, 0.2), transparent 35%),
+    radial-gradient(circle at 50% 20%, rgba(93, 181, 104, 0.18), transparent 40%),
+    linear-gradient(135deg, #e8f4e8 0%, #d0e8d4 100%);
+  border-radius: 24px;
+}
+
+.maps-pin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -100%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.maps-pin-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.maps-pin.active .maps-pin-dot {
+  background: var(--accent-blue);
+  transform: scale(1.2);
+}
+
+.maps-pin-label {
+  font-size: 11px;
+  color: #1d1d1f;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+  .maps-canvas {
+    background: #1a2a1d;
+  }
+
+  .maps-map {
+    background:
+      radial-gradient(circle at 30% 40%, rgba(82, 163, 93, 0.2), transparent 30%),
+      radial-gradient(circle at 70% 60%, rgba(82, 163, 93, 0.15), transparent 35%),
+      radial-gradient(circle at 50% 20%, rgba(93, 181, 104, 0.12), transparent 40%),
+      linear-gradient(135deg, #1a2a1d 0%, #122218 100%);
+  }
+
+  .maps-pin-label {
+    background: rgba(0, 0, 0, 0.6);
+    color: #f5f5f7;
+  }
+}

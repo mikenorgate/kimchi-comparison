@@ -1,0 +1,59 @@
+.stub-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-lg);
+  text-align: center;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  border-radius: var(--window-radius);
+  overflow: hidden;
+}
+
+.stub-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: var(--tahoe-shadow-sm);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.stub-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.stub-description {
+  margin: 0;
+  max-width: 320px;
+  color: var(--tahoe-text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.stub-action {
+  margin-top: var(--spacing-sm);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.stub-action:hover {
+  background: #005ecb;
+}

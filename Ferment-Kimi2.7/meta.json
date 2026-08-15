@@ -1,0 +1,36 @@
+{
+  "id": "ferment-kimi2-7",
+  "title": "macOS Tahoe — Ferment Kimi K2.7",
+  "approach": "React + Vite + TypeScript desktop with Zustand state",
+  "workflow": "ferment",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Approach",
+      "answer": "React + Vite + TypeScript desktop with Zustand state"
+    }
+  ],
+  "sourcePath": "Ferment-Kimi2.7",
+  "buildCommand": "npm run build",
+  "entryPoint": "index.html",
+  "agent": "kimchi",
+  "model": "Kimi K2.7",
+  "durationMs": 9252000,
+  "cost": "$38.04",
+  "thinkingLevel": "high",
+  "fermentId": "01a005cd-3580-764e-b232-dd0e96b60722",
+  "tokenUsage": {
+    "inputTokens": 16758473,
+    "cachedInputTokens": 78346688,
+    "cacheWriteTokens": 0,
+    "outputTokens": 1797469,
+    "reasoningTokens": 0,
+    "requests": 3527
+  },
+  "subagents": [
+    {"type": "Builder", "model": "Kimi K2.7", "description": "40 builder subagents for app development"},
+    {"type": "Grader", "model": "Kimi K2.7", "description": "170 grader subagents for phase verification"},
+    {"type": "Builder", "model": "GLM 5.2", "description": "3 test sessions"},
+    {"type": "Builder", "model": "Kimi K3", "description": "1 test session"}
+  ]
+}

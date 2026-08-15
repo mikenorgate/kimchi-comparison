@@ -1,0 +1,152 @@
+.photos {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  overflow: hidden;
+  border-radius: var(--window-radius);
+}
+
+.photos-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--tahoe-border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.photos-segments {
+  display: flex;
+  gap: var(--spacing-xs);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.photos-segment {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--tahoe-text);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.photos-segment.active {
+  background: var(--tahoe-bg);
+  box-shadow: var(--tahoe-shadow-sm);
+}
+
+.photos-filter {
+  padding: 4px 8px;
+  border: 1px solid var(--tahoe-border);
+  border-radius: 6px;
+  background: var(--tahoe-bg-secondary);
+  color: var(--tahoe-text);
+}
+
+.photos-body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-md);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.photos-body.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.photos-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--glass-radius-sm);
+  background: transparent;
+  color: var(--tahoe-text);
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.1s ease;
+}
+
+.photos-body.list .photos-item {
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--tahoe-border);
+}
+
+.photos-item.selected {
+  border-color: var(--accent-blue);
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.photos-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--glass-radius-sm);
+  box-shadow: var(--tahoe-shadow-sm);
+}
+
+.photos-body.list .photos-thumb {
+  width: 48px;
+  height: 48px;
+  aspect-ratio: auto;
+}
+
+.photos-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.photos-title {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photos-subtitle {
+  font-size: 11px;
+  color: var(--tahoe-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.photos-status {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--tahoe-border);
+  font-size: 12px;
+  color: var(--tahoe-text-secondary);
+  background: var(--tahoe-bg-secondary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .photos {
+    background: var(--tahoe-bg);
+  }
+
+  .photos-segments {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .photos-segment.active {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}

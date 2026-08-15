@@ -1,0 +1,105 @@
+.calculator {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  border-radius: var(--window-radius);
+  overflow: hidden;
+}
+
+.calculator-display {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: var(--spacing-lg);
+  min-height: 110px;
+  background: var(--tahoe-bg-secondary);
+  border-bottom: 1px solid var(--tahoe-border);
+}
+
+.calculator-expression {
+  font-size: 18px;
+  color: var(--tahoe-text-secondary);
+  min-height: 24px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.calculator-result {
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.calculator-pad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--tahoe-border);
+}
+
+.calculator-button {
+  border: none;
+  font-size: 24px;
+  background: var(--tahoe-bg);
+  color: var(--tahoe-text);
+  cursor: pointer;
+  transition: background 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculator-button:hover {
+  background: var(--glass-bg-hover);
+}
+
+.calculator-button:active {
+  background: var(--glass-bg-active);
+}
+
+.calculator-button.wide {
+  grid-column: span 2;
+  justify-content: flex-start;
+  padding-left: 26px;
+}
+
+.calculator-button.operator {
+  background: var(--accent-orange);
+  color: #fff;
+}
+
+.calculator-button.operator:hover {
+  background: #e68600;
+}
+
+.calculator-button.equals {
+  background: var(--accent-orange);
+  color: #fff;
+}
+
+.calculator-button.equals:hover {
+  background: #e68600;
+}
+
+.calculator-button.clear,
+.calculator-button.negate,
+.calculator-button.percent {
+  background: var(--tahoe-bg-secondary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .calculator-button {
+    background: #2c2c2e;
+  }
+
+  .calculator-button.clear,
+  .calculator-button.negate,
+  .calculator-button.percent {
+    background: #3a3a3c;
+  }
+}
