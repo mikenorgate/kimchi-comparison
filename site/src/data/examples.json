@@ -62,17 +62,17 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "Kimi K2.7",
-    "durationMs": 9258300,
-    "cost": "$12.73",
-    "fermentId": "01a005cd-3580-764e-b232-dd0e96b60722",
+    "durationMs": 4262000,
+    "cost": "$7.11",
+    "fermentId": "01a00ef2-6030-702a-928e-4aee079b54ff",
     "thinkingLevel": "high",
     "tokenUsage": {
-      "inputTokens": 7273937,
-      "cachedInputTokens": 24727168,
+      "inputTokens": 1093799,
+      "cachedInputTokens": 26633344,
       "cacheWriteTokens": 0,
-      "outputTokens": 279914,
+      "outputTokens": 253275,
       "reasoningTokens": 0,
-      "requests": 491
+      "requests": 438
     },
     "subagents": [
       {
@@ -129,11 +129,6 @@
         "type": "Grader",
         "model": "Kimi K2.7",
         "description": "Phase 11 grade"
-      },
-      {
-        "type": "Grader",
-        "model": "Kimi K2.7",
-        "description": "Phase 12 grade"
       },
       {
         "type": "Grader",
