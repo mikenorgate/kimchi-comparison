@@ -514,8 +514,20 @@
     "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
     "questionsAndAnswers": [
       {
-        "question": "Approach",
-        "answer": "React + Vite + TypeScript + Tailwind desktop with Zustand state"
+        "question": "Which apps must be included as working windows?",
+        "answer": "Finder, Safari, Notes, Calculator, Calendar, Mail/Messages, Terminal, System Settings"
+      },
+      {
+        "question": "How 'working' should each app be?",
+        "answer": "Interactive"
+      },
+      {
+        "question": "What should I build it with? (Greenfield, empty repo.)",
+        "answer": "React + Vite"
+      },
+      {
+        "question": "How faithful should the Liquid Glass material be?",
+        "answer": "Faithful — real backdrop-filter blur + saturation + translucency on Dock, menu bar, menus, windows, Control Center; tinted/clear icon variants"
       }
     ],
     "sourcePath": "Ferment-GLM5.2",
