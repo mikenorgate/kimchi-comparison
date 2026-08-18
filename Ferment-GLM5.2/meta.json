@@ -1,0 +1,40 @@
+{
+  "id": "ferment-glm5-2",
+  "title": "macOS Tahoe — Ferment GLM 5.2",
+  "approach": "React + Vite + TypeScript + Tailwind desktop with Zustand state",
+  "workflow": "ferment",
+  "originalPrompt": "Recreate the whole MacOs tahoe interface as a web app. Every app and menu should be working",
+  "questionsAndAnswers": [
+    {
+      "question": "Approach",
+      "answer": "React + Vite + TypeScript + Tailwind desktop with Zustand state"
+    }
+  ],
+  "sourcePath": "Ferment-GLM5.2",
+  "buildCommand": "npm run build",
+  "entryPoint": "index.html",
+  "agent": "kimchi",
+  "model": "GLM 5.2",
+  "durationMs": 5272000,
+  "cost": "$12.07",
+  "thinkingLevel": "high",
+  "fermentId": "01a013eb-9f04-7161-9456-bac32d8fb842",
+  "tokenUsage": {
+    "inputTokens": 4603460,
+    "cachedInputTokens": 18319168,
+    "cacheWriteTokens": 0,
+    "outputTokens": 197071,
+    "reasoningTokens": 0,
+    "requests": 277
+  },
+  "subagents": [
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 1 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 2 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 3 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 4 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 5 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 6 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Phase 7 grade"},
+    {"type": "Grader", "model": "GLM 5.2", "description": "Final grade: Complete ferment verification"}
+  ]
+}

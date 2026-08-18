@@ -523,17 +523,17 @@
     "entryPoint": "index.html",
     "agent": "kimchi",
     "model": "GLM 5.2",
-    "durationMs": 26992000,
-    "cost": "$27.65",
-    "fermentId": "01a01051-e637-71d7-9aad-3d6035a48a08",
+    "durationMs": 5272000,
+    "cost": "$12.07",
+    "fermentId": "01a013eb-9f04-7161-9456-bac32d8fb842",
     "thinkingLevel": "high",
     "tokenUsage": {
-      "inputTokens": 6954450,
-      "cachedInputTokens": 62331200,
+      "inputTokens": 4603460,
+      "cachedInputTokens": 18319168,
       "cacheWriteTokens": 0,
-      "outputTokens": 388800,
+      "outputTokens": 197071,
       "reasoningTokens": 0,
-      "requests": 517
+      "requests": 277
     },
     "subagents": [
       {
@@ -574,47 +574,7 @@
       {
         "type": "Grader",
         "model": "GLM 5.2",
-        "description": "Phase 8 grade"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Phase 9 grade"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Phase 10 grade"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Phase 11 grade"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
         "description": "Final grade: Complete ferment verification"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Post-completion review"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Final review 2"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Final review 3"
-      },
-      {
-        "type": "Grader",
-        "model": "GLM 5.2",
-        "description": "Final review 4"
       }
     ]
   },
