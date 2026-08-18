@@ -1,0 +1,3105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --wallpaper-from: #0a1a3a;
+  --wallpaper-via: #2a4a8a;
+  --wallpaper-to: #6a8ad6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", Arial, sans-serif;
+  background: #000;
+}
+
+/* macOS Tahoe-inspired scenic wallpaper. A multi-stop linear gradient
+   evokes the layered mountain/aurora look of the default macOS wallpaper
+   without referencing any external asset. */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      ellipse at 50% 18%,
+      rgba(255, 196, 120, 0.55) 0%,
+      rgba(255, 132, 178, 0.35) 22%,
+      rgba(120, 96, 200, 0) 55%
+    ),
+    radial-gradient(
+      ellipse at 50% 95%,
+      rgba(20, 60, 120, 0.85) 0%,
+      rgba(8, 24, 56, 0.95) 60%,
+      rgba(2, 6, 18, 1) 100%
+    ),
+    linear-gradient(
+      180deg,
+      #f4a672 0%,
+      #d96a8a 22%,
+      #6a5db8 48%,
+      #1f3a78 75%,
+      #07142e 100%
+    );
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.desktop-root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.desktop-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+}
+
+.desktop-title h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.desktop-title p {
+  margin-top: 0.75rem;
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* ---------- Dock ---------- */
+
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 8px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+}
+
+.dock__rail {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.dock-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dock-icon {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 140ms ease-out,
+    background-color 140ms ease-out,
+    box-shadow 140ms ease-out;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.dock-icon:hover,
+.dock-icon:focus-visible {
+  transform: translateY(-6px) scale(1.12);
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.dock-icon:active {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.dock-icon__glyph {
+  font-size: 28px;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+.dock-icon__indicator {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color 140ms ease-out;
+}
+
+.dock-icon__indicator--on {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Menu Bar ---------- */
+
+.menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0 12px;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(20, 20, 24, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  user-select: none;
+}
+
+.menu-bar__left,
+.menu-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.menu-bar__right {
+  gap: 10px;
+}
+
+.menu-bar__menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+}
+
+.menu-bar__item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 2px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  line-height: 1;
+  transition: background-color 100ms ease-out;
+}
+
+.menu-bar__item:hover,
+.menu-bar__item:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+
+.menu-bar__item--open {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.menu-bar__item--apple {
+  padding: 2px 8px;
+}
+
+.menu-bar__apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5f5f7;
+}
+
+.menu-bar__item--active {
+  font-weight: 600;
+}
+
+.menu-bar__active-name {
+  letter-spacing: 0.01em;
+}
+
+.menu-bar__clock {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  height: 100%;
+  cursor: default;
+  border-radius: 4px;
+}
+
+.menu-bar__clock:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.menu-bar__clock-date {
+  font-weight: 500;
+}
+
+.menu-bar__clock-time {
+  font-weight: 400;
+  opacity: 0.92;
+}
+
+.menu-bar__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.menu-bar__status--icon {
+  color: rgba(255, 255, 255, 0.92);
+  cursor: default;
+}
+
+.menu-bar__status-badge {
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 4px;
+  opacity: 0.9;
+}
+
+.menu-bar__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 220px;
+  padding: 4px;
+  background: rgba(40, 40, 46, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  z-index: 70;
+  color: #f5f5f7;
+  text-align: left;
+}
+
+.menu-bar__dropdown-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menu-bar__dropdown-item:hover:not(.menu-bar__dropdown-item--disabled) {
+  background: rgba(120, 160, 240, 0.6);
+}
+
+.menu-bar__dropdown-item--disabled {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+}
+
+.menu-bar__dropdown-shortcut {
+  font-size: 12px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.menu-bar__dropdown-separator {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 4px 6px;
+}
+
+/* ---------- Window ---------- */
+
+/* macOS-style window frame. Rounded corners, subtle border, translucent
+   backdrop blur, and a layered shadow give it the same lift as a native
+   window. The window manager will wrap the frame with absolute
+   positioning and z-index handling in a later phase. */
+.window {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  background: rgba(246, 246, 248, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  overflow: hidden;
+  color: #1c1c1e;
+  transition:
+    box-shadow 160ms ease-out,
+    opacity 160ms ease-out,
+    filter 160ms ease-out;
+  min-width: 240px;
+  min-height: 160px;
+}
+
+.window--inactive {
+  background: rgba(238, 238, 240, 0.72);
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.22),
+    0 2px 4px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: rgba(28, 28, 30, 0.78);
+}
+
+.window__titlebar {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  user-select: none;
+}
+
+.window--inactive .window__titlebar {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.32) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+}
+
+.window__lights {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+}
+
+.window__light {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0);
+  transition:
+    background-color 120ms ease-out,
+    color 120ms ease-out,
+    box-shadow 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+.window__light:focus-visible {
+  outline: 2px solid rgba(60, 120, 240, 0.7);
+  outline-offset: 2px;
+}
+
+.window__light--close {
+  background: #ff5f57;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.window__light--minimize {
+  background: #febc2e;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.window__light--maximize {
+  background: #28c840;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.window__light--inactive {
+  background: #d4d4d6;
+}
+
+.window__light:hover .window__light-glyph,
+.window__light:focus-visible .window__light-glyph {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.window__light:active {
+  transform: scale(0.94);
+}
+
+.window__light-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  color: rgba(0, 0, 0, 0);
+  transition: color 100ms ease-out;
+}
+
+.window__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.window--inactive .window__title {
+  font-weight: 500;
+}
+
+.window__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.window__title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.window__spacer {
+  width: 70px;
+  height: 1px;
+}
+
+.window__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.window--inactive .window__body {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ---------- Finder ---------- */
+
+.finder {
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.finder__sidebar {
+  background: rgba(245, 245, 247, 0.85);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px 6px;
+  overflow-y: auto;
+}
+
+.finder__sidebar-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(60, 60, 67, 0.6);
+  margin: 0 8px 6px;
+}
+
+.finder__sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finder__sidebar-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.finder__sidebar-item:hover,
+.finder__sidebar-item:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.finder__sidebar-item--active {
+  background: rgba(0, 122, 255, 0.18);
+  color: #0a64d8;
+}
+
+.finder__sidebar-icon {
+  font-size: 16px;
+  line-height: 1;
+  width: 18px;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.finder__sidebar-label {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.finder__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.finder__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(250, 250, 252, 0.85);
+}
+
+.finder__toolbar-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  color: inherit;
+  font: inherit;
+  height: 24px;
+  min-width: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.finder__toolbar-button:hover:not(:disabled),
+.finder__toolbar-button:focus-visible:not(:disabled) {
+  background: rgba(255, 255, 255, 0.95);
+  outline: none;
+}
+
+.finder__toolbar-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.finder__toolbar-button--active {
+  background: rgba(0, 122, 255, 0.18);
+  border-color: rgba(0, 122, 255, 0.3);
+  color: #0a64d8;
+}
+
+.finder__toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.finder__view-toggle {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.finder__breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  gap: 2px;
+}
+
+.finder__breadcrumb-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.finder__breadcrumb-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #0a64d8;
+  font: inherit;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.finder__breadcrumb-button:hover:not(:disabled),
+.finder__breadcrumb-button:focus-visible:not(:disabled) {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.finder__breadcrumb-button:disabled,
+.finder__breadcrumb-button--current {
+  color: #1c1c1e;
+  font-weight: 600;
+  cursor: default;
+}
+
+.finder__breadcrumb-sep {
+  color: rgba(0, 0, 0, 0.35);
+  padding: 0 2px;
+}
+
+.finder__empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(60, 60, 67, 0.6);
+  padding: 24px;
+  text-align: center;
+}
+
+.finder__icon-grid {
+  list-style: none;
+  margin: 0;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 12px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.finder__icon-cell {
+  display: flex;
+}
+
+.finder__icon-button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+  padding: 8px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.finder__icon-button:hover,
+.finder__icon-button:focus-visible {
+  background: rgba(0, 122, 255, 0.08);
+  border-color: rgba(0, 122, 255, 0.25);
+  outline: none;
+}
+
+.finder__icon-glyph {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.finder__icon-name {
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.finder__table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1 1 auto;
+  display: block;
+  overflow-y: auto;
+}
+
+.finder__table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  background: rgba(245, 245, 247, 0.85);
+  position: sticky;
+  top: 0;
+}
+
+.finder__table tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.finder__table th,
+.finder__table td {
+  text-align: left;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 12px;
+}
+
+.finder__table th {
+  font-weight: 600;
+  color: rgba(60, 60, 67, 0.7);
+}
+
+.finder__table-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.finder__table-button:hover,
+.finder__table-button:focus-visible {
+  color: #0a64d8;
+  outline: none;
+}
+
+.finder__table-glyph {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.finder__item-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.finder__item-kind {
+  color: rgba(60, 60, 67, 0.7);
+}
+
+/* ---------- File preview ---------- */
+
+.file-preview {
+  width: 320px;
+  max-width: 50%;
+  background: rgba(248, 248, 250, 0.96);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.file-preview__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  flex: 0 0 auto;
+}
+
+.file-preview__name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1c1c1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-preview__close {
+  background: transparent;
+  border: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: rgba(60, 60, 67, 0.7);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.file-preview__close:hover,
+.file-preview__close:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1c1c1e;
+  outline: none;
+}
+
+.file-preview__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+}
+
+.file-preview__text {
+  margin: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1c1c1e;
+  white-space: pre-wrap;
+  word-break: break-word;
+  width: 100%;
+}
+
+.file-preview__image {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ---------- Safari ---------- */
+
+/* The Safari window body mirrors the macOS Safari toolbar: three chrome
+   buttons on the left, a rounded address bar that fills the remaining
+   horizontal space, and a tall viewport area below reserved for the
+   sandboxed iframe that a later step will mount. */
+
+.safari {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.safari__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(246, 246, 248, 0.92);
+}
+
+.safari__toolbar-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  color: #3a3a3c;
+  font: inherit;
+  height: 26px;
+  min-width: 26px;
+  padding: 0 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 14px;
+}
+
+.safari__toolbar-button:hover:not(:disabled),
+.safari__toolbar-button:focus-visible:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  outline: none;
+}
+
+.safari__toolbar-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.safari__address-bar {
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.safari__address-bar:focus {
+  outline: none;
+  border-color: rgba(0, 122, 255, 0.55);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+}
+
+.safari__address-bar::placeholder {
+  color: rgba(60, 60, 67, 0.55);
+}
+
+.safari__viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+.safari__viewport-placeholder {
+  margin: 0;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+  word-break: break-all;
+}
+
+.safari__iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+  display: block;
+}
+
+.safari__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  color: #1c1c1e;
+  max-width: 480px;
+}
+
+.safari__fallback-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1c1e;
+}
+
+.safari__fallback-body {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.7);
+  word-break: break-all;
+}
+
+/* ---------- Mail ---------- */
+
+/* Three-pane layout that mirrors macOS Mail.app: sidebar | message list
+   | reading pane. Columns are sized as fixed-flex-flex so the sidebar
+   and the reading pane stay readable while the message list absorbs
+   any extra horizontal space. */
+
+.mail {
+  display: grid;
+  grid-template-columns: 180px minmax(260px, 1fr) minmax(320px, 1.4fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.mail__sidebar {
+  background: rgba(245, 245, 247, 0.92);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px 6px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.mail__sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mail__sidebar-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mail__sidebar-item:hover,
+.mail__sidebar-item:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.mail__sidebar-item--active {
+  background: rgba(0, 122, 255, 0.18);
+  color: #0a64d8;
+}
+
+.mail__sidebar-icon {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.mail__sidebar-label {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mail__sidebar-count {
+  min-width: 18px;
+  padding: 0 6px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(0, 122, 255, 0.85);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.mail__sidebar-count:empty {
+  display: none;
+}
+
+.mail__list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.mail__empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(60, 60, 67, 0.55);
+  padding: 24px;
+  text-align: center;
+}
+
+.mail__list-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.mail__row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  min-height: 44px;
+}
+
+.mail__row:hover {
+  background: rgba(0, 122, 255, 0.06);
+}
+
+.mail__row--selected {
+  background: rgba(0, 122, 255, 0.18);
+}
+
+.mail__row--selected:hover {
+  background: rgba(0, 122, 255, 0.22);
+}
+
+.mail__row-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 2px;
+  padding: 6px 10px 6px 12px;
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.mail__row-button:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.5);
+  outline-offset: -2px;
+}
+
+.mail__row-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: transparent;
+  flex-shrink: 0;
+  grid-row: 1 / span 2;
+  grid-column: 1;
+}
+
+.mail__row--unread .mail__row-unread-dot {
+  background: #0a64d8;
+}
+
+.mail__row-sender {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1c1c1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  grid-row: 1;
+  grid-column: 2;
+}
+
+.mail__row--unread .mail__row-sender {
+  font-weight: 700;
+}
+
+.mail__row-subject {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  grid-row: 2;
+  grid-column: 2;
+  min-width: 0;
+}
+
+.mail__row--unread .mail__row-subject {
+  color: #1c1c1e;
+  font-weight: 600;
+}
+
+.mail__row-date {
+  font-size: 11px;
+  color: rgba(60, 60, 67, 0.6);
+  white-space: nowrap;
+  padding-left: 8px;
+  text-align: right;
+  grid-row: 1 / span 2;
+  grid-column: 3;
+  align-self: center;
+}
+
+.mail__row-star {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(60, 60, 67, 0.4);
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  align-self: center;
+  flex: 0 0 auto;
+}
+
+.mail__row-star:hover,
+.mail__row-star:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(245, 158, 11, 1);
+  outline: none;
+}
+
+.mail__row-star--on {
+  color: rgba(245, 158, 11, 1);
+}
+
+.mail__reading {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  overflow: hidden;
+}
+
+.mail__reading-empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px;
+  text-align: center;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 14px;
+}
+
+.mail__reading-empty-sub {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.45);
+}
+
+.mail__reading-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.7);
+  flex: 0 0 auto;
+}
+
+.mail__reading-subject {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1c1c1e;
+  word-break: break-word;
+}
+
+.mail__reading-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.85);
+}
+
+.mail__reading-meta-row {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.mail__reading-meta-label {
+  color: rgba(60, 60, 67, 0.55);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.mail__reading-meta-value {
+  word-break: break-word;
+  color: #1c1c1e;
+}
+
+.mail__reading-meta-email {
+  color: rgba(60, 60, 67, 0.6);
+  margin-left: 4px;
+}
+
+.mail__reading-star {
+  align-self: flex-start;
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(60, 60, 67, 0.7);
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.mail__reading-star:hover,
+.mail__reading-star:focus-visible {
+  background: rgba(255, 255, 255, 1);
+  outline: none;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.mail__reading-star--on {
+  color: rgba(245, 158, 11, 1);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.mail__reading-body {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 18px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #1c1c1e;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.mail__reading-attachments {
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 12px 20px 16px;
+  background: rgba(245, 245, 247, 0.6);
+  flex: 0 0 auto;
+}
+
+.mail__reading-attachments-title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(60, 60, 67, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mail__reading-attachments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mail__reading-attachments-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 12px;
+}
+
+.mail__reading-attachments-name {
+  color: #1c1c1e;
+  font-weight: 500;
+}
+
+.mail__reading-attachments-meta {
+  color: rgba(60, 60, 67, 0.6);
+}
+
+/* ---------- Calendar ---------- */
+
+/* macOS Calendar-style month view: a translucent header with prev /
+   next / today controls and a centered month-year title, a 7-column
+   weekday strip, a 7×6 grid of day cells, and a side details panel
+   that surfaces events for the currently selected day. */
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.calendar__toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(246, 246, 248, 0.92);
+  flex: 0 0 auto;
+}
+
+.calendar__toolbar-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+}
+
+.calendar__toolbar-right {
+  justify-self: end;
+}
+
+.calendar__toolbar-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  color: #3a3a3c;
+  font: inherit;
+  height: 26px;
+  min-width: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 14px;
+}
+
+.calendar__toolbar-button:hover,
+.calendar__toolbar-button:focus-visible {
+  background: rgba(255, 255, 255, 1);
+  outline: none;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.calendar__toolbar-button--today {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.calendar__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c1c1e;
+  text-align: center;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.calendar__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.calendar__grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(245, 245, 247, 0.85);
+}
+
+.calendar__weekday {
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(60, 60, 67, 0.6);
+  text-align: left;
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(96px, 1fr);
+  flex: 1 1 auto;
+  min-height: 0;
+  background: rgba(0, 0, 0, 0.04);
+  gap: 1px;
+}
+
+.calendar__cell {
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 4px 6px 6px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  border: 0;
+  transition: background-color 120ms ease-out;
+  overflow: hidden;
+}
+
+.calendar__cell:hover,
+.calendar__cell:focus-visible {
+  background: rgba(0, 122, 255, 0.06);
+  outline: none;
+}
+
+.calendar__cell--out {
+  background: rgba(245, 245, 247, 0.65);
+  color: rgba(60, 60, 67, 0.45);
+}
+
+.calendar__cell--selected {
+  background: rgba(0, 122, 255, 0.18);
+  box-shadow: inset 0 0 0 2px rgba(0, 122, 255, 0.7);
+}
+
+.calendar__cell--selected:hover {
+  background: rgba(0, 122, 255, 0.22);
+}
+
+.calendar__cell-number {
+  font-size: 12px;
+  font-weight: 600;
+  color: inherit;
+  margin-bottom: 2px;
+}
+
+.calendar__cell--out .calendar__cell-number {
+  color: rgba(60, 60, 67, 0.4);
+}
+
+.calendar__events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.calendar__event-row {
+  min-width: 0;
+}
+
+.calendar__event {
+  appearance: none;
+  border: 0;
+  background: rgba(0, 122, 255, 0.18);
+  color: #0a3a8c;
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.2;
+  width: 100%;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.calendar__event:hover,
+.calendar__event:focus-visible {
+  filter: brightness(0.96);
+  outline: none;
+}
+
+.calendar__event-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.calendar__event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.calendar__event--indigo {
+  background: rgba(88, 86, 214, 0.22);
+  color: #2c2aa0;
+}
+.calendar__event--rose {
+  background: rgba(255, 69, 100, 0.22);
+  color: #b5133b;
+}
+.calendar__event--emerald {
+  background: rgba(48, 176, 100, 0.22);
+  color: #1f7a3f;
+}
+.calendar__event--amber {
+  background: rgba(255, 159, 10, 0.22);
+  color: #a85e00;
+}
+.calendar__event--sky {
+  background: rgba(56, 154, 230, 0.22);
+  color: #1c5fa6;
+}
+.calendar__event--violet {
+  background: rgba(160, 90, 220, 0.22);
+  color: #6a1f9a;
+}
+
+.calendar__details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  overflow: hidden;
+}
+
+.calendar__details-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+}
+
+.calendar__details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.7);
+  flex: 0 0 auto;
+}
+
+.calendar__details-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1c1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar__details-close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(60, 60, 67, 0.7);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.calendar__details-close:hover,
+.calendar__details-close:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1c1c1e;
+  outline: none;
+}
+
+.calendar__details-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.calendar__detail {
+  display: grid;
+  grid-template-columns: 4px 1fr;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(245, 245, 247, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.calendar__detail-swatch {
+  width: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  align-self: stretch;
+  opacity: 0.85;
+}
+
+.calendar__detail--indigo {
+  color: #2c2aa0;
+  background: rgba(88, 86, 214, 0.08);
+  border-color: rgba(88, 86, 214, 0.18);
+}
+.calendar__detail--rose {
+  color: #b5133b;
+  background: rgba(255, 69, 100, 0.08);
+  border-color: rgba(255, 69, 100, 0.18);
+}
+.calendar__detail--emerald {
+  color: #1f7a3f;
+  background: rgba(48, 176, 100, 0.08);
+  border-color: rgba(48, 176, 100, 0.18);
+}
+.calendar__detail--amber {
+  color: #a85e00;
+  background: rgba(255, 159, 10, 0.08);
+  border-color: rgba(255, 159, 10, 0.18);
+}
+.calendar__detail--sky {
+  color: #1c5fa6;
+  background: rgba(56, 154, 230, 0.08);
+  border-color: rgba(56, 154, 230, 0.18);
+}
+.calendar__detail--violet {
+  color: #6a1f9a;
+  background: rgba(160, 90, 220, 0.08);
+  border-color: rgba(160, 90, 220, 0.18);
+}
+
+.calendar__detail-body {
+  min-width: 0;
+  color: #1c1c1e;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendar__detail-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1c1c1e;
+}
+
+.calendar__detail-meta {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.75);
+}
+
+.calendar__detail-time,
+.calendar__detail-location,
+.calendar__detail-duration {
+  white-space: nowrap;
+}
+
+.calendar__detail-notes {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.7);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- Notes ---------- */
+
+/* Two-pane layout that mirrors macOS Notes: a sidebar list of notes
+   on the left and a large editor on the right. The sidebar column
+   is fixed-width so the list stays readable, the editor absorbs the
+   remaining horizontal space. */
+
+.notes {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.notes__sidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(246, 246, 248, 0.92);
+}
+
+.notes__sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.55);
+  flex: 0 0 auto;
+}
+
+.notes__sidebar-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1c1c1e;
+  letter-spacing: -0.01em;
+}
+
+.notes__new-button {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1c1c1e;
+  font: inherit;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.notes__new-button:hover,
+.notes__new-button:focus-visible {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+.notes__sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notes__sidebar-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+}
+
+.notes__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: stretch;
+  border-radius: 8px;
+  background: transparent;
+  min-height: 56px;
+}
+
+.notes__row:hover {
+  background: rgba(0, 122, 255, 0.08);
+}
+
+.notes__row--selected {
+  background: rgba(254, 211, 84, 0.45);
+}
+
+.notes__row--selected:hover {
+  background: rgba(254, 211, 84, 0.55);
+}
+
+.notes__row--pending {
+  background: rgba(255, 99, 99, 0.18);
+}
+
+.notes__row--pending.notes__row--selected {
+  background: rgba(255, 99, 99, 0.28);
+}
+
+.notes__row-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 2px;
+  min-width: 0;
+}
+
+.notes__row-button:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.5);
+  outline-offset: -2px;
+}
+
+.notes__row-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1c1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.notes__row-preview {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.notes__row-date {
+  font-size: 11px;
+  color: rgba(60, 60, 67, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.notes__row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 6px;
+}
+
+.notes__row-delete {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(60, 60, 67, 0.55);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 120ms ease-out, background-color 120ms ease-out;
+}
+
+.notes__row:hover .notes__row-delete,
+.notes__row:focus-within .notes__row-delete,
+.notes__row--pending .notes__row-delete {
+  opacity: 1;
+}
+
+.notes__row-delete:hover,
+.notes__row-delete:focus-visible {
+  background: rgba(255, 99, 99, 0.18);
+  color: #c92a2a;
+  outline: none;
+}
+
+.notes__row-action {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.notes__row-action--confirm {
+  background: #c92a2a;
+  color: #ffffff;
+}
+
+.notes__row-action--confirm:hover,
+.notes__row-action--confirm:focus-visible {
+  background: #b32525;
+  outline: none;
+}
+
+.notes__row-action--cancel {
+  background: rgba(60, 60, 67, 0.18);
+  color: #1c1c1e;
+}
+
+.notes__row-action--cancel:hover,
+.notes__row-action--cancel:focus-visible {
+  background: rgba(60, 60, 67, 0.28);
+  outline: none;
+}
+
+.notes__editor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.98);
+  overflow: hidden;
+}
+
+.notes__editor-empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px;
+  text-align: center;
+  color: rgba(60, 60, 67, 0.55);
+}
+
+.notes__editor-empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(60, 60, 67, 0.7);
+}
+
+.notes__editor-empty-sub {
+  font-size: 13px;
+  color: rgba(60, 60, 67, 0.55);
+}
+
+.notes__editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.6);
+  flex: 0 0 auto;
+}
+
+.notes__editor-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.notes__editor-updated {
+  font-size: 11px;
+  color: rgba(60, 60, 67, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notes__editor-delete {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  color: #c92a2a;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notes__editor-delete:hover,
+.notes__editor-delete:focus-visible {
+  background: rgba(255, 99, 99, 0.12);
+  border-color: rgba(255, 99, 99, 0.4);
+  outline: none;
+}
+
+.notes__editor-delete-label {
+  font-weight: 500;
+}
+
+.notes__editor-title {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #1c1c1e;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 18px 20px 8px;
+  outline: none;
+  flex: 0 0 auto;
+}
+
+.notes__editor-title::placeholder {
+  color: rgba(60, 60, 67, 0.45);
+  font-weight: 600;
+}
+
+.notes__editor-body {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #1c1c1e;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.55;
+  padding: 8px 20px 20px;
+  resize: none;
+  outline: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+.notes__editor-body::placeholder {
+  color: rgba(60, 60, 67, 0.45);
+}
+
+/* ---------- Photos ---------- */
+
+/* macOS-Photos-inspired layout: a translucent toolbar across the top
+   and a responsive thumbnail grid below. The grid uses CSS
+   `auto-fill / minmax` so it scales gracefully from a phone-sized
+   window all the way to a full 1080p desktop without any explicit
+   breakpoint bookkeeping. */
+
+.photos {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+  position: relative;
+}
+
+.photos__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(246, 246, 248, 0.92);
+  flex: 0 0 auto;
+}
+
+.photos__toolbar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1c1c1e;
+  letter-spacing: -0.01em;
+}
+
+.photos__toolbar-count {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.65);
+  font-variant-numeric: tabular-nums;
+}
+
+.photos__empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+}
+
+.photos__grid {
+  list-style: none;
+  margin: 0;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-content: start;
+}
+
+.photos__cell {
+  display: flex;
+  min-width: 0;
+}
+
+.photos__thumb-button {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+  padding: 4px 4px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  text-align: left;
+  transition:
+    background-color 120ms ease-out,
+    border-color 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+.photos__thumb-button:hover,
+.photos__thumb-button:focus-visible {
+  background: rgba(0, 122, 255, 0.08);
+  border-color: rgba(0, 122, 255, 0.25);
+  outline: none;
+}
+
+.photos__thumb-button:active {
+  transform: scale(0.98);
+}
+
+.photos__thumb-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.photos__thumb-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.photos__caption {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1c1c1e;
+  text-align: center;
+  padding: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Lightbox-style detail view. The overlay covers the full window
+   with a dimmed backdrop; the panel centers the image and meta
+   data. The backdrop is clickable (closes the detail) but the
+   panel uses stopPropagation so clicking the panel itself doesn't
+   accidentally close it. */
+
+.photos__detail {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 24, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 5;
+  animation: photos__detail-fade 140ms ease-out;
+}
+
+@keyframes photos__detail-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.photos__detail-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 100%);
+  max-height: 100%;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.photos__detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(246, 246, 248, 0.95);
+  flex: 0 0 auto;
+}
+
+.photos__detail-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1c1e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photos__detail-close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(60, 60, 67, 0.7);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.photos__detail-close:hover,
+.photos__detail-close:focus-visible {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1c1c1e;
+  outline: none;
+}
+
+.photos__detail-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.photos__detail-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.photos__detail-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 12px;
+  row-gap: 6px;
+  margin: 0;
+  font-size: 12px;
+  color: #1c1c1e;
+}
+
+.photos__detail-label {
+  color: rgba(60, 60, 67, 0.6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  align-self: baseline;
+}
+
+.photos__detail-value {
+  margin: 0;
+  color: #1c1c1e;
+  word-break: break-word;
+}
+
+/* ---------- Settings ---------- */
+
+/* macOS System Settings-inspired layout: a sidebar of preference
+   categories on the left and a vertical list of setting rows on
+   the right. The sidebar column is fixed-width so the category
+   labels stay readable, the detail column absorbs the remaining
+   horizontal space. */
+
+.settings {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: rgba(245, 245, 247, 0.96);
+  color: #1c1c1e;
+  font-size: 13px;
+}
+
+.settings__sidebar {
+  background: rgba(232, 232, 236, 0.92);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 12px 8px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.settings__sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings__sidebar-item {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 120ms ease-out,
+    color 120ms ease-out;
+}
+
+.settings__sidebar-item:hover,
+.settings__sidebar-item:focus-visible {
+  background: rgba(0, 0, 0, 0.06);
+  outline: none;
+}
+
+.settings__sidebar-item--active {
+  background: rgba(0, 122, 255, 0.85);
+  color: #ffffff;
+}
+
+.settings__sidebar-item--active:hover,
+.settings__sidebar-item--active:focus-visible {
+  background: rgba(0, 122, 255, 0.95);
+}
+
+.settings__sidebar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.settings__sidebar-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.settings__detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.98);
+  overflow-y: auto;
+}
+
+.settings__detail--empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+}
+
+.settings__detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.7);
+  flex: 0 0 auto;
+}
+
+.settings__detail-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1c1e;
+  letter-spacing: -0.01em;
+}
+
+.settings__detail-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(60, 60, 67, 0.55);
+  font-size: 13px;
+  text-align: center;
+}
+
+.settings__rows {
+  list-style: none;
+  margin: 0;
+  padding: 8px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.settings__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  min-height: 56px;
+}
+
+.settings__row-label {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.settings__row-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: rgba(0, 122, 255, 0.12);
+  color: #0a64d8;
+  font-size: 15px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.settings__row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.settings__row-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1c1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings__row-description {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings__row-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* macOS-style toggle switch. The track is the clickable surface and
+   the knob slides between the two ends depending on the boolean
+   state. The track itself is a `<button role="switch">` so keyboard
+   users get the native on/off semantics for free. */
+
+.settings__toggle {
+  appearance: none;
+  border: 0;
+  position: relative;
+  width: 42px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(120, 120, 128, 0.32);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background-color 160ms ease-out,
+    box-shadow 160ms ease-out;
+  flex-shrink: 0;
+}
+
+.settings__toggle:hover {
+  background: rgba(120, 120, 128, 0.4);
+}
+
+.settings__toggle:focus-visible {
+  outline: 2px solid rgba(0, 122, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.settings__toggle--on {
+  background: #34c759;
+}
+
+.settings__toggle--on:hover {
+  background: #2db44d;
+}
+
+.settings__toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.18),
+    0 1px 1px rgba(0, 0, 0, 0.08);
+  transition: transform 160ms ease-out;
+}
+
+.settings__toggle--on .settings__toggle-knob {
+  transform: translateX(16px);
+}
+
+.settings__input {
+  appearance: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.2;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1c1c1e;
+  min-width: 0;
+}
+
+.settings__input:focus {
+  outline: none;
+  border-color: rgba(0, 122, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+}
+
+.settings__input--text {
+  width: 220px;
+  max-width: 100%;
+}
+
+.settings__input--number {
+  width: 80px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.settings__number {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.settings__number-unit {
+  font-size: 12px;
+  color: rgba(60, 60, 67, 0.7);
+  white-space: nowrap;
+}
+
+/* ---------- Calculator ---------- */
+
+/* macOS-Calculator-inspired layout: a translucent display at the
+ * top followed by a 4-column grid of rounded buttons. The grid is
+ * driven by the `CALCULATOR_KEYPAD` constant in calculatorLogic.ts;
+ * the `span` attribute on the `0` key makes it stretch across two
+ * columns via inline style.
+ */
+.calculator {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(30, 30, 32, 0.92);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  padding: 16px;
+  gap: 16px;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.calculator__display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  min-height: 88px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  text-align: right;
+  overflow: hidden;
+}
+
+.calculator__display--error {
+  color: #ff6b6b;
+}
+
+.calculator__display-pending {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  color: rgba(255, 165, 0, 0.9);
+  min-height: 18px;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.calculator__display-value {
+  font-size: 56px;
+  font-weight: 200;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  word-break: break-all;
+}
+
+.calculator__keypad {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 10px;
+  min-height: 0;
+}
+
+.calculator__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  font-size: 26px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 80ms ease, transform 80ms ease,
+    filter 80ms ease;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  min-height: 0;
+  color: #fff;
+}
+
+.calculator__key:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.calculator__key:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.calculator__key:active:not(:disabled) {
+  transform: scale(0.97);
+  filter: brightness(0.9);
+}
+
+/* Digit buttons share the same dark grey as real Calculator's
+ * number row. */
+.calculator__key--digit {
+  background: rgba(80, 80, 82, 0.95);
+  color: #fff;
+}
+
+/* Decimal point uses the same color as digits but a slightly
+ * heavier weight so the small dot reads cleanly. */
+.calculator__key--decimal {
+  background: rgba(80, 80, 82, 0.95);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Operators and the equals button share the orange family in
+ * macOS Calculator. */
+.calculator__key--operator {
+  background: rgba(255, 149, 0, 0.95);
+  color: #fff;
+}
+
+/* AC, ±, % — the lighter function row at the top. */
+.calculator__key--function {
+  background: rgba(170, 170, 175, 0.95);
+  color: #1c1c1e;
+}
+
+/* ---------- Terminal ---------- */
+
+/* macOS-Terminal-inspired layout: dark translucent background,
+ * monospace green-on-black text, scrollback region above a
+ * sticky prompt + input row. The scrollback container is the
+ * only scrolling area; the prompt line stays anchored to the
+ * bottom of the pane.
+ */
+.terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(15, 16, 18, 0.94);
+  color: #d6ffd6;
+  font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 12px 14px 8px;
+  box-sizing: border-box;
+  cursor: text;
+  overflow: hidden;
+}
+
+.terminal__scrollback {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 0;
+  padding-right: 4px;
+  scrollbar-color: rgba(214, 255, 214, 0.3) transparent;
+  scrollbar-width: thin;
+}
+
+.terminal__scrollback::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal__scrollback::-webkit-scrollbar-thumb {
+  background: rgba(214, 255, 214, 0.25);
+  border-radius: 4px;
+}
+
+.terminal__entry {
+  display: block;
+}
+
+.terminal__line {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
+}
+
+.terminal__line--input {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.terminal__prompt {
+  color: #5fd75f;
+  margin-right: 8px;
+  flex: 0 0 auto;
+  white-space: pre;
+}
+
+.terminal__input-text {
+  color: #d6ffd6;
+  white-space: pre-wrap;
+}
+
+.terminal__entry--output {
+  color: #d6ffd6;
+}
+
+.terminal__entry--error {
+  color: #ff6b6b;
+}
+
+.terminal__entry--system {
+  color: rgba(214, 255, 214, 0.6);
+  font-style: italic;
+}
+
+.terminal__prompt-line {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-top: 4px;
+  margin-top: 2px;
+  border-top: 1px solid rgba(214, 255, 214, 0.05);
+}
+
+.terminal__input {
+  flex: 1 1 auto;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #d6ffd6;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
+  caret-color: #d6ffd6;
+  /* `size=1` plus full flex makes the input fill the row without
+   * fighting a width attribute; the visible width is driven by
+   * flex-grow. */
+  width: 100%;
+  min-width: 0;
+}
+
+.terminal__input::selection {
+  background: rgba(95, 215, 95, 0.35);
+}
